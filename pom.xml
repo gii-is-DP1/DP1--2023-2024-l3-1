@@ -55,6 +55,10 @@
 			<email>javnievic@us.es</email>
 			<url>http://www.isa.us.es</url>
 		</developer>
+		<developer>
+			<name>José Ramón Baños Botón</name>
+			<email>josbanbot@alum.us.es</email>
+		</developer>
 	</developers>
 
 	<dependencies>
