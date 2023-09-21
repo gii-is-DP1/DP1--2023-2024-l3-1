@@ -59,6 +59,10 @@
 			<name>José Ramón Baños Botón</name>
 			<email>josbanbot@alum.us.es</email>
 		</developer>
+		<developer>
+			<name>Fernando Jesús Fernández Gallardo</name>
+			<email>ferfergal@alum.us.es</email>
+		</developer>
 	</developers>
 
 	<dependencies>
