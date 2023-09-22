@@ -102,7 +102,7 @@ INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (13, 'Sly', '2012-0
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (14, 'Matias', '2023-07-29', 2, 11);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (15, 'Lia', '2020-3-16', 1, 12);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (16, 'Luna', '2017-8-11', 2, 13);
-INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (17, 'Lulo', '2015-3-17', 2, 23);
+INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (17, 'Lulo', '2015-3-17', 2, 14);
 
 
 INSERT INTO visits(id,pet_id,visit_date_time,description,vet_id) VALUES (1, 7, '2013-01-01 13:00', 'rabies shot', 4);
