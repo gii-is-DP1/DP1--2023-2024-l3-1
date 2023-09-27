@@ -49,7 +49,6 @@
 			<email>rubpergar@alum.us.es</email>
 			<url>http://www.isa.us.es</url>
 		</developer>
-		<developer>
 			<id>02</id>
 			<name>Javier</name>
 			<email>javnievic@us.es</email>
@@ -58,6 +57,10 @@
 		<developer>
 			<name>José Ramón Baños Botón</name>
 			<email>josbanbot@alum.us.es</email>
+		</developer>
+		<developer>
+			<name>Javier Ramírez Nuñez</name>
+			<email>javramnun@alum.us.es</email>
 		</developer>
 		<developer>
 			<name>Fernando Jesús Fernández Gallardo</name>
