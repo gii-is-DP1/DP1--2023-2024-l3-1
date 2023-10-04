@@ -6,50 +6,39 @@
 	<groupId>org.springframework.samples</groupId>
 	<artifactId>L3-1</artifactId>
 	<version>2.2.0.BUILD-SNAPSHOT</version>
-
 	<parent>
 		<groupId>org.springframework.boot</groupId>
 		<artifactId>spring-boot-starter-parent</artifactId>
 		<version>3.1.1</version>
 	</parent>
 	<name>Dobble</name>
-
 	<properties>
-
 		<!-- Generic properties -->
 		<java.version>17</java.version>
 		<maven.compiler.source>${java.version}</maven.compiler.source>
-		<maven.compiler.target>${java.version}</maven.compiler.target>
+    	<maven.compiler.target>${java.version}</maven.compiler.target>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-
 		<lombok.version>1.18.28</lombok.version>
 		<mapstruct.version>1.5.5.Final</mapstruct.version>
-
 		<jacoco.version>0.8.8</jacoco.version>
 		<spring-format.version>0.0.19</spring-format.version>
-
 		<frontend-maven-plugin.version>1.6</frontend-maven-plugin.version>
 		<node.version>v18.12.1</node.version>
 		<npm.version>8.19.2</npm.version>
 		<frontend-src-dir>${project.basedir}/frontend</frontend-src-dir>
-
 	</properties>
-
 	<developers>
-		
-
 		<developer>
 			<name>Sonia María Rus Morales</name>
 			<email>sonrusmor@alum.us.es</email>
 		</developer>
-
 		<developer>
 			<name>Rubpergar</name>
 			<email>rubpergar@alum.us.es</email>
 			<url>http://www.isa.us.es</url>
 		</developer>
-			<id>02</id>
+		<developer>
 			<name>Javier</name>
 			<email>javnievic@us.es</email>
 			<url>http://www.isa.us.es</url>
@@ -67,9 +56,7 @@
 			<email>ferfergal@alum.us.es</email>
 		</developer>
 	</developers>
-
 	<dependencies>
-
 		<!-- Spring and Spring Boot dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -115,7 +102,6 @@
 			<groupId>javax.cache</groupId>
 			<artifactId>cache-api</artifactId>
 		</dependency>
-
 		<!-- Testing -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -180,9 +166,7 @@
 			<artifactId>maven-model</artifactId>
 			<version>3.9.4</version>
 		</dependency>
-
 	</dependencies>
-
 	<build>
 		<plugins>
 			<plugin>
@@ -191,12 +175,10 @@
 				<executions>
 					<execution>
 						<!-- Spring Boot Actuator displays build-related information if a
-						META-INF/build-info.properties 
-                        file is present -->
+						META-INF/build-info.properties file is present -->
 						<goals>
 							<goal>build-info</goal>
 						</goals>
-
 						<configuration>
 							<additionalProperties>
 								<encoding.source>${project.build.sourceEncoding}</encoding.source>
@@ -212,14 +194,12 @@
 				<groupId>com.github.eirslett</groupId>
 				<artifactId>frontend-maven-plugin</artifactId>
 				<version>${frontend-maven-plugin.version}</version>
-
 				<configuration>
 					<nodeVersion>${node.version}</nodeVersion>
 					<npmVersion>${npm.version}</npmVersion>
 					<workingDirectory>${frontend-src-dir}</workingDirectory>
 					<installDirectory>${project.build.directory}</installDirectory>
 				</configuration>
-
 				<executions>
 					<!--execution>
 						<id>install-frontend-tools</id>
@@ -227,7 +207,6 @@
 							<goal>install-node-and-npm</goal>
 						</goals>
 					</execution>
-
 					<execution>
 						<id>npm-install</id>
 						<goals>
@@ -237,7 +216,6 @@
 							<arguments>install</arguments>
 						</configuration>
 					</execution>
-
 					<execution>
 						<id>build-frontend</id>
 						<goals>
@@ -337,13 +315,10 @@
 					<verbose>true</verbose>
 					<dateFormat>yyyy-MM-dd'T'HH:mm:ssZ</dateFormat>
 					<generateGitPropertiesFile>true</generateGitPropertiesFile>
-					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties
-					</generateGitPropertiesFilename>
+					<generateGitPropertiesFilename>${project.build.outputDirectory}/git.properties</generateGitPropertiesFilename>
 					<failOnNoGitDirectory>false</failOnNoGitDirectory>
 				</configuration>
 			</plugin>
-
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -369,7 +344,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<!-- Apache 2 license -->
 	<licenses>
 		<license>
@@ -377,6 +351,4 @@
 			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
 		</license>
 	</licenses>
-
-
 </project>

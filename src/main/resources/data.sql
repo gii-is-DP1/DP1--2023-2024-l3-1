@@ -14,7 +14,7 @@ INSERT INTO clinics(id, name, address, telephone, plan, clinic_owner) VALUES (1,
 INSERT INTO clinics(id, name, address, telephone, plan, clinic_owner) VALUES (2, 'Clinic 2', 'Av. Torneo, 52', '955634232', 'GOLD', 2);
 INSERT INTO clinics(id, name, address, telephone, plan, clinic_owner) VALUES (3, 'Clinic 3', 'Av. Reina Mercedes, 70', '955382238', 'BASIC', 2);
 
--- Ten owner user, named owner1 with password 0wn3r
+-- Ten owner user, named owner1 with passwor 0wn3r
 INSERT INTO authorities(id,authority) VALUES (3,'OWNER');
 INSERT INTO appusers(id,username,password,authority) VALUES (4,'owner1','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e',3);
 INSERT INTO appusers(id,username,password,authority) VALUES (5,'owner2','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e',3);
@@ -82,7 +82,7 @@ INSERT INTO owners(id, first_name, last_name, address, city, telephone, user_id,
 INSERT INTO owners(id, first_name, last_name, address, city, telephone, user_id, clinic) VALUES (9, 'David', 'Schroeder', '2749 Blackhawk Trail','Cádiz', '685559435', 12, 3);
 INSERT INTO owners(id, first_name, last_name, address, city, telephone, user_id, clinic) VALUES (10, 'Carlos', 'Estaban', '2335 Independence La.', 'Cádiz', '685555487', 13, 1);
 
--- consulta insercion del owner
+-- Consulta insercion del owner
 INSERT INTO owners(id, first_name, last_name, address, city, telephone, user_id, clinic) VALUES (11, 'Ruben', 'Perez', '229 Avenida de la Palmera', 'Sevilla', '685555487', 20, 1);
 INSERT INTO owners(id, first_name, last_name, address, city, telephone, user_id, clinic) VALUES (12, 'Sonia', 'Rus', 'Reina Mercedes', 'Sevilla', '123456789', 21, 2);
 INSERT INTO owners(id, first_name, last_name, address, city, telephone, user_id, clinic) VALUES (15, 'Javier', 'Nieto', 'Los Remedios', 'Sevilla', '622293411', 45, 1);
@@ -104,7 +104,7 @@ INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (11, 'Freddy', '201
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (12, 'Lucky', '2010-06-24', 2, 10);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (13, 'Sly', '2012-06-08', 1, 10);
 
---Consulta insercion mascota
+-- Consulta insercion mascota
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (14, 'Matias', '2023-07-29', 2, 11);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (15, 'Lia', '2020-3-16', 1, 12);
 INSERT INTO pets(id,name,birth_date,type_id,owner_id) VALUES (20, 'Paco', '2016-06-08', 1, 15);

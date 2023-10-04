@@ -30,7 +30,6 @@ public class DevelopersController {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         try {
             Model model = reader.read(new FileReader("pom.xml", StandardCharsets.UTF_8));
-            Person p=null;
             developers=model.getDevelopers();                                            
         } catch (IOException | XmlPullParserException e) {
             // TODO Auto-generated catch block
@@ -38,7 +37,4 @@ public class DevelopersController {
         }
         
     }
-   
-
-
 }
