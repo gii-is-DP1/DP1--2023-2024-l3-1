@@ -104,4 +104,3 @@ _site/
 /.apt_generated/
 coverage/jacoco.xml
 .gitignore
-package-lock.json

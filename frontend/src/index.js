@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import './global.css';
+import '@fontsource/lakki-reddy';
 import '@splidejs/react-splide/css/sea-green';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
