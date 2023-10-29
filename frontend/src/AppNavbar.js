@@ -144,8 +144,10 @@ function AppNavbar() {
         <div>
             <Navbar expand="md" dark color="dark">
                 <NavbarBrand href="/">
-                    <img alt="logo" src="/logo1-recortado.png" style={{ height: 40, width: 40 }} />
-                    PetClinic
+                    <img alt="Dobble logo" src="logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
+                    <NavbarText style={{ color: "white", marginLeft: '0.5rem' }}>
+                        Online
+                    </NavbarText>
                 </NavbarBrand>
                 <NavbarToggler onClick={toggleNavbar} className="ms-2" />
                 <Collapse isOpen={!collapsed} navbar>
