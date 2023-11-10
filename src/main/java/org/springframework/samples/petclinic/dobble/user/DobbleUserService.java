@@ -6,18 +6,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class UserService {
-    private UserRepository userRepository; 
+public class DobbleUserService {
+    private DobbleUserRepository userRepository; 
 
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public DobbleUserService(DobbleUserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 
 
     @Transactional
-	public User saveUser(User user) throws DataAccessException {
+	public DobbleUser saveUser(DobbleUser user) throws DataAccessException {
 		userRepository.save(user);
 		return user;
 	}

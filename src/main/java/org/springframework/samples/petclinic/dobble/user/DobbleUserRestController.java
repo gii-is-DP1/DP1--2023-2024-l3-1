@@ -13,23 +13,23 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/v1/dobbleusers")
 @SecurityRequirement(name = "bearerAuth")
-public class UserRestController {
+public class DobbleUserRestController {
 
-    private final UserService userService;
-	private final AuthoritiesService authService; 
+    private final DobbleUserService userService;
+	private final DobbleAuthoritiesService authService; 
 
     @Autowired
-	public UserRestController(UserService userService, AuthoritiesService authService) {
+	public DobbleUserRestController(DobbleUserService userService, DobbleAuthoritiesService authService) {
 		this.userService = userService;
 		this.authService = authService;
 	}
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	public ResponseEntity<User> create(@RequestBody @Valid User user) {
-		User savedUser = userService.saveUser(user);
+	public ResponseEntity<DobbleUser> create(@RequestBody @Valid DobbleUser user) {
+		DobbleUser savedUser = userService.saveUser(user);
 		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
 	}
     
