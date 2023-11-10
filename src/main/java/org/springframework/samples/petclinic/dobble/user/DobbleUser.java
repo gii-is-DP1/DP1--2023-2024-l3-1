@@ -2,10 +2,13 @@ package org.springframework.samples.petclinic.dobble.user;
 
 import java.util.List;
 
+import org.springframework.samples.petclinic.dobble.figure.Icon;
 import org.springframework.samples.petclinic.model.BaseEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -39,7 +42,9 @@ public class DobbleUser extends BaseEntity {
     @ManyToMany
     private List<DobbleUser> friends; 
     
-	//Icono jugador
+	//Icono jugador (Puede no tener foto (es null) de perfil-> Foto predeterminada)
+	@Enumerated(EnumType.STRING)
+	private Icon icon; 
 
     public Boolean hasAuthority(String auth) {
 		return authority.getAuthority().equals(auth);
