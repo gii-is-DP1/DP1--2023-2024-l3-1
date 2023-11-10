@@ -21,12 +21,12 @@ export default function Login() {
     })
       .then(function (response) {
         if (response.status === 200) return response.json();
-        else return Promise.reject("Invalid login attempt");
+        else return Promise.reject("Intento de inicio de sesión inválido");
       })
       .then(function (data) {
         tokenService.setUser(data);
         tokenService.updateLocalAccessToken(data.token);
-        window.location.href = "/dashboard";
+        window.location.href = "/dashboard";//Página principal
       })
       .catch((error) => {         
         setMessage(error);
