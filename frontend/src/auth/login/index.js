@@ -42,7 +42,7 @@ export default function Login() {
           <></>
         )}
 
-        <h1>Login</h1>
+        <h1>Inicio de sesión</h1>
 
         <div className="auth-form-container">
           <FormGenerator
