@@ -1,0 +1,92 @@
+name: Quality checks
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build_backend:
+    name: 'Backend build'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Clone
+    
+      - name: Setup JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Build with Maven
+        run: mvn --batch-mode compile
+
+  test_backend:
+    name: 'Backend tests'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Clone
+    
+      - name: Setup JDK 17
+        uses: actions/setup-java@v2
+        with:
+          java-version: '17'
+          distribution: 'adopt'
+
+      - name: Test with Maven
+        run: mvn --batch-mode --update-snapshots verify
+
+  build_frontend:
+    name: 'Build frontend'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Clone
+    
+      - name: Setup node environment ⚙️
+        uses: actions/setup-node@v4.0.0
+        with:
+          node-version: 18
+          check-latest: true
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
+      - name: Build
+        run: npm run build
+
+  test_frontend:
+    name: 'Test frontend'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - uses: actions/checkout@v2
+        name: Clone
+    
+      - name: Setup node environment ⚙️
+        uses: actions/setup-node@v4.0.0
+        with:
+          node-version: 18
+          check-latest: true
+
+      - name: Install dependencies
+        run: npm ci --no-audit
+
+      - name: Run tests
+        run: npm run test
