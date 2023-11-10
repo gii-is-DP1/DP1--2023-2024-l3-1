@@ -3,7 +3,7 @@ package org.springframework.samples.petclinic.dobble.user;
 
 import org.springframework.data.repository.CrudRepository;
 
-public interface UserRepository extends CrudRepository<User,Integer>{
+public interface DobbleUserRepository extends CrudRepository<DobbleUser,Integer>{
     
 
 

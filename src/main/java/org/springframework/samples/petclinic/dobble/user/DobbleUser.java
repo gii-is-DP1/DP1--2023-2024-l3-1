@@ -19,7 +19,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "dobbleusers")
-public class User extends BaseEntity {
+public class DobbleUser extends BaseEntity {
 
     @Column(unique = true)
 	String username;
@@ -33,11 +33,11 @@ public class User extends BaseEntity {
     @NotNull
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "authority")
-    Authorities authority; 
+    DobbleAuthorities authority; 
 
     @NotNull
     @ManyToMany
-    private List<User> friends; 
+    private List<DobbleUser> friends; 
     
 	//Icono jugador
 
