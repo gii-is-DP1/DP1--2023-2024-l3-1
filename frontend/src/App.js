@@ -47,6 +47,9 @@ import ConsultationListClinicOwner from "./clinicOwner/consultations/Consultatio
 import ConsultationEditClinicOwner from "./clinicOwner/consultations/ConsultationEditClinicOwner";
 import VetListClinicOwner from "./clinicOwner/vets/VetListClinicOwner";
 import VetEditClinicOwner from "./clinicOwner/vets/VetEditClinicOwner";
+import AchievementListPlayer from "./achievement/achievementListPlayer";
+import AchievementList from "./achievement/achievementListAdmin";
+import AchievementEdit from "./achievement/achievementEdit";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -98,9 +101,11 @@ function App() {
           <Route path="/consultations" exact={true} element={<PrivateRoute><ConsultationListAdmin /></PrivateRoute>} />
           <Route path="/consultations/:consultationId" exact={true} element={<PrivateRoute><ConsultationEditAdmin /></PrivateRoute>} />
           <Route path="/consultations/:consultationId/tickets" exact={true} element={<PrivateRoute><TicketListAdmin /></PrivateRoute>} />
+          <Route path="/achievements/" exact={true} element={<PrivateRoute><AchievementList /></PrivateRoute>} />
+          <Route path="/achievements/:achievementId" exact={true} element={<PrivateRoute><AchievementEdit/></PrivateRoute>} />
         </>)
     }
-    if (role === "OWNER") {
+    if (role === "OWNER") { /* PLAYER */
       ownerRoutes = (
         <>
           <Route path="/dashboard" element={<PrivateRoute><OwnerDashboard /></PrivateRoute>} />
@@ -111,9 +116,10 @@ function App() {
           <Route path="/consultations" exact={true} element={<PrivateRoute><OwnerConsultationList /></PrivateRoute>} />
           <Route path="/consultations/:consultationId" exact={true} element={<PrivateRoute><OwnerConsultationEdit /></PrivateRoute>} />
           <Route path="/consultations/:consultationId/tickets" exact={true} element={<PrivateRoute><OwnerConsultationTickets /></PrivateRoute>} />
+          <Route path="/achievements/" exact={true} element={<PrivateRoute><AchievementListPlayer /></PrivateRoute>} />
         </>)
     }
-    if (role === "VET") {
+    if (role === "VET") {  /* SE ELIMINA */
       vetRoutes = (
         <>
           {/* <Route path="/dashboard" element={<PrivateRoute><OwnerDashboard /></PrivateRoute>} /> */}
@@ -122,7 +128,7 @@ function App() {
           <Route path="/consultations/:consultationId/tickets" exact={true} element={<PrivateRoute><VetConsultationTickets /></PrivateRoute>} />
         </>)
     }
-    if (role === "CLINIC_OWNER") {
+    if (role === "CLINIC_OWNER") {  /* SE ELIMINA */
       vetRoutes = (
         <>
           <Route path="/owners" exact={true} element={<PrivateRoute><OwnerListClinicOwner /></PrivateRoute>} />
