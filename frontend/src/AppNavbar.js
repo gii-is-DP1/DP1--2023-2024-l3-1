@@ -131,12 +131,9 @@ function AppNavbar() {
                 <NavItem>
                     <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/docs">Docs</NavLink>
                 </NavItem>
-                <NavItem>
-                    <NavLink style={{ color: "white" }} id="plans" tag={Link} to="/plans">Pricing Plans</NavLink>
-                </NavItem>
                 <NavbarText style={{ color: "white" }} className="justify-content-end">{username}</NavbarText>
                 <NavItem className="d-flex">
-                    <NavLink style={{ color: "white" }} id="logout" tag={Link} to="/logout">Logout</NavLink>
+                    <NavLink style={{ color: "white" }} id="logout" tag={Link} to="/logout">Cerrar sesión</NavLink>
                 </NavItem>
             </>
         )
