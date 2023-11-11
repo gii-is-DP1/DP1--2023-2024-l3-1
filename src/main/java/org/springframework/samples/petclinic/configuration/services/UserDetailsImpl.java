@@ -4,7 +4,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.samples.petclinic.user.User;
+import org.springframework.samples.petclinic.dobble.user.DobbleUser;
+//import org.springframework.samples.petclinic.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -32,7 +33,7 @@ public class UserDetailsImpl implements UserDetails {
 		this.authorities = authorities;
 	}
 
-	public static UserDetailsImpl build(User user) {
+	public static UserDetailsImpl build(DobbleUser user) {
 		List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getAuthority().getAuthority()));
 
 		return new UserDetailsImpl(user.getId(), user.getUsername(),
