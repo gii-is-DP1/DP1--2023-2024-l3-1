@@ -51,6 +51,7 @@ import AchievementListPlayer from "./achievement/achievementListPlayer";
 import AchievementList from "./achievement/achievementListAdmin";
 import AchievementEdit from "./achievement/achievementEdit";
 import MainLobby from "./player/main_lobby";
+import Profile from "./profile";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -148,6 +149,7 @@ function App() {
       playerRoutes = (
         <>
         <Route path="/lobby" exact={true} element={<PrivateRoute><MainLobby /></PrivateRoute>}/>
+        <Route path="/profile" exaxt element= {<PrivateRoute><Profile/></PrivateRoute>}/>
         </>
       )
     }
@@ -183,6 +185,7 @@ function App() {
           {adminRoutes}
           {ownerRoutes}
           {vetRoutes}
+          {playerRoutes}
         </Routes>
       </ErrorBoundary>
     </div>
