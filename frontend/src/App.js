@@ -78,6 +78,7 @@ function App() {
   let userRoutes = <></>;
   let vetRoutes = <></>;
   let publicRoutes = <></>;
+  let playerRoutes = <></>;
 
   roles.forEach((role) => {
     if (role === "ADMIN") {
@@ -118,6 +119,7 @@ function App() {
           <Route path="/consultations/:consultationId" exact={true} element={<PrivateRoute><OwnerConsultationEdit /></PrivateRoute>} />
           <Route path="/consultations/:consultationId/tickets" exact={true} element={<PrivateRoute><OwnerConsultationTickets /></PrivateRoute>} />
           <Route path="/achievements/" exact={true} element={<PrivateRoute><AchievementListPlayer /></PrivateRoute>} />
+          <Route path= "/lobby" element={<MainLobby/>}/>
         </>)
     }
     if (role === "VET") {  /* SE ELIMINA */
@@ -141,6 +143,13 @@ function App() {
           <Route path="/vets" exact={true} element={<PrivateRoute><VetListClinicOwner /></PrivateRoute>} />
           <Route path="/vets/:id" exact={true} element={<PrivateRoute><VetEditClinicOwner /></PrivateRoute>} />
         </>)
+    }
+    if(role === "PLAYER") {
+      playerRoutes = (
+        <>
+        <Route path="/lobby" exact={true} element={<PrivateRoute><MainLobby /></PrivateRoute>}/>
+        </>
+      )
     }
   })
   if (!jwt) {
