@@ -50,6 +50,7 @@ import VetEditClinicOwner from "./clinicOwner/vets/VetEditClinicOwner";
 import AchievementListPlayer from "./achievement/achievementListPlayer";
 import AchievementList from "./achievement/achievementListAdmin";
 import AchievementEdit from "./achievement/achievementEdit";
+import MainLobby from "./player/main_lobby";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -155,6 +156,7 @@ function App() {
         {/* <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} /> */}        
         <Route path="/logout" element={<Logout />} />
         <Route path="/login" element={<Login />} />
+        <Route path= "/lobby" element={<MainLobby/>}/>
       </>
     )
   }
