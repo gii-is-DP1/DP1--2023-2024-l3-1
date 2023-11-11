@@ -21,7 +21,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "dobbleusers")
+@Table(name = "dobble_users")
 public class DobbleUser extends BaseEntity {
 
     @Column(unique = true)
