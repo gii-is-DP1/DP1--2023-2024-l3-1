@@ -55,7 +55,7 @@ export default function Login() {
             buttonClassName="auth-button"
           />
 
-          <h1 style={{fontSize: '1.1em',margin:'1em'}}>   No tienes una cuenta?
+          <h1 style={{fontSize: '1.1em',margin:'1em'}}>No tienes una cuenta?
           <a href="register">  Regístrate</a>
           </h1>
           
