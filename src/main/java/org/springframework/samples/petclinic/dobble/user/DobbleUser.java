@@ -10,9 +10,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -38,8 +40,12 @@ public class DobbleUser extends BaseEntity {
 	@JoinColumn(name = "authority")
     DobbleAuthorities authority; 
 
-    @NotNull
+    
     @ManyToMany
+	@JoinTable(name = "dobble_user_friends", 
+        joinColumns = @JoinColumn(name = "dobble_user_id"),
+        inverseJoinColumns = @JoinColumn(name = "friend_id"), uniqueConstraints = {
+			@UniqueConstraint(columnNames = { "dobble_user_id", "friend_id" }) } )
     private List<DobbleUser> friends; 
     
 	//Icono jugador (Puede no tener foto (es null) de perfil-> Foto predeterminada)

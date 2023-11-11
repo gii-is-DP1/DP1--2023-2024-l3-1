@@ -141,4 +141,9 @@ INSERT INTO consultation_tickets(id,description,creation_date, user_id, consulta
 
 --Consulta de inserción de usuario Dobble
 INSERT INTO dobble_authorities(id,authority) VALUES (2, 'Player');
-INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (1,'player1','player1@gmail.com','$2a$10$t.I/C4cjUdUWzqlFlSddLeh9SbZ6d8wR7mdbeIRghT355/KRKZPAi','DELFIN',2);--pass: 0wn3r -> cambiar a player
+INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (1,'player1','player1@gmail.com','$2a$10$t.I/C4cjUdUWzqlFlSddLeh9SbZ6d8wR7mdbeIRghT355/KRKZPAi','DELFIN',2); --pass: 0wn3r -> cambiar a pl4yer
+INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (2,'player2','player2@gmail.com','$2a$10$t.I/C4cjUdUWzqlFlSddLeh9SbZ6d8wR7mdbeIRghT355/KRKZPAi','TIJERAS',2);
+INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (3,'player3','player3@gmail.com','$2a$10$t.I/C4cjUdUWzqlFlSddLeh9SbZ6d8wR7mdbeIRghT355/KRKZPAi','SNOWMAN',2);
+
+INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (1,2);
+INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (1,3);
