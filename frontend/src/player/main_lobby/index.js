@@ -16,8 +16,8 @@ function PlayButton(){
 
 export default function MainLobby(){
     return (
-        <div>
-        <h1> Main Lobby</h1>
+        <div className="page-container">
+       
         <PlayButton/>
         </div>
     );
