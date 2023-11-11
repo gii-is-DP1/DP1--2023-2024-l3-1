@@ -143,7 +143,7 @@ INSERT INTO dobble_authorities(id,authority) VALUES (1, 'ADMIN');
 INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (1,'admin1','admin1@gmail.com','$2a$10$nMmTWAhPTqXqLDJTag3prumFrAJpsYtroxf0ojesFYq0k4PmcbWUS','DELFIN',1);
 
 --Consulta de inserción de usuario Dobble
-INSERT INTO dobble_authorities(id,authority) VALUES (2, 'Player');
+INSERT INTO dobble_authorities(id,authority) VALUES (2, 'PLAYER');
 INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (2,'player1','player1@gmail.com','$2a$10$t.I/C4cjUdUWzqlFlSddLeh9SbZ6d8wR7mdbeIRghT355/KRKZPAi','DELFIN',2); --pass: 0wn3r -> cambiar a pl4yer
 INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (3,'player2','player2@gmail.com','$2a$10$t.I/C4cjUdUWzqlFlSddLeh9SbZ6d8wR7mdbeIRghT355/KRKZPAi','TIJERAS',2);
 INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (4,'player3','player3@gmail.com','$2a$10$t.I/C4cjUdUWzqlFlSddLeh9SbZ6d8wR7mdbeIRghT355/KRKZPAi','SNOWMAN',2);
