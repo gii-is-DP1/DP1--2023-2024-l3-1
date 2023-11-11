@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.dobble.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -31,6 +32,12 @@ public class DobbleUserRestController {
 	public ResponseEntity<DobbleUser> create(@RequestBody @Valid DobbleUser user) {
 		DobbleUser savedUser = userService.saveUser(user);
 		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
+	}
+
+	@GetMapping("current")
+	public ResponseEntity<DobbleUser> findCurrent(){
+		DobbleUser currentUser = userService.findCurrentDobbleUser();
+		return new ResponseEntity<>(currentUser,HttpStatus.OK);
 	}
     
 }
