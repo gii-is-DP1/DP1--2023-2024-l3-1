@@ -144,9 +144,11 @@ INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (1,'a
 
 --Consulta de inserción de usuario Dobble
 INSERT INTO dobble_authorities(id,authority) VALUES (2, 'PLAYER');
+
 INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (2,'player1','player1@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','DELFIN',2); --pass: 0wn3r -> cambiar a pl4yer
 INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (3,'player2','player2@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','TIJERAS',2);
 INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (4,'player3','player3@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','SNOWMAN',2);
+
 
 INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (2,3);
 INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (2,4);
