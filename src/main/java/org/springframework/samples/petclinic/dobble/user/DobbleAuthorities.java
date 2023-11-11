@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "authorities")
+@Table(name = "dobble_authorities")
 public class DobbleAuthorities extends BaseEntity{
 	
 //	@ManyToOne
