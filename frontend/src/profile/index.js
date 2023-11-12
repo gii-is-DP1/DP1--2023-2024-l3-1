@@ -31,15 +31,28 @@ export default function Profile(){
       }, []);
 
     return(
-    <div className="auth-page-container">
+    <div className="profile-page-container">
         {message ? (
           <Alert color="primary">{message}</Alert>
         ) : (
           <></>
         )}
+        
         <h1>Mi perfil</h1>
-        <h4>Nombre de usuario:  {currentUser.username}</h4>
-        <h4>Email:  {currentUser.email}</h4>
+        <div className="profile-field">
+            <h6>Nombre de usuario: </h6>
+        <div className="rounded-box">{currentUser.username}</div>
+        </div>
+        
+        <div className="profile-field">
+            <h6>Email:</h6>
+        <div className="rounded-box">{currentUser.email}</div>
+        </div>
+
+        <div className="profile-field">
+            <h6>Logo:</h6>
+        </div>
+
     </div>
     );
 
