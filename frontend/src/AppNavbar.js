@@ -51,6 +51,9 @@ function AppNavbar() {
                         <NavLink style={{ color: "white" }} tag={Link} to="/users">Users</NavLink>
                     </NavItem>
                     <NavItem>
+                        <NavLink style={{ color: "white" }} tag={Link} to="/dobbleUsers">DobbleUsers</NavLink>
+                    </NavItem>
+                    <NavItem>
                         <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
                     </NavItem>
                 </>
@@ -113,6 +116,7 @@ function AppNavbar() {
                 <NavItem>
                     <NavLink style={{ color: "white" }} id="register" tag={Link} to="/register">Registro</NavLink>
                 </NavItem>
+             
                 <NavItem>
                     <NavLink style={{ color: "white" }} id="login" tag={Link} to="/login">Inicio de sesión</NavLink>
                 </NavItem>
@@ -124,6 +128,7 @@ function AppNavbar() {
                 <NavItem>
                     <NavLink style={{ color: "white" }} tag={Link} to="/dashboard">Dashboard</NavLink>
                 </NavItem>
+            
             </>
         )
         userLogout = (
