@@ -13,6 +13,7 @@ import org.springframework.samples.petclinic.auth.payload.response.JwtResponse;
 import org.springframework.samples.petclinic.auth.payload.response.MessageResponse;
 import org.springframework.samples.petclinic.configuration.jwt.JwtUtils;
 import org.springframework.samples.petclinic.configuration.services.UserDetailsImpl;
+import org.springframework.samples.petclinic.dobble.user.DobbleUserService;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -39,14 +40,16 @@ public class AuthController {
 	private final UserService userService;
 	private final JwtUtils jwtUtils;
 	private final AuthService authService;
+	private final DobbleUserService dobbleUserService;
 
 	@Autowired
 	public AuthController(AuthenticationManager authenticationManager, UserService userService, JwtUtils jwtUtils,
-			AuthService authService) {
+			AuthService authService, DobbleUserService dobbleUserService) {
 		this.userService = userService;
 		this.jwtUtils = jwtUtils;
 		this.authenticationManager = authenticationManager;
 		this.authService = authService;
+		this.dobbleUserService = dobbleUserService;
 	}
 
 	@PostMapping("/signin")
@@ -64,6 +67,24 @@ public class AuthController {
 
 			return ResponseEntity.ok().body(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
 		}catch(BadCredentialsException exception){
+			return ResponseEntity.badRequest().body("Bad Credentials!");
+		}
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity authenticateDobbleUser(@Valid @RequestBody LoginRequest loginRequest){
+		try {
+			Authentication authentication = authenticationManager.authenticate(
+			new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+			);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			String jwt = jwtUtils.generateJwtToken(authentication);
+			UserDetailsImpl userDetails= (UserDetailsImpl) authentication.getPrincipal(); 
+			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+				.collect(Collectors.toList());
+			
+			return ResponseEntity.ok().body(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
+		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("Bad Credentials!");
 		}
 	}

@@ -14,7 +14,7 @@ export default function Login() {
 
     const reqBody = values;
     setMessage(null);
-    await fetch("/api/v1/auth/signin", {
+    await fetch("/api/v1/auth/login", {
       headers: { "Content-Type": "application/json" },
       method: "POST",
       body: JSON.stringify(reqBody),
@@ -26,7 +26,7 @@ export default function Login() {
       .then(function (data) {
         tokenService.setUser(data);
         tokenService.updateLocalAccessToken(data.token);
-        window.location.href = "/dashboard";//Página principal
+        window.location.href = "/lobby";//Página principal
       })
       .catch((error) => {         
         setMessage(error);
@@ -42,7 +42,7 @@ export default function Login() {
           <></>
         )}
 
-        <h1>Login</h1>
+        <h1>Inicio de sesión</h1>
 
         <div className="auth-form-container">
           <FormGenerator
@@ -54,6 +54,11 @@ export default function Login() {
             buttonText="Login"
             buttonClassName="auth-button"
           />
+
+          <h1 style={{fontSize: '1.1em',margin:'1em'}}>No tienes una cuenta?
+          <a href="register">  Regístrate</a>
+          </h1>
+          
         </div>
       </div>
     );  

@@ -137,3 +137,16 @@ INSERT INTO consultation_tickets(id,description,creation_date, user_id, consulta
 INSERT INTO consultation_tickets(id,description,creation_date, user_id, consultation_id) VALUES (6, 'Try to give him some tuna to check if he eats that.', '2023-04-11 15:20', 15, 3);
 INSERT INTO consultation_tickets(id,description,creation_date, user_id, consultation_id) VALUES (7, 'My lovebird doesn''t sing as my neighbour''s one.', '2023-02-24 12:30', 5, 4);
 INSERT INTO consultation_tickets(id,description,creation_date, user_id, consultation_id) VALUES (8, 'Lovebirds do not sing.', '2023-02-24 18:30', 16, 4);
+
+-- One admin user, named admin1 with password 4dm1n and authority admin
+INSERT INTO dobble_authorities(id,authority) VALUES (1, 'ADMIN');
+INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (1,'admin1','admin1@gmail.com','$2a$10$nMmTWAhPTqXqLDJTag3prumFrAJpsYtroxf0ojesFYq0k4PmcbWUS','DELFIN',1);
+
+--Consulta de inserción de usuario Dobble
+INSERT INTO dobble_authorities(id,authority) VALUES (2, 'PLAYER');
+INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (2,'player1','player1@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','DELFIN',2); --pass: 0wn3r -> cambiar a pl4yer
+INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (3,'player2','player2@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','TIJERAS',2);
+INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (4,'player3','player3@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','SNOWMAN',2);
+
+INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (2,3);
+INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (2,4);

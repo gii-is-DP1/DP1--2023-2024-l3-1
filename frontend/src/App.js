@@ -50,6 +50,8 @@ import VetEditClinicOwner from "./clinicOwner/vets/VetEditClinicOwner";
 import AchievementListPlayer from "./achievement/achievementListPlayer";
 import AchievementList from "./achievement/achievementListAdmin";
 import AchievementEdit from "./achievement/achievementEdit";
+import MainLobby from "./player/main_lobby";
+import Profile from "./profile";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -77,6 +79,7 @@ function App() {
   let userRoutes = <></>;
   let vetRoutes = <></>;
   let publicRoutes = <></>;
+  let playerRoutes = <></>;
 
   roles.forEach((role) => {
     if (role === "ADMIN") {
@@ -117,6 +120,7 @@ function App() {
           <Route path="/consultations/:consultationId" exact={true} element={<PrivateRoute><OwnerConsultationEdit /></PrivateRoute>} />
           <Route path="/consultations/:consultationId/tickets" exact={true} element={<PrivateRoute><OwnerConsultationTickets /></PrivateRoute>} />
           <Route path="/achievements/" exact={true} element={<PrivateRoute><AchievementListPlayer /></PrivateRoute>} />
+          <Route path= "/lobby" element={<MainLobby/>}/>
         </>)
     }
     if (role === "VET") {  /* SE ELIMINA */
@@ -141,6 +145,14 @@ function App() {
           <Route path="/vets/:id" exact={true} element={<PrivateRoute><VetEditClinicOwner /></PrivateRoute>} />
         </>)
     }
+    if(role === "PLAYER") {
+      playerRoutes = (
+        <>
+        <Route path="/lobby" exact={true} element={<PrivateRoute><MainLobby /></PrivateRoute>}/>
+        <Route path="/profile" exaxt element= {<PrivateRoute><Profile/></PrivateRoute>}/>
+        </>
+      )
+    }
   })
   if (!jwt) {
     publicRoutes = (
@@ -155,6 +167,7 @@ function App() {
         {/* <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} /> */}        
         <Route path="/logout" element={<Logout />} />
         <Route path="/login" element={<Login />} />
+        <Route path= "/lobby" element={<MainLobby/>}/>
       </>
     )
   }
@@ -172,6 +185,7 @@ function App() {
           {adminRoutes}
           {ownerRoutes}
           {vetRoutes}
+          {playerRoutes}
         </Routes>
       </ErrorBoundary>
     </div>
