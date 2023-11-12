@@ -31,7 +31,7 @@ class DobbleUserList extends Component {
                 'Content-Type': 'application/json'
             }
         }).then(() => {
-            let updatedVets = [...this.state.dobbleUsers].filter(i => i.id !== id);
+            let updatedDobbleUsers = [...this.state.dobbleUsers].filter(i => i.id !== id);
             this.setState({ dobbleUsers: updatedDobbleUsers });
         });
     }
@@ -69,7 +69,6 @@ class DobbleUserList extends Component {
                             <tr>
                                 <th width="20%">Email</th>
                                 <th width="20%">Username</th>
-                           
                                 <th width="20%">Actions</th>
                             </tr>
                         </thead>
