@@ -32,10 +32,14 @@ export default function Login() {
         setMessage(error);
       });            
   }
-
   
     return (
-      <div className="auth-page-container">
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
         {message ? (
           <Alert color="primary">{message}</Alert>
         ) : (
@@ -44,21 +48,21 @@ export default function Login() {
 
         <h1>Inicio de sesión</h1>
 
-        <div className="auth-form-container">
+        <div>
           <FormGenerator
             ref={loginFormRef}
             inputs={loginFormInputs}
             onSubmit={handleSubmit}
             numberOfColumns={1}
             listenEnterKey
-            buttonText="Login"
+            buttonText="Iniciar sesión"
             buttonClassName="auth-button"
           />
-
-          <h1 style={{fontSize: '1.1em',margin:'1em'}}>No tienes una cuenta?
-          <a href="register">  Regístrate</a>
-          </h1>
-          
+        </div>
+        <div style={{
+          padding: '50px'
+        }}>
+          ¿No tienes una cuenta? <a href="register">Regístrate</a>
         </div>
       </div>
     );  
