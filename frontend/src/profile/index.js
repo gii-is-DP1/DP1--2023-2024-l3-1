@@ -1,5 +1,6 @@
 import { Alert, Button } from "reactstrap";
 import "../../src/static/css/profile/profilePage.css";
+import "../../src/static/css/profile/editProfileButton.css"
 import { useEffect, useState } from "react"
 import tokenService from "../services/token.service";
 import DELFIN from "../../src/static/images/icons/dolphin.png"
@@ -56,9 +57,8 @@ export default function Profile(){
         </div>
 
         <div>
-        <Button className="edit-profile-button"
-            >
-              Editar perfil
+        <Button className="edit-profile-button">
+            Editar perfil
         </Button>
         </div>
     </div>
