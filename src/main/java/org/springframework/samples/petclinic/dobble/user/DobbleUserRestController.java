@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.dobble.user;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,6 +31,13 @@ public class DobbleUserRestController {
 		this.userService = userService;
 		this.authService = authService;
 	}
+
+	@GetMapping("authorities")
+	public ResponseEntity<List<DobbleAuthorities>> findAllAuths() {
+		List<DobbleAuthorities> res = (List<DobbleAuthorities>) authService.findAll();
+		return new ResponseEntity<>(res, HttpStatus.OK);
+	}
+	
 
 	@GetMapping(value = "{id}")
 	public ResponseEntity<DobbleUser> findById(@PathVariable("id") Integer id) {
