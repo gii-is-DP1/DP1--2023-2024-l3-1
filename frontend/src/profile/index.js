@@ -1,7 +1,8 @@
-import { Alert } from "reactstrap";
+import { Alert, Button } from "reactstrap";
 import "../../src/static/css/profile/profilePage.css";
 import { useEffect, useState } from "react"
 import tokenService from "../services/token.service";
+import DELFIN from "../../src/static/images/icons/dolphin.png"
 
 
 
@@ -45,14 +46,21 @@ export default function Profile(){
         </div>
         
         <div className="profile-field">
-            <h6>Email:</h6>
+            <h6>Email: </h6>
         <div className="rounded-box">{currentUser.email}</div>
         </div>
 
         <div className="profile-field">
             <h6>Logo:</h6>
+            <img alt="Player logo" src={DELFIN} width={"30%"} height={"30%"}/>
         </div>
 
+        <div>
+        <Button className="edit-profile-button"
+            >
+              Editar perfil
+        </Button>
+        </div>
     </div>
     );
 
