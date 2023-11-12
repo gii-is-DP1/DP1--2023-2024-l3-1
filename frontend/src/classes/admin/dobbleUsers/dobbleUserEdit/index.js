@@ -8,6 +8,7 @@ class DobbleUserEdit extends Component {
         id: '',
         email: '',
         username: '',
+        authority: 5,
         user: { id: 1 },
     };
 

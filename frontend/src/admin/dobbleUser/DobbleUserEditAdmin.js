@@ -19,7 +19,7 @@ export default function DobbleUserEditAdmin() {
     id: "",
     email: "",
     username: "",
-    user: {},
+    authority: 5
   };
   const id = getIdFromUrl(2);
   const [message, setMessage] = useState(null);
@@ -41,7 +41,8 @@ export default function DobbleUserEditAdmin() {
     if (name === "user") {
       const user = users.find((u) => u.id === Number(value));
       setDobbleUser({ ...dobbleUser, user: user });
-    } else setDobbleUser({ ...dobbleUser, [name]: value });
+    } else 
+        setDobbleUser({ ...dobbleUser, [name]: value });
   }
 
 
@@ -71,11 +72,6 @@ export default function DobbleUserEditAdmin() {
   const modal = getErrorModal(setVisible, visible, message);
 
   
-  const userOptions = users.map((user) => (
-    <option key={user.id} value={user.id}>
-      {user.username}
-    </option>
-  ));
 
   return (
     <div className="auth-page-container">
@@ -89,6 +85,7 @@ export default function DobbleUserEditAdmin() {
             </Label>
             <Input
               type="text"
+              required
               name="email"
               id="email"
               value={dobbleUser.email || ""}
@@ -102,44 +99,13 @@ export default function DobbleUserEditAdmin() {
             </Label>
             <Input
               type="text"
+              required
               name="username"
               id="username"
               value={dobbleUser.username || ""}
               onChange={handleChange}
               className="custom-input"
             />
-          </div>
-         
-      
-        
-          <div className="custom-form-input">
-            {dobbleUser.id ? (
-              <Input
-                type="select"
-                disabled
-                name="user"
-                id="user"
-                value={dobbleUser.user?.id || ""}
-                onChange={handleChange}
-                className="custom-input"
-              >
-                <option value="">None</option>
-                {userOptions}
-              </Input>
-            ) : (
-              <Input
-                type="select"
-                required
-                name="user"
-                id="user"
-                value={dobbleUser.user?.id || ""}
-                onChange={handleChange}
-                className="custom-input"
-              >
-                <option value="">None</option>
-                {userOptions}
-              </Input>
-            )}
           </div>
           <div className="custom-button-row">
             <button className="auth-button">Save</button>
