@@ -2,9 +2,13 @@ package org.springframework.samples.petclinic.dobble.user;
 
 import java.util.List;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.samples.petclinic.dobble.figure.Icon;
 import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.samples.petclinic.user.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.constraints.Email;
@@ -64,5 +69,11 @@ public class DobbleUser extends BaseEntity {
 		}
 		return cond;
 	}
+
+	
+	@OneToOne(cascade = { CascadeType.DETACH, CascadeType.REFRESH, CascadeType.PERSIST })
+	@JoinColumn(name = "user_id", referencedColumnName = "id")
+	@OnDelete(action = OnDeleteAction.CASCADE)
+	private User user;
 
 }

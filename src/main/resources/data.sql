@@ -139,14 +139,21 @@ INSERT INTO consultation_tickets(id,description,creation_date, user_id, consulta
 INSERT INTO consultation_tickets(id,description,creation_date, user_id, consultation_id) VALUES (8, 'Lovebirds do not sing.', '2023-02-24 18:30', 16, 4);
 
 -- One admin user, named admin1 with password 4dm1n and authority admin
-INSERT INTO dobble_authorities(id,authority) VALUES (1, 'ADMIN');
-INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (1,'admin1','admin1@gmail.com','$2a$10$nMmTWAhPTqXqLDJTag3prumFrAJpsYtroxf0ojesFYq0k4PmcbWUS','DELFIN',1);
+INSERT INTO authorities(id,authority) VALUES (5,'PLAYER');
 
+INSERT INTO dobble_authorities(id,authority) VALUES (5, 'PLAYER');
+INSERT INTO dobble_authorities(id,authority) VALUES (1, 'ADMIN');
 --Consulta de inserción de usuario Dobble
-INSERT INTO dobble_authorities(id,authority) VALUES (2, 'PLAYER');
-INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (2,'player1','player1@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','DELFIN',2); --pass: 0wn3r -> cambiar a pl4yer
-INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (3,'player2','player2@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','TIJERAS',2);
-INSERT INTO dobble_users(id,username,email,password,icon,authority) VALUES (4,'player3','player3@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','SNOWMAN',2);
+
+INSERT INTO appusers(id,username,password,authority) VALUES (49,'dobbleeee','$2a$10$aeypcHWSf4YEkDAF0d.vjOLu94aS40MBUb4rOtDncFxZdo2wpkt8.',1);
+INSERT INTO appusers(id,username,password,authority) VALUES (50,'doble2','$2a$10$aeypcHWSf4YEkDAF0d.vjOLu94aS40MBUb4rOtDncFxZdo2wpkt8.',5);
+INSERT INTO appusers(id,username,password,authority) VALUES (51,'doble3','$2a$10$aeypcHWSf4YEkDAF0d.vjOLu94aS40MBUb4rOtDncFxZdo2wpkt8.',5);
+INSERT INTO appusers(id,username,password,authority) VALUES (52,'doble4','$2a$10$aeypcHWSf4YEkDAF0d.vjOLu94aS40MBUb4rOtDncFxZdo2wpkt8.',5);
+
+INSERT INTO dobble_users(id,username,email,password,icon,authority, user_id) VALUES (1,'admin1','admin1@gmail.com','$2a$10$nMmTWAhPTqXqLDJTag3prumFrAJpsYtroxf0ojesFYq0k4PmcbWUS','DELFIN',1,49 );
+INSERT INTO dobble_users(id,username,email,password,icon,authority, user_id) VALUES (2,'player1','player1@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','DELFIN',5,50); --pass: 0wn3r -> cambiar a pl4yer
+INSERT INTO dobble_users(id,username,email,password,icon,authority, user_id) VALUES (3,'player2','player2@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','TIJERAS',5,51);
+INSERT INTO dobble_users(id,username,email,password,icon,authority, user_id) VALUES (4,'player3','player3@gmail.com','$2a$10$DaS6KIEfF5CRTFrxIoGc7emY3BpZZ0.fVjwA3NiJ.BjpGNmocaS3e','SNOWMAN',5,52);
 
 INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (2,3);
 INSERT INTO dobble_user_friends(dobble_user_id,friend_id) VALUES (2,4);

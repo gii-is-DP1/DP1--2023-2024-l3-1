@@ -52,6 +52,8 @@ import AchievementList from "./achievement/achievementListAdmin";
 import AchievementEdit from "./achievement/achievementEdit";
 import MainLobby from "./player/main_lobby";
 import Profile from "./profile";
+import DobbleUserListAdmin from "./admin/dobbleUser/DobbleUserListAdmin";
+import DobbleUserEditAdmin from "./admin/dobbleUser/DobbleUserEditAdmin";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -106,6 +108,9 @@ function App() {
           <Route path="/consultations/:consultationId/tickets" exact={true} element={<PrivateRoute><TicketListAdmin /></PrivateRoute>} />
           <Route path="/achievements/" exact={true} element={<PrivateRoute><AchievementList /></PrivateRoute>} />
           <Route path="/achievements/:achievementId" exact={true} element={<PrivateRoute><AchievementEdit/></PrivateRoute>} />
+          <Route path="/dobbleUsers/" exact={true} element={<PrivateRoute><DobbleUserListAdmin /></PrivateRoute>} />
+          <Route path="/dobbleUsers/:dobbleUserId" exact={true} element={<PrivateRoute><DobbleUserEditAdmin/></PrivateRoute>} />
+        
         </>)
     }
     if (role === "OWNER") { /* PLAYER */
@@ -159,6 +164,7 @@ function App() {
       <>        
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+
       </>
     )
   } else {
