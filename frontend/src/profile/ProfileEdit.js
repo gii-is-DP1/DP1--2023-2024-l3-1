@@ -1,8 +1,8 @@
 import { useState } from "react";
-import useFetchState from "../../util/useFetchState";
-import getIdFromUrl from "../../util/getIdFromUrl";
-import tokenService from "../../services/token.service";
-
+import useFetchState from "../util/useFetchState";
+import getIdFromUrl from "../util/getIdFromUrl";
+import tokenService from "../services/token.service";
+import useFetchData from "../util/useFetchData";
 
 const jwt = tokenService.getLocalAccessToken();
 
@@ -19,12 +19,13 @@ export default function ProfileEdit() {
     const [visible, setVisible] = useState(false);
     const [dobbleUser, setDobbleUser] = useFetchState(
         emptyItem,
-    `/api/v1/dobbleUsers/${id}`,
-    jwt,
-    setMessage,
-    setVisible,
-    id
+        `/api/v1/dobbleUsers/${id}`,
+        jwt,
+        setMessage,
+        setVisible,
+        id
     )
+    const auths = useFetchData(`/api/v1/users/authorities`, jwt);
 
 
 

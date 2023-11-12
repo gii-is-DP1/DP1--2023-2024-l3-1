@@ -30,6 +30,11 @@ public class DobbleUserRestController {
 		this.authService = authService;
 	}
 
+	@GetMapping(value = "{id}")
+	public ResponseEntity<DobbleUser> findById(@PathVariable("id") Integer id) {
+		return new ResponseEntity<>(userService.findUser(id), HttpStatus.OK);
+	}
+
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<DobbleUser> create(@RequestBody @Valid DobbleUser user) {
