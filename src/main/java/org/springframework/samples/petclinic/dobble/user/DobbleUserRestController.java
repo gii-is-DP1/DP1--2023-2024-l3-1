@@ -3,8 +3,11 @@ package org.springframework.samples.petclinic.dobble.user;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.util.RestPreconditions;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +36,16 @@ public class DobbleUserRestController {
 		DobbleUser savedUser = userService.saveUser(user);
 		return new ResponseEntity<>(savedUser, HttpStatus.CREATED);
 	}
+
+	
+	@PutMapping(value = "{userId}")
+	@ResponseStatus(HttpStatus.OK)
+	public ResponseEntity<DobbleUser> update(@PathVariable("userId") Integer id, @RequestBody @Valid DobbleUser user) {
+		RestPreconditions.checkNotNull(userService.findUser(id), "DobbleUser", "ID", id);
+		return new ResponseEntity<>(this.userService.updateUser(user, id), HttpStatus.OK);
+	}
+	 
+	
 
 	@GetMapping("current")
 	public ResponseEntity<DobbleUser> findCurrent(){

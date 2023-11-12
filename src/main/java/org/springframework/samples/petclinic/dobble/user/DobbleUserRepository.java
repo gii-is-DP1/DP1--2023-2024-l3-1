@@ -7,11 +7,12 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface DobbleUserRepository extends CrudRepository<DobbleUser,Integer>{
     
+    Optional<DobbleUser> findById(Integer id);
 
     Optional<DobbleUser> findByUsername(String username);
 
 
    
     
-    
+
 }
