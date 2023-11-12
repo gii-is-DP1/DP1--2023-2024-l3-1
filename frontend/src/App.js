@@ -149,7 +149,8 @@ function App() {
       playerRoutes = (
         <>
         <Route path="/lobby" exact={true} element={<PrivateRoute><MainLobby /></PrivateRoute>}/>
-        <Route path="/profile" exaxt element= {<PrivateRoute><Profile/></PrivateRoute>}/>
+        <Route path="/profile" exact={true} element= {<PrivateRoute><Profile/></PrivateRoute>}/>
+        {/* TODO Cambiar /profile a /users/:id */}
         </>
       )
     }
