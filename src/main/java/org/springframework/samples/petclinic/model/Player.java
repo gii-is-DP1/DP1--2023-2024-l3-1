@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 import org.springframework.samples.petclinic.model.enums.Icon;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
@@ -31,9 +33,9 @@ public class Player extends BaseEntity {
 
     @NotNull
     @NotEmpty
+    @JsonIgnore
     String password;
 
-    @NotNull
     Icon profile_icon;
 
     @NotNull
