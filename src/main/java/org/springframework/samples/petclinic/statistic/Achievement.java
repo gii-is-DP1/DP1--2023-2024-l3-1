@@ -1,14 +1,13 @@
 package org.springframework.samples.petclinic.statistic;
 
+import org.springframework.samples.petclinic.model.base.NamedEntity;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Min;
-
-import org.springframework.samples.petclinic.model.NamedEntity;
-
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.enums;
+package org.springframework.samples.petclinic.model.enums;
 
 public enum Icon {
     DELFIN, TIJERAS, SNOWMAN, RAYO, FANTASMA, OBJETIVO, GAFAS, EXCLAMACION, MARTILLO, CACTUS,
