@@ -52,6 +52,7 @@ import AchievementList from "./achievement/achievementListAdmin";
 import AchievementEdit from "./achievement/achievementEdit";
 import MainLobby from "./player/main_lobby";
 import Profile from "./profile";
+import ProfileEdit from "./profile/ProfileEdit";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -151,6 +152,7 @@ function App() {
         <Route path="/lobby" exact={true} element={<PrivateRoute><MainLobby /></PrivateRoute>}/>
         <Route path="/profile" exact={true} element= {<PrivateRoute><Profile/></PrivateRoute>}/>
         {/* TODO Cambiar /profile a /users/:id */}
+        <Route path="/profile/:id" exact={true} element= {<PrivateRoute><ProfileEdit/></PrivateRoute>}/>
         </>
       )
     }

@@ -4,6 +4,7 @@ import "../../src/static/css/profile/editProfileButton.css"
 import { useEffect, useState } from "react"
 import tokenService from "../services/token.service";
 import DELFIN from "../../src/static/images/icons/dolphin.png"
+import { Link } from "react-router-dom";
 
 
 
@@ -57,7 +58,10 @@ export default function Profile(){
         </div>
 
         <div>
-        <Button className="edit-profile-button">
+        <Button className="edit-profile-button"
+        tag={Link}
+        to={"/profile/" + currentUser.id}
+        >
             Editar perfil
         </Button>
         </div>

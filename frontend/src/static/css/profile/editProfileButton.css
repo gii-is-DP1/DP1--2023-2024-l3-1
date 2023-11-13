@@ -1,5 +1,5 @@
 .edit-profile-button {
-    background-color: purple ; 
+    background-color: purple !important; 
     color: white;
     padding: 10px 20px; 
     border-radius: 15px; 
