@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.user;
 
+import org.springframework.samples.petclinic.model.Authorities;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -21,23 +22,4 @@ public class User extends BaseEntity {
 	String username;
 
 	String password;
-
-	@NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "authority")
-	Authorities authority;
-
-	public Boolean hasAuthority(String auth) {
-		return authority.getAuthority().equals(auth);
-	}
-
-	public Boolean hasAnyAuthority(String... authorities) {
-		Boolean cond = false;
-		for (String auth : authorities) {
-			if (auth.equals(authority.getAuthority()))
-				cond = true;
-		}
-		return cond;
-	}
-
 }

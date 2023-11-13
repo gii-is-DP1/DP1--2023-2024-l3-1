@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.user;
+package org.springframework.samples.petclinic.model;
 
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "authorities")
-public class Authorities extends BaseEntity{
+public class Authorities extends BaseEntity {
 	
 //	@ManyToOne
 //	@JoinColumn(name = "username")
@@ -21,6 +21,4 @@ public class Authorities extends BaseEntity{
 //	@Enumerated(EnumType.STRING)
 	@Column(length = 20)
 	String authority;
-	
-	
 }
