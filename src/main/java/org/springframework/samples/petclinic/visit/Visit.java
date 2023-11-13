@@ -26,7 +26,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.samples.petclinic.model.base.BaseEntity;
 import org.springframework.samples.petclinic.pet.Pet;
 import org.springframework.samples.petclinic.vet.Vet;
 

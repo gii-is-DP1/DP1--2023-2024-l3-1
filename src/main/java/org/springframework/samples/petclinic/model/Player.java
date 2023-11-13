@@ -1,9 +1,9 @@
-package org.springframework.samples.petclinic.player;
+package org.springframework.samples.petclinic.model;
 
 import java.util.List;
 
-import org.springframework.samples.petclinic.enums.Icon;
-import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.samples.petclinic.model.base.BaseEntity;
+import org.springframework.samples.petclinic.model.enums.Icon;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

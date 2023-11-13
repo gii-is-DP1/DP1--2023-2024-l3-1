@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
-import org.springframework.samples.petclinic.enums.Icon;
-import org.springframework.samples.petclinic.model.BaseEntity;
+import org.springframework.samples.petclinic.model.base.BaseEntity;
+import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.user.User;
 
 import jakarta.persistence.CascadeType;

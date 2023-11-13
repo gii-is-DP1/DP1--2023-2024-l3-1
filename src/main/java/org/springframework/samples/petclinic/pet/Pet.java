@@ -27,7 +27,7 @@ import jakarta.validation.Valid;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.model.NamedEntity;
+import org.springframework.samples.petclinic.model.base.NamedEntity;
 import org.springframework.samples.petclinic.owner.Owner;
 
 import lombok.Getter;

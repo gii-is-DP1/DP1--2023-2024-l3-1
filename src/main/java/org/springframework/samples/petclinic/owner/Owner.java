@@ -28,7 +28,7 @@ import jakarta.validation.constraints.NotEmpty;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.samples.petclinic.clinic.Clinic;
-import org.springframework.samples.petclinic.model.Person;
+import org.springframework.samples.petclinic.model.base.Person;
 import org.springframework.samples.petclinic.user.User;
 
 import lombok.Getter;
