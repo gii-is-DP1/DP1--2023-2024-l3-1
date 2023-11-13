@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import jakarta.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.auth.payload.request.LoginRequest;
 import org.springframework.samples.petclinic.auth.payload.request.SignupRequest;
@@ -67,7 +68,7 @@ public class AuthController {
 
 			return ResponseEntity.ok().body(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
 		}catch(BadCredentialsException exception){
-			return ResponseEntity.badRequest().body("Bad Credentials!");
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 	}
 
