@@ -6,14 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.auth.AuthService;
-import org.springframework.samples.petclinic.auth.payload.request.LoginRequest;
-import org.springframework.samples.petclinic.auth.payload.request.SignupRequest;
-import org.springframework.samples.petclinic.auth.payload.response.MessageResponse;
 import org.springframework.samples.petclinic.configuration.jwt.JwtUtils;
 import org.springframework.samples.petclinic.configuration.services.UserDetailsImpl;
 import org.springframework.samples.petclinic.dobble.user.DobbleUserService;
 import org.springframework.samples.petclinic.dto.JwtResponseDto;
+import org.springframework.samples.petclinic.dto.LoginRequest;
+import org.springframework.samples.petclinic.dto.SignupRequest;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -31,22 +29,20 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v2/players")
+@RequestMapping("/api/v1/players")
 @Tag(name = "Players", description = "Inicio de sesión, registro e información sobre los jugadores registrados en el sistema")
 public class PlayerController {
 
     private final AuthenticationManager authenticationManager;
 	private final UserService userService;
 	private final JwtUtils jwtUtils;
-	private final AuthService authService;
 
 	@Autowired
 	public PlayerController(AuthenticationManager authenticationManager, UserService userService, JwtUtils jwtUtils,
-			AuthService authService, DobbleUserService dobbleUserService) {
+			DobbleUserService dobbleUserService) {
 		this.userService = userService;
 		this.jwtUtils = jwtUtils;
 		this.authenticationManager = authenticationManager;
-		this.authService = authService;
 	}
 
 	@PostMapping("/login")
@@ -59,10 +55,10 @@ public class PlayerController {
 			String jwt = jwtUtils.generateJwtToken(authentication);
 
 			UserDetailsImpl userDetails = (UserDetailsImpl) authentication.getPrincipal();
-			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-				.collect(Collectors.toList());
+			Boolean isAdmin = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
+				.count() > 0;
 
-			return ResponseEntity.ok().body(new JwtResponseDto(jwt, userDetails.getId(), userDetails.getUsername()));
+			return ResponseEntity.ok().body(new JwtResponseDto(jwt, userDetails.getId(), userDetails.getUsername(), isAdmin));
 		}catch(BadCredentialsException exception){
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
