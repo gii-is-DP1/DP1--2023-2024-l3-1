@@ -53,7 +53,7 @@ public class AuthController {
 		this.dobbleUserService = dobbleUserService;
 	}
 
-	@PostMapping("/signin")
+	@PostMapping("/login")
 	public ResponseEntity authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		try{
 			Authentication authentication = authenticationManager.authenticate(
@@ -69,24 +69,6 @@ public class AuthController {
 			return ResponseEntity.ok().body(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
 		}catch(BadCredentialsException exception){
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
-	}
-
-	@PostMapping("/login")
-	public ResponseEntity authenticateDobbleUser(@Valid @RequestBody LoginRequest loginRequest){
-		try {
-			Authentication authentication = authenticationManager.authenticate(
-			new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
-			);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-			String jwt = jwtUtils.generateJwtToken(authentication);
-			UserDetailsImpl userDetails= (UserDetailsImpl) authentication.getPrincipal(); 
-			List<String> roles = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
-				.collect(Collectors.toList());
-			
-			return ResponseEntity.ok().body(new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), roles));
-		} catch (Exception e) {
-			return ResponseEntity.badRequest().body("Bad Credentials!");
 		}
 	}
 
