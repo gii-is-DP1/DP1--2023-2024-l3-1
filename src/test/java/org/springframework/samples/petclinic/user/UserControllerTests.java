@@ -25,6 +25,8 @@ import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.configuration.SecurityConfiguration;
 import org.springframework.samples.petclinic.exceptions.AccessDeniedException;
 import org.springframework.samples.petclinic.exceptions.ResourceNotFoundException;
+import org.springframework.samples.petclinic.model.Authorities;
+import org.springframework.samples.petclinic.services.AuthoritiesService;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;

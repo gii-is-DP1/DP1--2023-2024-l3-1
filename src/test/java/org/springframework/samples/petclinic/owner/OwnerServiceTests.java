@@ -37,7 +37,7 @@ import org.springframework.samples.petclinic.exceptions.ResourceNotFoundExceptio
 import org.springframework.samples.petclinic.pet.Pet;
 import org.springframework.samples.petclinic.pet.PetService;
 import org.springframework.samples.petclinic.pet.exceptions.DuplicatedPetNameException;
-import org.springframework.samples.petclinic.user.AuthoritiesService;
+import org.springframework.samples.petclinic.services.AuthoritiesService;
 import org.springframework.samples.petclinic.user.User;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.transaction.annotation.Transactional;
