@@ -1,4 +1,5 @@
 -- Para los hashes de las contraseñas, utilizar: https://bcrypt-generator.com/
+-- Para generar los IDs de usuario, utilizar: https://www.uuidgenerator.net/version4
 
 -- One admin user, named admin1 with password 4dm1n and authority admin
 INSERT INTO authorities(id,authority) VALUES (1,'ADMIN');
