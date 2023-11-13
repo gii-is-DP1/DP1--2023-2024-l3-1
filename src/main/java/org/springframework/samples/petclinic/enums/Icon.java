@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.dobble.figure;
+package org.springframework.samples.petclinic.enums;
 
 public enum Icon {
     DELFIN, TIJERAS, SNOWMAN, RAYO, FANTASMA, OBJETIVO, GAFAS, EXCLAMACION, MARTILLO, CACTUS,
