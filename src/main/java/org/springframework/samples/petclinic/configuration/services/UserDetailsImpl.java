@@ -1,11 +1,11 @@
 package org.springframework.samples.petclinic.configuration.services;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import org.springframework.samples.petclinic.dobble.user.DobbleUser;
-//import org.springframework.samples.petclinic.user.User;
+import org.springframework.samples.petclinic.model.Player;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -33,11 +33,14 @@ public class UserDetailsImpl implements UserDetails {
 		this.authorities = authorities;
 	}
 
-	public static UserDetailsImpl build(DobbleUser user) {
-		List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority(user.getAuthority().getAuthority()));
+	public static UserDetailsImpl build(Player player) {
+		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
+		if (player.getIs_admin()) {
+			authorities.add(new SimpleGrantedAuthority("ADMIN"));
+		}
 
-		return new UserDetailsImpl(user.getId(), user.getUsername(),
-				user.getPassword(),
+		return new UserDetailsImpl(player.getId(), player.getUsername(),
+				player.getPassword(),
 				authorities);
 	}
 
