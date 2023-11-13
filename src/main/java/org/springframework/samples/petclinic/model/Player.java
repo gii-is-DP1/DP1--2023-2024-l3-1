@@ -7,9 +7,7 @@ import org.springframework.samples.petclinic.model.enums.Icon;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -39,26 +37,8 @@ public class Player extends BaseEntity {
     Icon profile_icon;
 
     @NotNull
-    Boolean is_admin;
+    Boolean is_admin = false;
 
     @ManyToMany
     List<Player> friends;
-
-    @NotNull
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "authority")
-	Authorities authority;
-
-	public Boolean hasAuthority(String auth) {
-		return authority.getAuthority().equals(auth);
-	}
-
-	public Boolean hasAnyAuthority(String... authorities) {
-		Boolean cond = false;
-		for (String auth : authorities) {
-			if (auth.equals(authority.getAuthority()))
-				cond = true;
-		}
-		return cond;
-	}
 }
