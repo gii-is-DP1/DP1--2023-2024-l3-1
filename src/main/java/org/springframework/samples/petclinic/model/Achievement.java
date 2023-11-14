@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.statistic;
+package org.springframework.samples.petclinic.model;
 
 import org.springframework.samples.petclinic.model.base.NamedEntity;
 
