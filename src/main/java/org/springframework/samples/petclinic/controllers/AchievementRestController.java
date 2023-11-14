@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.statistic;
+package org.springframework.samples.petclinic.controllers;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.exceptions.BadRequestException;
 import org.springframework.samples.petclinic.exceptions.ResourceNotFoundException;
+import org.springframework.samples.petclinic.model.Achievement;
+import org.springframework.samples.petclinic.services.AchievementService;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

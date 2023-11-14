@@ -1,8 +1,9 @@
-package org.springframework.samples.petclinic.statistic;
+package org.springframework.samples.petclinic.repositories;
 
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.stereotype.Repository;
 
 @Repository
