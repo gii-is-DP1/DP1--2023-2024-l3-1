@@ -26,8 +26,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/players")
-@Tag(name = "Players", description = "Inicio de sesión, registro e información sobre los jugadores registrados en el sistema")
+@RequestMapping("/api/v1/player")
+@Tag(name = "Player", description = "Inicio de sesión, registro e información sobre los jugadores registrados en el sistema")
 public class PlayerController {
 
     private final AuthenticationManager authenticationManager;
