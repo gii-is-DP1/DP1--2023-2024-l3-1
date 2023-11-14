@@ -7,29 +7,37 @@ export default function Login() {
   const [message, setMessage] = useState(null)
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);  
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit() {
-    setMessage(null);
-    const response = await fetch("/api/v1/auth/login", {
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: JSON.stringify({
-        username,
-        password
-      }),
-    });
+    try {
+      setLoading(true);
+      setMessage(null);
+      const response = await fetch("/api/v1/player/login", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          password
+        }),
+      });
 
-    if (response.status >= 400 && response.status < 500) {
-      setMessage("Credenciales incorrectas");
-      return;
-    } else if (response.status >= 500) {
-      setMessage("Error del servidor");
-      return;
-    }
+      if (response.status === 401) {
+        setMessage("Credenciales incorrectas");
+        return;
+      } else if (response.status >= 500) {
+        setMessage("Error del servidor");
+        return;
+      }
 
-    const data = await response.json();
-    tokenService.setUser(data);
-    tokenService.updateLocalAccessToken(data.token);          
+      const data = await response.json();
+      tokenService.user = data;
+      tokenService.localAccessToken = data.token;
+    } catch (e) {
+      setMessage(String(e));
+    } finally {
+      setLoading(false);
+    }     
   }
 
   async function handleClick (e) {
@@ -79,7 +87,7 @@ export default function Login() {
             backgroundColor: '#61196C',
             color: 'white',
           }}>
-            Iniciar sesión
+            {loading ? 'Iniciando sesión...' : 'Iniciar sesión' }
           </button>
         </form>
 
