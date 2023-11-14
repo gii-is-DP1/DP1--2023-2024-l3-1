@@ -3,8 +3,10 @@ package org.springframework.samples.petclinic.services;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.dto.SignupRequest;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.repositories.PlayerRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.Authentication;
@@ -46,20 +48,43 @@ public class PlayerService {
     }
 
 	@Transactional
-	public Player updatePlayer(@Valid SignupRequest payload, Integer idToUpdate) {
+	public Player updatePlayer(@Valid EditPlayerDto payload, Integer idToUpdate) {
 		Optional<Player> toUpdate_opt = findPlayer(idToUpdate);
 
 		if (toUpdate_opt.isPresent()) {
 			Player toUpdate = toUpdate_opt.get();
-			toUpdate.setEmail(payload.getEmail());
-			toUpdate.setPassword(encoder.encode(payload.getPassword()));
-			toUpdate.setUsername(payload.getUsername());
+			String newUsername = payload.getUsername();
+			String newEmail = payload.getEmail();
+			String newPassword = payload.getPassword();
+			Icon newProfileIcon = payload.getProfileIcon();
+			if (newUsername != null && !newUsername.isBlank()) {
+				toUpdate.setUsername(payload.getUsername());
+			}
+			if (newEmail != null && !newEmail.isBlank()) {
+				toUpdate.setEmail(payload.getEmail());
+			}
+			if (newPassword != null && !newPassword.isBlank()) {
+				toUpdate.setPassword(encoder.encode(payload.getPassword()));
+			}
+			if (newProfileIcon != null) {
+				toUpdate.setProfile_icon(newProfileIcon);
+			}
+			
 			this.repository.save(toUpdate);
 
 			return toUpdate;
 		}
 
 		return null;
+	}
+
+	@Transactional
+	public void deletePlayer(Integer idToDelete) {
+		Optional<Player> toDelete_opt = findPlayer(idToDelete);
+
+		if (toDelete_opt.isPresent()) {
+			this.repository.delete(toDelete_opt.get());
+		}
 	}
 
 	public Boolean existsUser(String username) {
