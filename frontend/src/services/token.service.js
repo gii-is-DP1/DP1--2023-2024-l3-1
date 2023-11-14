@@ -1,45 +1,60 @@
-import { createRef } from 'react';
+import { configureStore, createSlice } from '@reduxjs/toolkit';
 
-export const localAccessToken = createRef();
-export const user = createRef();
+const tokenSlice = createSlice({
+    name: 'tokenStore',
+    initialState: {
+        user: undefined,
+    },
+    reducers: {
+        setUser: (state, action) => {
+            state.user = action.payload;
+        }
+    }
+});
+
+export const tokenStore = configureStore({
+    reducer: {
+        tokenStore: tokenSlice.reducer
+    }
+});
 
 class TokenService {
+    /**
+     * Rellenar el store
+     */
     constructor() {
-        const storedUser = JSON.parse(localStorage.getItem("user"));
-        const jwt = JSON.parse(localStorage.getItem("jwt"));
-        localAccessToken.current = jwt;
-        user.current = storedUser;
+        tokenStore.dispatch({ type: 'tokenStore/setUser', payload: this.user });
     }
 
     get localAccessToken() {
-        return localAccessToken.current;
+        return this.user?.token;
     }
 
     set localAccessToken(token) {
-        window.localStorage.setItem("jwt", JSON.stringify(token));
-        localAccessToken.current = token;
+        const user = this.user || {};
+        user.token = token;
+        this.user = user;
     }
 
     get localRefreshToken() {
-        return user?.refreshToken;
+        return this.user?.refreshToken;
     }
 
     get user() {
-        return user.current;
+        return JSON.parse(localStorage.getItem("user"));
     }
 
     set user(user) {
+        tokenStore.dispatch({ type: 'tokenStore/setUser', payload: user });
         window.localStorage.setItem("user", JSON.stringify(user));
-        user.current = user;
     }
 
     removeUser() {
         window.localStorage.removeItem("user");
-        window.localStorage.removeItem("jwt");
-        user.current = undefined;
     }
 
 }
+
 const tokenService = new TokenService();
 
 export default tokenService;
