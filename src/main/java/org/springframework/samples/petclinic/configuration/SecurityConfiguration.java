@@ -22,6 +22,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.context.SecurityContext;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -52,29 +54,27 @@ public class SecurityConfiguration {
 			.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.disable()))
 			.exceptionHandling((exepciontHandling) -> exepciontHandling.authenticationEntryPoint(unauthorizedHandler))
 			.authorizeHttpRequests(authorizeRequests ->	authorizeRequests
-			.requestMatchers("/webjars/**", "/static/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-			.requestMatchers("/api/v1/developers").permitAll()
-			.requestMatchers("/api/v1/player/login", "/api/v1/player/validate", "/api/v1/player/signup").permitAll()
-			.requestMatchers("/api/v1/plan").hasAuthority("OWNER")
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/users/**")).hasAuthority(ADMIN)
-			.requestMatchers("/api/v1/clinicOwners/all").hasAuthority(ADMIN)
-			.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/api/v1/consultations/**")).hasAuthority(ADMIN)
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/owners/**")).hasAuthority(ADMIN)
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/visits/**")).authenticated()			
-			.requestMatchers(HttpMethod.GET, "/api/v1/pets/stats").hasAuthority(ADMIN)
-			.requestMatchers("/api/v1/pets").authenticated()
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/pets/**")).authenticated()
-			.requestMatchers(HttpMethod.GET, "/api/v1/vets/stats").hasAuthority(ADMIN)
-			.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/v1/vets/**")).authenticated()
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-
-
-			.requestMatchers("/api/v1/dobbleUsers").authenticated()
-			.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/dobbleUsers/**")).permitAll()
-			.requestMatchers("/api/v1/dobbleUsers/**").permitAll()
-			.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/v1/dobbleUsers/**")).authenticated()
-
-			.anyRequest().authenticated())
+				.requestMatchers("/webjars/**", "/static/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
+				.requestMatchers("/api/v1/developers").permitAll()
+				.requestMatchers("/api/v1/player/login", "/api/v1/player/validate", "/api/v1/player/signup").permitAll()
+				.requestMatchers("/api/v1/player/me").authenticated()
+				.requestMatchers("/api/v1/plan").hasAuthority("OWNER")
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/users/**")).hasAuthority(ADMIN)
+				.requestMatchers("/api/v1/clinicOwners/all").hasAuthority(ADMIN)
+				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/api/v1/consultations/**")).hasAuthority(ADMIN)
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/owners/**")).hasAuthority(ADMIN)
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/visits/**")).authenticated()			
+				.requestMatchers(HttpMethod.GET, "/api/v1/pets/stats").hasAuthority(ADMIN)
+				.requestMatchers("/api/v1/pets").authenticated()
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/pets/**")).authenticated()
+				.requestMatchers(HttpMethod.GET, "/api/v1/vets/stats").hasAuthority(ADMIN)
+				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/v1/vets/**")).authenticated()
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+				.requestMatchers("/api/v1/dobbleUsers").authenticated()
+				.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/dobbleUsers/**")).permitAll()
+				.requestMatchers("/api/v1/dobbleUsers/**").permitAll()
+				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/v1/dobbleUsers/**")).authenticated()
+				.anyRequest().authenticated())
 			.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);		
 		return http.build();
 	}
