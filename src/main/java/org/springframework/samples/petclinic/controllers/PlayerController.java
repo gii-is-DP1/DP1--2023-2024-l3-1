@@ -187,6 +187,10 @@ public class PlayerController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
+		if (playerService.areFriends(target.get(), friend.get())) {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
+
 		playerService.addFriend(target.get(), friend.get());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -207,6 +211,10 @@ public class PlayerController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
+		if (!playerService.areFriends(target.get(), friend.get())) {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
+
 		playerService.removeFriend(target.get(), friend.get());
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
@@ -220,10 +228,14 @@ public class PlayerController {
 
 		if (!target.isPresent() || !friend.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} else {
-			playerService.addFriend(target.get(), friend.get());
-			return new ResponseEntity<>(HttpStatus.OK);
 		}
+
+		if (playerService.areFriends(target.get(), friend.get())) {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
+
+		playerService.addFriend(target.get(), friend.get());
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@Operation(summary = "Elimina un amigo del usuario actual. Se proporciona el usuario del jugador a eliminar como amigo")
@@ -235,9 +247,13 @@ public class PlayerController {
 
 		if (!target.isPresent() || !friend.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} else {
-			playerService.removeFriend(target.get(), friend.get());
-			return new ResponseEntity<>(HttpStatus.OK);
 		}
+
+		if (!playerService.areFriends(target.get(), friend.get())) {
+			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
+		}
+
+		playerService.removeFriend(target.get(), friend.get());
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 }
