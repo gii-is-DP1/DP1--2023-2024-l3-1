@@ -71,9 +71,14 @@ public class PlayerController {
 
 	@Operation(summary = "Verifica la validez de un token JWT")
 	@GetMapping("/validate")
-	public ResponseEntity<Boolean> validateToken(@RequestParam String token) {
+	public ResponseEntity<?> validateToken(@RequestParam String token) {
 		Boolean isValid = jwtUtils.validateJwtToken(token);
-		return new ResponseEntity<>(isValid, HttpStatus.OK);
+		if (isValid) {
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+		}
+		
 	}
 
 	@Operation(summary = "Devuelve el usuario que tiene iniciada la sesión actual")
@@ -85,6 +90,7 @@ public class PlayerController {
 		if (user.isPresent()) {
 			return new ResponseEntity<>(user.get(), HttpStatus.OK);
 		}
+
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
@@ -93,14 +99,15 @@ public class PlayerController {
 	public ResponseEntity<JwtResponseDto> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (playerService.existsUser(signUpRequest.getUsername()).equals(true)) {
 			return new ResponseEntity<>(HttpStatus.IM_USED);
+		} else {
+			playerService.createUser(signUpRequest);
+
+			LoginRequest loginRequest = new LoginRequest();
+			loginRequest.setUsername(signUpRequest.getUsername());
+			loginRequest.setPassword(signUpRequest.getPassword());
+
+			return authenticateUser(loginRequest);
 		}
-		playerService.createUser(signUpRequest);
-
-		LoginRequest loginRequest = new LoginRequest();
-		loginRequest.setUsername(signUpRequest.getUsername());
-		loginRequest.setPassword(signUpRequest.getPassword());
-
-		return authenticateUser(loginRequest);
 	}
 
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario de un usuario. El usuario que realice la edición debe ser administrador")
@@ -114,7 +121,11 @@ public class PlayerController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		if (user.isPresent() && user.get().getIs_admin()) {
+		if (user.isPresent()) {
+			if (!user.get().getIs_admin()) {
+				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+			}
+
 			Player newPlayer = playerService.updatePlayer(payload, id);
 			if (newPlayer != null) {
 				return new ResponseEntity<>(newPlayer, HttpStatus.OK);
@@ -137,7 +148,7 @@ public class PlayerController {
 			}
 		}
 
-		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
 
 	@Operation(summary = "Elimina un usuario. El usuario que realice la edición debe ser administrador")
@@ -147,31 +158,36 @@ public class PlayerController {
 		Optional<Player> user = playerService.findCurrentPlayer();
 		Optional<Player> target = playerService.findPlayer(id);
 
-		if (!target.isPresent()) {
+		if (!target.isPresent() || !user.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		if (user.isPresent() && user.get().getIs_admin()) {
-			playerService.deletePlayer(id);
+		if (!user.get().getIs_admin()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		return new ResponseEntity<>(HttpStatus.OK);
-		
+		playerService.deletePlayer(id);
+		return new ResponseEntity<>(HttpStatus.OK);		
 	}
 
 	@Operation(summary = "Añade un amigo a un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@PostMapping("/friends/{id}/add/{friend_id}")	
 	public ResponseEntity<?> addFriendToUser(@PathVariable("id") Integer id, @PathVariable("friend_id") Integer friend_id) {
+		Optional<Player> currentUser = playerService.findCurrentPlayer();
 		Optional<Player> target = playerService.findPlayer(id);
 		Optional<Player> friend = playerService.findPlayer(friend_id);
 
-		if (!target.isPresent() || !friend.isPresent()) {
+		if (!target.isPresent() || !friend.isPresent() || !currentUser.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		} else {
-			playerService.addFriend(target.get(), friend.get());
-			return new ResponseEntity<>(HttpStatus.OK);
 		}
+
+		if (!currentUser.get().getIs_admin()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		playerService.addFriend(target.get(), friend.get());
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 	@Operation(summary = "Añade un amigo al usuario actual")
