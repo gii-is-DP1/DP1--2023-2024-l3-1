@@ -6,8 +6,8 @@ import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
 import useFetchState from "../../util/useFetchState";
 
-const user = tokenService.getUser();
-const jwt = tokenService.getLocalAccessToken();
+const user = tokenService.user;
+const jwt = tokenService.localAccessToken;
 
 export default function ClinicOwnerEditAdmin() {
   const emptyItem = {

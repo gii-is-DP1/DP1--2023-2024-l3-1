@@ -6,7 +6,7 @@ import deleteFromList from "../../util/deleteFromList";
 import getErrorModal from "../../util/getErrorModal";
 import useFetchState from "../../util/useFetchState";
 
-const jwt = tokenService.getLocalAccessToken();
+const jwt = tokenService.localAccessToken;
 
 export default function VetListAdmin() {
   const [message, setMessage] = useState(null);

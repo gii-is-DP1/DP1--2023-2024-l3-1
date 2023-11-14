@@ -17,8 +17,8 @@ export default function VetConsultationList() {
   let [filter, setFilter] = useState("");
   let [search, setSearch] = useState("");
 
-  const user = tokenService.getUser();
-  const jwt = tokenService.getLocalAccessToken();
+  const user = tokenService.user;
+  const jwt = tokenService.localAccessToken;
 
   function handleFilter(event) {
     const value = event.target.value;

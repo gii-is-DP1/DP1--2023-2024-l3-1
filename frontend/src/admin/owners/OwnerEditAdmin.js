@@ -6,7 +6,7 @@ import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
 import useFetchState from "../../util/useFetchState";
 
-const jwt = tokenService.getLocalAccessToken();
+const jwt = tokenService.localAccessToken;
 
 export default function OwnerEditAdmin() {
   const emptyItem = {

@@ -9,7 +9,7 @@ import tokenService from "../services/token.service";
 export default function Profile(){
     const [currentUser, setCurrentUser] = useState([]);
     const [message, setMessage] = useState(null);
-    const jwt = tokenService.getLocalAccessToken();
+    const jwt = tokenService.localAccessToken;
 
     useEffect(() => {
        

@@ -7,7 +7,7 @@ import jwt_decode from "jwt-decode";
 function AppNavbar() {
     const [roles, setRoles] = useState([]);
     const [username, setUsername] = useState("");
-    const jwt = tokenService.getLocalAccessToken();
+    const jwt = tokenService.localAccessToken;
     const [collapsed, setCollapsed] = useState(true);
 
     const toggleNavbar = () => setCollapsed(!collapsed);

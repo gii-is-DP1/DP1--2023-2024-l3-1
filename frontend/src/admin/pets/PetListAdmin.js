@@ -6,7 +6,7 @@ import useFetchState from "../../util/useFetchState";
 import getErrorModal from "../../util/getErrorModal";
 import deleteFromList from "../../util/deleteFromList";
 
-const jwt = tokenService.getLocalAccessToken();
+const jwt = tokenService.localAccessToken;
 
 export default function PetListAdmin() {
   const [message, setMessage] = useState(null);

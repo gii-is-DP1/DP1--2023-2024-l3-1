@@ -3,7 +3,7 @@ import tokenService from '../services/token.service';
 import Login from '../auth/login';
 
 const PrivateRoute = ({ children }) => {
-    const jwt = tokenService.getLocalAccessToken();
+    const jwt = tokenService.localAccessToken;
     const [isLoading, setIsLoading] = useState(true);
     const [isValid, setIsValid] = useState(null);
     const [message, setMessage] = useState(null);

@@ -8,7 +8,7 @@ import useFetchState from "../../util/useFetchState";
 import getIdFromUrl from "../../util/getIdFromUrl";
 import "../../static/css/admin/adminPage.css";
 
-const jwt = tokenService.getLocalAccessToken();
+const jwt = tokenService.localAccessToken;
 
 export default function PetEditAdmin() {
   const emptyItem = {
