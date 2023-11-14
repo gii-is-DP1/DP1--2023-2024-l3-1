@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -37,6 +38,7 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/player")
+@RestControllerAdvice
 @Tag(name = "Player", description = "Inicio de sesión, registro e información sobre los jugadores registrados en el sistema")
 public class PlayerController {
 
