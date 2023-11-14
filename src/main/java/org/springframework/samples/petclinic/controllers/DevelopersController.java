@@ -1,4 +1,4 @@
-package org.springframework.samples.petclinic.developers;
+package org.springframework.samples.petclinic.controllers;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,13 +9,15 @@ import org.apache.maven.model.Developer;
 import org.apache.maven.model.Model;
 import org.apache.maven.model.io.xpp3.MavenXpp3Reader;
 import org.codehaus.plexus.util.xml.pull.XmlPullParserException;
-import org.springframework.samples.petclinic.model.base.Person;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/v1/developers")
+@Tag(name = "Developers", description = "Información sobre los desarrolladores del sistema")
 public class DevelopersController {
     List<Developer> developers;
 
