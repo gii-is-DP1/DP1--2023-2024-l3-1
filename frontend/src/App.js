@@ -8,7 +8,6 @@ import PrivateRoute from "./privateRoute";
 import PricingPlan from "./owner/plan";
 import Register from "./auth/register";
 import Login from "./auth/login";
-import Logout from "./auth/logout";
 import OwnerPetList from "./owner/pets/petList";
 import OwnerPetEdit from "./owner/pets/petEdit";
 import OwnerVisitEdit from "./owner/visits/visitEdit";
@@ -180,7 +179,7 @@ function App() {
   useEffect(() => {
     if (
       (
-        (user?.is_admin && (!location.pathname.includes("user_edit") || location.pathname !== "/docs" || location.pathname !== "/logout")) || 
+        (user?.is_admin && (!location.pathname.includes("user_edit") || location.pathname !== "/docs")) || 
         (!user && (location.pathname !== "/register"))
       ) &&
       location.pathname !== "/"
@@ -237,17 +236,6 @@ function App() {
     }
   }
 
-  /**
-   * Rutas que estarán disponibles para usuarios autenticados
-   */
-  function loggedRoutes() {
-    if (user) {
-      return (
-          <Route path="/logout" element={<Logout />} />
-      )
-    }
-  }
-
   return (
     <div>
       <ErrorBoundary FallbackComponent={ErrorFallback} >
@@ -256,7 +244,6 @@ function App() {
           {notLoggedRoutes()}
           {notAdminRoutes()}
           {adminRoutes()}
-          {loggedRoutes()}
         </Routes>
       </ErrorBoundary>
     </div>
