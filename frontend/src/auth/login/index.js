@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { Alert } from "reactstrap";
 import tokenService from "../../services/token.service";
 import "../../static/css/auth/authButton.css";
+import DButton from "../../components/DButton";
+import DInput from "../../components/DInput";
+import { formStyle } from "../../components/sharedStyles";
 
 export default function Login() {
   const [message, setMessage] = useState(null)
@@ -51,24 +54,6 @@ export default function Login() {
       setMessage('El nombre de usuario o la contraseña no pueden estar vacíos');
     }
   }
-
-  const formStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center'
-  }
-
-  const inputStyles = {
-    border: 'none',
-    outline: 'none',
-    backgroundColor: '#F2F9F3',
-    borderRadius: '5px',
-    padding: '10px',
-    margin: '10px',
-    width: '25vw',
-    fontSize: '1.5rem'
-  }
   
     return (
       <div style={formStyle}>
@@ -80,15 +65,9 @@ export default function Login() {
 
         <h1>Iniciar sesión</h1>
         <form onSubmit={handleClick} style={formStyle}>
-          <input type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={inputStyles}/>
-          <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={inputStyles} />
-          <button style={{
-            ...inputStyles,
-            backgroundColor: '#61196C',
-            color: 'white',
-          }}>
-            {loading ? 'Iniciando sesión...' : 'Iniciar sesión' }
-          </button>
+          <DInput type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={{ width: '25vw' }} />
+          <DInput type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={{ width: '25vw' }}  />
+          <DButton text={loading ? 'Iniciando sesión...' : 'Iniciar sesión' } style={{ width: '25vw' }} />
         </form>
 
         <div style={{
