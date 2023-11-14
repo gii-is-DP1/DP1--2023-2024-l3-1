@@ -190,12 +190,12 @@ public class PlayerController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@Operation(summary = "Añade un amigo al usuario actual")
+	@Operation(summary = "Añade un amigo al usuario actual. Se proporciona el nombre de usuario a añadir como amigo")
 	@SecurityRequirement(name = "bearerAuth")
-	@PostMapping("/friends/add/{friend_id}")	
-	public ResponseEntity<?> addFriendToMe(@PathVariable("friend_id") Integer friend_id) {
+	@PostMapping("/friends/add/{friend_username}")	
+	public ResponseEntity<?> addFriendToMe(@PathVariable("friend_username") String friend_username) {
 		Optional<Player> target = playerService.findCurrentPlayer();
-		Optional<Player> friend = playerService.findPlayer(friend_id);
+		Optional<Player> friend = playerService.findByUsernamePlayer(friend_username);
 
 		if (!target.isPresent() || !friend.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

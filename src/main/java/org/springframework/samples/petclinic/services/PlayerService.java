@@ -39,6 +39,11 @@ public class PlayerService {
 		return this.repository.findByUsername(auth.getName());
 	}
 
+	@Transactional(readOnly = true)
+	public Optional<Player> findByUsernamePlayer(String username) {
+		return repository.findByUsername(username);
+	}
+
 	@Transactional
 	public void createUser(@Valid SignupRequest request) {
 		Player player = new Player();
