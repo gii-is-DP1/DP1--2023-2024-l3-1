@@ -25,7 +25,7 @@ export default function OwnerConsultationEdit() {
   const jwt = JSON.parse(window.localStorage.getItem("jwt"));
 
   const id = getIdFromUrl(2);
-  const userId = tokenService.getUser().id;
+  const userId = tokenService.user.id;
 
   function handleChange(event) {
     const target = event.target;

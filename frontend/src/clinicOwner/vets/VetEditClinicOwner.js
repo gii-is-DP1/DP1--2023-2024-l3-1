@@ -12,7 +12,7 @@ import getIdFromUrl from "../../util/getIdFromUrl";
 import useFetchData from "../../util/useFetchData";
 import useFetchState from "../../util/useFetchState";
 
-const jwt = tokenService.getLocalAccessToken();
+const jwt = tokenService.localAccessToken;
 
 export default function VetEditClinicOwner() {
   const emptyItem = {

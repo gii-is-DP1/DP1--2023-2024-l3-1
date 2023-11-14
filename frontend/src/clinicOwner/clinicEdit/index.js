@@ -9,8 +9,8 @@ import FormGenerator from "../../components/formGenerator/formGenerator";
 import { useState, useEffect, useRef } from "react";
 import {useNavigate} from "react-router-dom";
 
-const user = tokenService.getUser();
-const jwt = tokenService.getLocalAccessToken();
+const user = tokenService.user;
+const jwt = tokenService.localAccessToken;
 
 export default function EditClinic() {
   const id = getIdFromUrl(2);

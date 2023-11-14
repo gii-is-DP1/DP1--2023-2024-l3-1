@@ -1,16 +1,34 @@
-import React from 'react';
-import '../App.css';
-import '../static/css/home/home.css'; 
+import React, { useEffect, useState } from 'react';
+import '../static/css/home/home.css';
+import tokenService from '../services/token.service';
+import DobbleUserListAdmin from '../admin/dobbleUser/DobbleUserListAdmin';
+import Login from '../auth/login';
+import MainLobby from '../player/main_lobby';
 
 export default function Home(){
+    const user = tokenService.user;
+    const [component, setComponent] = useState(<></>);
+
+    useEffect(() => {
+        if (user) {
+            if (user.is_admin) {
+                setComponent(<DobbleUserListAdmin />);
+            } else {
+                setComponent(<MainLobby />);
+            }
+        } else {
+            setComponent(
+                <>
+                    <img alt="Dobble logo" src="logo.png" width="15%" />
+                    <Login />
+                </>
+            );
+        }
+    }, [user]);
+
     return(
         <div className="home-page-container">
-            <div className="hero-div">
-                <h1>Dobble Online</h1>
-                {/* <h3>---</h3>
-                <h3>Find the best vet for your pet</h3>  */}
-                <img alt="Dobble logo" src="logo.png" width={"30%"} height={"30%"}/>
-            </div>
+            {component}
         </div>
     );
 }

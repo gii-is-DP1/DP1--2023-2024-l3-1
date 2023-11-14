@@ -54,6 +54,7 @@ import MainLobby from "./player/main_lobby";
 import Profile from "./profile";
 import DobbleUserListAdmin from "./admin/dobbleUser/DobbleUserListAdmin";
 import DobbleUserEditAdmin from "./admin/dobbleUser/DobbleUserEditAdmin";
+import './App.css';
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -66,7 +67,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 }
 
 function App() {
-  const jwt = tokenService.getLocalAccessToken();
+  const jwt = tokenService.localAccessToken;
   let roles = []
   if (jwt) {
     roles = getRolesFromJWT(jwt);
@@ -181,7 +182,7 @@ function App() {
   return (
     <div>
       <ErrorBoundary FallbackComponent={ErrorFallback} >
-        <AppNavbar />
+        {jwt ? <AppNavbar /> : undefined}
         <Routes>
           <Route path="/" exact={true} element={<Home />} />
           <Route path="/plans" element={<PlanList />} />

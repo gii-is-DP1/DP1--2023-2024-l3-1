@@ -1,64 +1,102 @@
 import React, { useState } from "react";
 import { Alert } from "reactstrap";
-import FormGenerator from "../../components/formGenerator/formGenerator";
 import tokenService from "../../services/token.service";
 import "../../static/css/auth/authButton.css";
-import { loginFormInputs } from "./form/loginFormInputs";
 
 export default function Login() {
   const [message, setMessage] = useState(null)
-  const loginFormRef = React.createRef();      
-  
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);  
+  const [loading, setLoading] = useState(false);
 
-  async function handleSubmit({ values }) {
+  async function handleSubmit() {
+    try {
+      setLoading(true);
+      setMessage(null);
+      const response = await fetch("/api/v1/player/login", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          password
+        }),
+      });
 
-    const reqBody = values;
-    setMessage(null);
-    await fetch("/api/v1/auth/login", {
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: JSON.stringify(reqBody),
-    })
-      .then(function (response) {
-        if (response.status === 200) return response.json();
-        else return Promise.reject("Intento de inicio de sesión inválido");
-      })
-      .then(function (data) {
-        tokenService.setUser(data);
-        tokenService.updateLocalAccessToken(data.token);
-        window.location.href = "/lobby";//Página principal
-      })
-      .catch((error) => {         
-        setMessage(error);
-      });            
+      if (response.status === 401) {
+        setMessage("Credenciales incorrectas");
+        return;
+      } else if (response.status >= 500) {
+        setMessage("Error del servidor");
+        return;
+      }
+
+      const data = await response.json();
+      tokenService.user = data;
+      tokenService.localAccessToken = data.token;
+    } catch (e) {
+      setMessage(String(e));
+    } finally {
+      setLoading(false);
+    }     
   }
 
+  async function handleClick (e) {
+    e.preventDefault();
+    setUsername(username?.trim());
+    setPassword(password?.trim());
+
+    if (username && password) {
+      await handleSubmit();
+    } else {
+      setMessage('El nombre de usuario o la contraseña no pueden estar vacíos');
+    }
+  }
+
+  const formStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+
+  const inputStyles = {
+    border: 'none',
+    outline: 'none',
+    backgroundColor: '#F2F9F3',
+    borderRadius: '5px',
+    padding: '10px',
+    margin: '10px',
+    width: '25vw',
+    fontSize: '1.5rem'
+  }
   
     return (
-      <div className="auth-page-container">
+      <div style={formStyle}>
         {message ? (
           <Alert color="primary">{message}</Alert>
         ) : (
           <></>
         )}
 
-        <h1>Inicio de sesión</h1>
+        <h1>Iniciar sesión</h1>
+        <form onSubmit={handleClick} style={formStyle}>
+          <input type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={inputStyles}/>
+          <input type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={inputStyles} />
+          <button style={{
+            ...inputStyles,
+            backgroundColor: '#61196C',
+            color: 'white',
+          }}>
+            {loading ? 'Iniciando sesión...' : 'Iniciar sesión' }
+          </button>
+        </form>
 
-        <div className="auth-form-container">
-          <FormGenerator
-            ref={loginFormRef}
-            inputs={loginFormInputs}
-            onSubmit={handleSubmit}
-            numberOfColumns={1}
-            listenEnterKey
-            buttonText="Login"
-            buttonClassName="auth-button"
-          />
-
-          <h1 style={{fontSize: '1.1em',margin:'1em'}}>No tienes una cuenta?
-          <a href="register">  Regístrate</a>
-          </h1>
-          
+        <div style={{
+          padding: '50px'
+        }}>
+          <h3>
+            ¿No tienes una cuenta? <a href="register">Regístrate</a>
+          </h3>
         </div>
       </div>
     );  

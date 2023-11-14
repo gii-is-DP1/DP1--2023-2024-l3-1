@@ -6,7 +6,7 @@ import tokenService from "../services/token.service";
 import useFetchState from "../util/useFetchState";
 import getErrorModal from "../util/getErrorModal";
 const imgnotfound = "https://cdn-icons-png.flaticon.com/512/5778/5778223.png";
-const jwt = tokenService.getLocalAccessToken();
+const jwt = tokenService.localAccessToken;
 export default function AchievementList() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);

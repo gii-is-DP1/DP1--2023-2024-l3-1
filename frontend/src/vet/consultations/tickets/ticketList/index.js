@@ -33,7 +33,7 @@ export default function VetConsultationTickets() {
 
   const conversationRef = useRef(null);
 
-  const jwt = tokenService.getLocalAccessToken();
+  const jwt = tokenService.localAccessToken;
   let pathArray = window.location.pathname.split("/");
   const id = pathArray[2];
 

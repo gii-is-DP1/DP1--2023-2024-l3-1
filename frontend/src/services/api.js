@@ -10,7 +10,7 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config) => {
-        const token = TokenService.getLocalAccessToken();
+        const token = TokenService.localAccessToken;
         if (token) {
             config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
         }
@@ -35,11 +35,11 @@ instance.interceptors.response.use(
 
                 try {
                     const rs = await instance.post("/auth/refreshtoken", {
-                        refreshToken: TokenService.getLocalRefreshToken(),
+                        refreshToken: TokenService.localRefreshToken,
                     });
 
                     const { accessToken } = rs.data;
-                    TokenService.updateLocalAccessToken(accessToken);
+                    TokenService.localAccessToken = accessToken;
 
                     return instance(originalConfig);
                 } catch (_error) {
