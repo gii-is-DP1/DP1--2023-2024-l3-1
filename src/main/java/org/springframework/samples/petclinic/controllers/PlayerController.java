@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -137,7 +138,7 @@ public class PlayerController {
 
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario del usuario con sesión iniciada")
 	@SecurityRequirement(name = "bearerAuth")
-	@PatchMapping
+	@PatchMapping("/me")
 	public ResponseEntity<Player> editMe(@Valid @RequestBody EditPlayerDto payload) {
 		Optional<Player> user_opt = playerService.findCurrentPlayer();
 
@@ -172,7 +173,7 @@ public class PlayerController {
 
 	@Operation(summary = "Añade un amigo a un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
-	@PostMapping("/friends/{id}/add/{friend_id}")	
+	@PutMapping("/friends/{id}/{friend_id}")	
 	public ResponseEntity<?> addFriendToUser(@PathVariable("id") Integer id, @PathVariable("friend_id") Integer friend_id) {
 		Optional<Player> currentUser = playerService.findCurrentPlayer();
 		Optional<Player> target = playerService.findPlayer(id);
@@ -190,9 +191,29 @@ public class PlayerController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@Operation(summary = "Añade un amigo al usuario actual. Se proporciona el nombre de usuario a añadir como amigo")
+	@Operation(summary = "Elimina un amigo a un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
-	@PostMapping("/friends/add/{friend_username}")	
+	@DeleteMapping("/friends/{id}/{friend_id}")	
+	public ResponseEntity<?> deleteFriendToUser(@PathVariable("id") Integer id, @PathVariable("friend_id") Integer friend_id) {
+		Optional<Player> currentUser = playerService.findCurrentPlayer();
+		Optional<Player> target = playerService.findPlayer(id);
+		Optional<Player> friend = playerService.findPlayer(friend_id);
+
+		if (!target.isPresent() || !friend.isPresent() || !currentUser.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		if (!currentUser.get().getIs_admin()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		playerService.removeFriend(target.get(), friend.get());
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@Operation(summary = "Añade un amigo al usuario actual. Se proporciona el usuario del jugador a añadir como amigo")
+	@SecurityRequirement(name = "bearerAuth")
+	@PutMapping("/friends/{friend_username}")	
 	public ResponseEntity<?> addFriendToMe(@PathVariable("friend_username") String friend_username) {
 		Optional<Player> target = playerService.findCurrentPlayer();
 		Optional<Player> friend = playerService.findByUsernamePlayer(friend_username);
@@ -201,6 +222,21 @@ public class PlayerController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		} else {
 			playerService.addFriend(target.get(), friend.get());
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+	}
+
+	@Operation(summary = "Elimina un amigo del usuario actual. Se proporciona el usuario del jugador a eliminar como amigo")
+	@SecurityRequirement(name = "bearerAuth")
+	@DeleteMapping("/friends/{friend_username}")	
+	public ResponseEntity<?> deleteFriendToMe(@PathVariable("friend_username") String friend_username) {
+		Optional<Player> target = playerService.findCurrentPlayer();
+		Optional<Player> friend = playerService.findByUsernamePlayer(friend_username);
+
+		if (!target.isPresent() || !friend.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			playerService.removeFriend(target.get(), friend.get());
 			return new ResponseEntity<>(HttpStatus.OK);
 		}
 	}
