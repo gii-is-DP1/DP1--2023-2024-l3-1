@@ -13,6 +13,6 @@ public interface PlayerRepository extends CrudRepository<Player, Integer> {
     @Query("SELECT DISTINCT p FROM Player p WHERE p.username = :username")
 	public Optional<Player> findByUsername(@Param("username") String username);
 
-    @Query("SELECT DISTINCT p FROM Player p WHERE p.is_admin = true ORDER BY p.username")
+    @Query("SELECT DISTINCT p FROM Player p WHERE p.is_admin = false ORDER BY p.username")
     public Optional<List<Player>> findAllNonAdmin();
 }
