@@ -4,9 +4,11 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.configuration.jwt.JwtUtils;
 import org.springframework.samples.petclinic.configuration.services.UserDetailsImpl;
+import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.dto.JwtResponseDto;
 import org.springframework.samples.petclinic.dto.LoginRequest;
 import org.springframework.samples.petclinic.dto.SignupRequest;
@@ -17,6 +19,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -104,7 +107,7 @@ public class PlayerController {
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario de un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@PatchMapping("/{id}")
-	public ResponseEntity<Player> editUser(@PathVariable("id") Integer id, @Valid @RequestBody SignupRequest payload) {
+	public ResponseEntity<Player> editUser(@PathVariable("id") Integer id, @Valid @RequestBody EditPlayerDto payload) {
 		Optional<Player> user = playerService.findCurrentPlayer();
 
 		if (user.isPresent() && user.get().getIs_admin()) {
@@ -120,7 +123,7 @@ public class PlayerController {
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario del usuario con sesión iniciada")
 	@SecurityRequirement(name = "bearerAuth")
 	@PatchMapping
-	public ResponseEntity<Player> editMe(@Valid @RequestBody SignupRequest payload) {
+	public ResponseEntity<Player> editMe(@Valid @RequestBody EditPlayerDto payload) {
 		Optional<Player> user_opt = playerService.findCurrentPlayer();
 
 		if (user_opt.isPresent()) {
@@ -131,5 +134,20 @@ public class PlayerController {
 		}
 
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@Operation(summary = "Elimina un usuario. El usuario que realice la edición debe ser administrador")
+	@SecurityRequirement(name = "bearerAuth")
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
+		Optional<Player> user = playerService.findCurrentPlayer();
+
+		if (user.isPresent() && user.get().getIs_admin()) {
+			playerService.deletePlayer(id);
+				
+		}
+
+		return new ResponseEntity<>(HttpStatus.OK);
+		
 	}
 }
