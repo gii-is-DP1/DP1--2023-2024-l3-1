@@ -96,6 +96,11 @@ public class PlayerService {
 		this.repository.save(target);
 	}
 
+	@Transactional(readOnly = true)
+	public Boolean areFriends(Player target, Player friend) {
+		return target.getFriends().contains(friend);
+	}
+
 	@Transactional
 	public void deletePlayer(Integer idToDelete) {
 		Optional<Player> toDelete_opt = findPlayer(idToDelete);
