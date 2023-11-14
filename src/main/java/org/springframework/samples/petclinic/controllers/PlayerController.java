@@ -12,6 +12,7 @@ import org.springframework.samples.petclinic.dobble.user.DobbleUserService;
 import org.springframework.samples.petclinic.dto.JwtResponseDto;
 import org.springframework.samples.petclinic.dto.LoginRequest;
 import org.springframework.samples.petclinic.dto.SignupRequest;
+import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -34,19 +35,18 @@ import jakarta.validation.Valid;
 public class PlayerController {
 
     private final AuthenticationManager authenticationManager;
-	private final UserService userService;
 	private final JwtUtils jwtUtils;
+	private final PlayerService playerService;
 
 	@Autowired
-	public PlayerController(AuthenticationManager authenticationManager, UserService userService, JwtUtils jwtUtils,
-			DobbleUserService dobbleUserService) {
-		this.userService = userService;
+	public PlayerController(AuthenticationManager authenticationManager, JwtUtils jwtUtils, PlayerService playerService) {
 		this.jwtUtils = jwtUtils;
 		this.authenticationManager = authenticationManager;
+		this.playerService = playerService;
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<JwtResponseDto> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		try{
 			Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -58,7 +58,7 @@ public class PlayerController {
 			Boolean isAdmin = userDetails.getAuthorities().stream().map(item -> item.getAuthority())
 				.count() > 0;
 
-			return ResponseEntity.ok().body(new JwtResponseDto(jwt, userDetails.getId(), userDetails.getUsername(), isAdmin));
+			return new ResponseEntity<>(new JwtResponseDto(jwt, userDetails.getId(), userDetails.getUsername(), isAdmin), HttpStatus.OK);
 		}catch(BadCredentialsException exception){
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
@@ -67,17 +67,22 @@ public class PlayerController {
 	@GetMapping("/validate")
 	public ResponseEntity<Boolean> validateToken(@RequestParam String token) {
 		Boolean isValid = jwtUtils.validateJwtToken(token);
-		return ResponseEntity.ok(isValid);
+		return new ResponseEntity<>(isValid, HttpStatus.OK);
 	}
 
 	
 	@PostMapping("/signup")	
-	public ResponseEntity<MessageResponse> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		if (userService.existsUser(signUpRequest.getUsername()).equals(true)) {
-			return ResponseEntity.badRequest().body(new MessageResponse("Error: Username is already taken!"));
+	public ResponseEntity<JwtResponseDto> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+		if (playerService.existsUser(signUpRequest.getUsername()).equals(true)) {
+			return new ResponseEntity<>(HttpStatus.IM_USED);
 		}
-		authService.createUser(signUpRequest);
-		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
+		playerService.createUser(signUpRequest);
+
+		LoginRequest loginRequest = new LoginRequest();
+		loginRequest.setUsername(signUpRequest.getUsername());
+		loginRequest.setPassword(signUpRequest.getPassword());
+
+		return authenticateUser(loginRequest);
 	}
     
 }
