@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Navbar, NavbarBrand, NavLink, NavItem, Nav, NavbarText, NavbarToggler, Collapse } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import tokenService from './services/token.service';
 
 function AppNavbar() {
     const user = useSelector(state => state.tokenStore.user);
@@ -174,7 +175,7 @@ function AppNavbar() {
         if (user) {
             return (
                 <NavItem className="d-flex">
-                    <NavLink style={{ color: "white" }} id="logout" tag={Link} to="/logout">Cerrar sesión</NavLink>
+                    <NavLink style={{ color: "white", cursor: 'pointer' }} onClick={tokenService.removeUser}>Cerrar sesión</NavLink>
                 </NavItem>
             )
         }

@@ -50,6 +50,7 @@ class TokenService {
     }
 
     removeUser() {
+        tokenStore.dispatch({ type: 'tokenStore/setUser', payload: undefined });
         window.localStorage.removeItem("user");
     }
 
