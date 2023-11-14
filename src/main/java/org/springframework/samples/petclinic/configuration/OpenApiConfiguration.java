@@ -10,13 +10,13 @@ import io.swagger.v3.oas.annotations.security.SecurityScheme;
 @Configuration
 @OpenAPIDefinition(
   info =@Info(
-    title = "Dobble Online APIs",
-    version = "v2.0",
+    title = "Dobble Online",
+    version = "v1.0",
     license = @License(
       name = "Apache 2.0", url = "https://www.apache.org/licenses/LICENSE-2.0"
     ),
     termsOfService = "${tos.uri}",
-    description = "${api.description}"
+    description = "Esta API permite interactuar con un servidor Spring Boot que permite jugar online al Dobble"
   )
 )
 
