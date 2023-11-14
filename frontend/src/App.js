@@ -55,6 +55,8 @@ import Profile from "./profile";
 import DobbleUserListAdmin from "./admin/dobbleUser/DobbleUserListAdmin";
 import DobbleUserEditAdmin from "./admin/dobbleUser/DobbleUserEditAdmin";
 import './App.css';
+import PlayerListAdmin from "./admin/players/PlayerListAdmin";
+import PlayerEditAdmin from "./admin/players/PlayerEditAdmin";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -109,8 +111,8 @@ function App() {
           <Route path="/consultations/:consultationId/tickets" exact={true} element={<PrivateRoute><TicketListAdmin /></PrivateRoute>} />
           <Route path="/achievements/" exact={true} element={<PrivateRoute><AchievementList /></PrivateRoute>} />
           <Route path="/achievements/:achievementId" exact={true} element={<PrivateRoute><AchievementEdit/></PrivateRoute>} />
-          <Route path="/dobbleUsers/" exact={true} element={<PrivateRoute><DobbleUserListAdmin /></PrivateRoute>} />
-          <Route path="/dobbleUsers/:dobbleUserId" exact={true} element={<PrivateRoute><DobbleUserEditAdmin/></PrivateRoute>} />
+          <Route path="/player/" exact={true} element={<PrivateRoute><PlayerListAdmin /></PrivateRoute>} />
+          <Route path="/player/:playerId" exact={true} element={<PrivateRoute><PlayerEditAdmin/></PrivateRoute>} />
         
         </>)
     }
