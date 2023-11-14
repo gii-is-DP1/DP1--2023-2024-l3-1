@@ -1,19 +1,14 @@
 package org.springframework.samples.petclinic.controllers;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.configuration.jwt.JwtUtils;
 import org.springframework.samples.petclinic.configuration.services.UserDetailsImpl;
-import org.springframework.samples.petclinic.dobble.user.DobbleUserService;
 import org.springframework.samples.petclinic.dto.JwtResponseDto;
 import org.springframework.samples.petclinic.dto.LoginRequest;
 import org.springframework.samples.petclinic.dto.SignupRequest;
 import org.springframework.samples.petclinic.services.PlayerService;
-import org.springframework.samples.petclinic.user.UserService;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
