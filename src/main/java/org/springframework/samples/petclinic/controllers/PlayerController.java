@@ -18,6 +18,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -76,7 +78,7 @@ public class PlayerController {
 	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping("/me")
 	public ResponseEntity<Player> getMe() {
-		Optional<Player> user = playerService.findCurrentUser();
+		Optional<Player> user = playerService.findCurrentPlayer();
 
 		if (user.isPresent()) {
 			return new ResponseEntity<>(user.get(), HttpStatus.OK);
@@ -98,5 +100,36 @@ public class PlayerController {
 
 		return authenticateUser(loginRequest);
 	}
-    
+
+	@Operation(summary = "Edita correo, contraseña y nombre de usuario de un usuario. El usuario que realice la edición debe ser administrador")
+	@SecurityRequirement(name = "bearerAuth")
+	@PatchMapping("/{id}")
+	public ResponseEntity<Player> editUser(@PathVariable("id") Integer id, @Valid @RequestBody SignupRequest payload) {
+		Optional<Player> user = playerService.findCurrentPlayer();
+
+		if (user.isPresent() && user.get().getIs_admin()) {
+			Player newPlayer = playerService.updatePlayer(payload, id);
+			if (newPlayer != null) {
+				return new ResponseEntity<>(newPlayer, HttpStatus.OK);
+			}
+		}
+
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
+
+	@Operation(summary = "Edita correo, contraseña y nombre de usuario del usuario con sesión iniciada")
+	@SecurityRequirement(name = "bearerAuth")
+	@PatchMapping
+	public ResponseEntity<Player> editMe(@Valid @RequestBody SignupRequest payload) {
+		Optional<Player> user_opt = playerService.findCurrentPlayer();
+
+		if (user_opt.isPresent()) {
+			Player newPlayer = playerService.updatePlayer(payload, user_opt.get().getId());
+			if (newPlayer != null) {
+				return new ResponseEntity<>(newPlayer, HttpStatus.OK);
+			}
+		}
+
+		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	}
 }

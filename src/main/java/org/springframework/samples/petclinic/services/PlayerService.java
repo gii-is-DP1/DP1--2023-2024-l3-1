@@ -25,7 +25,18 @@ public class PlayerService {
 		this.repository = repository;
 	}
 
-    @Transactional
+	@Transactional(readOnly = true)
+	public Optional<Player> findPlayer(Integer id) {
+		return repository.findById(id);
+	}
+
+	@Transactional(readOnly = true)
+	public Optional<Player> findCurrentPlayer() {
+		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+		return this.repository.findByUsername(auth.getName());
+	}
+
+	@Transactional
 	public void createUser(@Valid SignupRequest request) {
 		Player player = new Player();
 		player.setUsername(request.getUsername());
@@ -34,10 +45,21 @@ public class PlayerService {
 		this.repository.save(player);
     }
 
-	@Transactional(readOnly = true)
-	public Optional<Player> findCurrentUser() {
-		Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-		return this.repository.findByUsername(auth.getName());
+	@Transactional
+	public Player updatePlayer(@Valid SignupRequest payload, Integer idToUpdate) {
+		Optional<Player> toUpdate_opt = findPlayer(idToUpdate);
+
+		if (toUpdate_opt.isPresent()) {
+			Player toUpdate = toUpdate_opt.get();
+			toUpdate.setEmail(payload.getEmail());
+			toUpdate.setPassword(encoder.encode(payload.getPassword()));
+			toUpdate.setUsername(payload.getUsername());
+			this.repository.save(toUpdate);
+
+			return toUpdate;
+		}
+
+		return null;
 	}
 
 	public Boolean existsUser(String username) {
