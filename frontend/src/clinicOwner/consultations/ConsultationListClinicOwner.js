@@ -6,8 +6,8 @@ import consultationService from '../../services/consultation.service';
 import useFetchState from '../../util/useFetchState';
 import getErrorModal from '../../util/getErrorModal';
 
-const user = tokenService.getUser();
-const jwt = tokenService.getLocalAccessToken();
+const user = tokenService.user;
+const jwt = tokenService.localAccessToken;
 
 export default function ConsultationListClinicOwner() {
     const [message, setMessage] = useState(null);

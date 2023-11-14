@@ -7,8 +7,8 @@ import getErrorModal from "../../util/getErrorModal";
 import "../../static/css/admin/adminPage.css";
 import { useNavigate } from "react-router-dom";
 
-const user = tokenService.getUser();
-const jwt = tokenService.getLocalAccessToken();
+const user = tokenService.user;
+const jwt = tokenService.localAccessToken;
 
 export default function ClinicsList() {
   const [message, setMessage] = useState(null);

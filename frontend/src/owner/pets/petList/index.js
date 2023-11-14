@@ -12,8 +12,8 @@ export default function OwnerPetList() {
   let [message, setMessage] = useState(null);
   let [modalShow, setModalShow] = useState(false);
 
-  const user = tokenService.getUser();
-  const jwt = tokenService.getLocalAccessToken();
+  const user = tokenService.user;
+  const jwt = tokenService.localAccessToken;
 
   function removePet(id) {
     fetch(`/api/v1/pets/${id}`, {

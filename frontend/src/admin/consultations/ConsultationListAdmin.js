@@ -6,7 +6,7 @@ import consultationService from '../../services/consultation.service';
 import useFetchState from '../../util/useFetchState';
 import getErrorModal from '../../util/getErrorModal';
 
-const jwt = tokenService.getLocalAccessToken();
+const jwt = tokenService.localAccessToken;
 
 export default function ConsultationListAdmin() {
     const [message, setMessage] = useState(null);

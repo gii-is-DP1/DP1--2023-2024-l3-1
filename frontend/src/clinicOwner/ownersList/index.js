@@ -5,8 +5,8 @@ import "../../static/css/admin/adminPage.css";
 import getErrorModal from "../../util/getErrorModal";
 import useFetchState from "../../util/useFetchState";
 
-const user = tokenService.getUser();
-const jwt = tokenService.getLocalAccessToken();
+const user = tokenService.user;
+const jwt = tokenService.localAccessToken;
 
 export default function OwnerListClinicOwner(){
   const [message, setMessage] = useState(null);

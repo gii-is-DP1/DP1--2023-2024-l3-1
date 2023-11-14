@@ -67,7 +67,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 }
 
 function App() {
-  const jwt = tokenService.getLocalAccessToken();
+  const jwt = tokenService.localAccessToken;
   let roles = []
   if (jwt) {
     roles = getRolesFromJWT(jwt);
