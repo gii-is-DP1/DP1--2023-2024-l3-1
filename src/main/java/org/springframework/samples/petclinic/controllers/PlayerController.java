@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -255,5 +256,24 @@ public class PlayerController {
 
 		playerService.removeFriend(target.get(), friend.get());
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@Operation(summary = "Lista todos los usuarios. El usuario de este método debe ser administrador")
+	@SecurityRequirement(name = "bearerAuth")
+	@GetMapping
+	public ResponseEntity<?> getAll() {
+		Optional<Player> target = playerService.findCurrentPlayer();
+
+		if (!target.isPresent() || !target.get().getIs_admin()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		Optional<List<Player>> playerList = playerService.findAll();
+
+		if (!playerList.isPresent() || (playerList.isPresent() && playerList.get().isEmpty())) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+
+		return new ResponseEntity<>(playerList.get(), HttpStatus.OK);
 	}
 }

@@ -44,6 +44,11 @@ public class PlayerService {
 		return repository.findByUsername(username);
 	}
 
+	@Transactional(readOnly = true)
+	public Optional<List<Player>> findAll() {
+		return repository.findAllNonAdmin();
+	}
+
 	@Transactional
 	public void createUser(@Valid SignupRequest request) {
 		Player player = new Player();
