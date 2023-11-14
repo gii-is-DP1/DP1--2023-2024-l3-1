@@ -1,34 +1,33 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import '../static/css/home/home.css';
-import tokenService from '../services/token.service';
 import DobbleUserListAdmin from '../admin/dobbleUser/DobbleUserListAdmin';
 import Login from '../auth/login';
 import MainLobby from '../player/main_lobby';
+import { useSelector } from 'react-redux';
 
 export default function Home(){
-    const user = tokenService.user;
-    const [component, setComponent] = useState(<></>);
+    const user = useSelector(state => state.tokenStore.user);
 
-    useEffect(() => {
+    function getAppropiateComponent() {
         if (user) {
             if (user.is_admin) {
-                setComponent(<DobbleUserListAdmin />);
+                return (<DobbleUserListAdmin />);
             } else {
-                setComponent(<MainLobby />);
+                return (<MainLobby />);
             }
         } else {
-            setComponent(
+            return (
                 <>
                     <img alt="Dobble logo" src="logo.png" width="15%" />
                     <Login />
                 </>
-            );
+            )
         }
-    }, [user]);
+    }
 
     return(
         <div className="home-page-container">
-            {component}
+            {getAppropiateComponent()}
         </div>
     );
 }
