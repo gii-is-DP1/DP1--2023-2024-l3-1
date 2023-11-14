@@ -4,7 +4,6 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.configuration.jwt.JwtUtils;
 import org.springframework.samples.petclinic.configuration.services.UserDetailsImpl;
@@ -109,6 +108,11 @@ public class PlayerController {
 	@PatchMapping("/{id}")
 	public ResponseEntity<Player> editUser(@PathVariable("id") Integer id, @Valid @RequestBody EditPlayerDto payload) {
 		Optional<Player> user = playerService.findCurrentPlayer();
+		Optional<Player> target = playerService.findPlayer(id);
+
+		if (!target.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 
 		if (user.isPresent() && user.get().getIs_admin()) {
 			Player newPlayer = playerService.updatePlayer(payload, id);
@@ -117,7 +121,7 @@ public class PlayerController {
 			}
 		}
 
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario del usuario con sesión iniciada")
@@ -133,7 +137,7 @@ public class PlayerController {
 			}
 		}
 
-		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
 	@Operation(summary = "Elimina un usuario. El usuario que realice la edición debe ser administrador")
@@ -141,13 +145,47 @@ public class PlayerController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteUser(@PathVariable("id") Integer id) {
 		Optional<Player> user = playerService.findCurrentPlayer();
+		Optional<Player> target = playerService.findPlayer(id);
+
+		if (!target.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
 
 		if (user.isPresent() && user.get().getIs_admin()) {
 			playerService.deletePlayer(id);
-				
 		}
 
 		return new ResponseEntity<>(HttpStatus.OK);
 		
+	}
+
+	@Operation(summary = "Añade un amigo a un usuario. El usuario que realice la edición debe ser administrador")
+	@SecurityRequirement(name = "bearerAuth")
+	@PostMapping("/friends/{id}/add/{friend_id}")	
+	public ResponseEntity<?> addFriendToUser(@PathVariable("id") Integer id, @PathVariable("friend_id") Integer friend_id) {
+		Optional<Player> target = playerService.findPlayer(id);
+		Optional<Player> friend = playerService.findPlayer(friend_id);
+
+		if (!target.isPresent() || !friend.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			playerService.addFriend(target.get(), friend.get());
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
+	}
+
+	@Operation(summary = "Añade un amigo al usuario actual")
+	@SecurityRequirement(name = "bearerAuth")
+	@PostMapping("/friends/add/{friend_id}")	
+	public ResponseEntity<?> addFriendToMe(@PathVariable("friend_id") Integer friend_id) {
+		Optional<Player> target = playerService.findCurrentPlayer();
+		Optional<Player> friend = playerService.findPlayer(friend_id);
+
+		if (!target.isPresent() || !friend.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		} else {
+			playerService.addFriend(target.get(), friend.get());
+			return new ResponseEntity<>(HttpStatus.OK);
+		}
 	}
 }
