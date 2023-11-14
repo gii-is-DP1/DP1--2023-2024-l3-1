@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,6 +77,18 @@ public class PlayerService {
 		}
 
 		return null;
+	}
+
+	@Transactional
+	public void addFriend(Player target, Player friend) {
+		target.getFriends().add(friend);
+		this.repository.save(target);
+	}
+
+	@Transactional
+	public void removeFriend(Player target, Player friend) {
+		target.getFriends().remove(friend);
+		this.repository.save(target);
 	}
 
 	@Transactional
