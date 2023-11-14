@@ -26,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
@@ -45,6 +46,7 @@ public class PlayerController {
 		this.playerService = playerService;
 	}
 
+	@Operation(summary = "Inicia la sesión de un usuario")
 	@PostMapping("/login")
 	public ResponseEntity<JwtResponseDto> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
 		try{
@@ -64,13 +66,14 @@ public class PlayerController {
 		}
 	}
 
+	@Operation(summary = "Verifica la validez de un token JWT")
 	@GetMapping("/validate")
 	public ResponseEntity<Boolean> validateToken(@RequestParam String token) {
 		Boolean isValid = jwtUtils.validateJwtToken(token);
 		return new ResponseEntity<>(isValid, HttpStatus.OK);
 	}
 
-	
+	@Operation(summary = "Registra a un usuario")
 	@PostMapping("/signup")	
 	public ResponseEntity<JwtResponseDto> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
 		if (playerService.existsUser(signUpRequest.getUsername()).equals(true)) {
