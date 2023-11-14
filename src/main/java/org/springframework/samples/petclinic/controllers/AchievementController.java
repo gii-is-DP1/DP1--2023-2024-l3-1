@@ -5,9 +5,8 @@ import java.util.List;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.exceptions.BadRequestException;
-import org.springframework.samples.petclinic.exceptions.ResourceNotFoundException;
 import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.services.AchievementService;
 import org.springframework.validation.BindingResult;
@@ -28,12 +27,12 @@ import jakarta.validation.Valid;
 @RequestMapping("/api/v1/achievements")
 @Tag(name = "Achievements", description = "The Achievements management API")
 @SecurityRequirement(name = "bearerAuth")
-public class AchievementRestController {
+public class AchievementController {
     
     private final AchievementService achievementService;
 
     @Autowired
-	public AchievementRestController(AchievementService achievementService) {
+	public AchievementController(AchievementService achievementService) {
 		this.achievementService = achievementService;
 	}
 
@@ -44,33 +43,40 @@ public class AchievementRestController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<Achievement> findAchievement(@PathVariable("id") int id){
-		Achievement achievementToGet=achievementService.getById(id);
-		if(achievementToGet==null)
-			throw new ResourceNotFoundException("Achievement with id "+id+" not found!");
+		Achievement achievementToGet = achievementService.getById(id);
+
+		if(achievementToGet == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
 		return new ResponseEntity<Achievement>(achievementToGet, HttpStatus.OK);
 	}
 
 	@PostMapping
 	public ResponseEntity<Achievement> createAchievement(@RequestBody @Valid Achievement newAchievement, BindingResult br){ 
-		Achievement result=null;
-		if(!br.hasErrors())
-			result=achievementService.saveAchievement(newAchievement);
-		else
-			throw new BadRequestException(br.getAllErrors());
+		Achievement result = null;
+
+		if(!br.hasErrors()) {
+			result = achievementService.saveAchievement(newAchievement);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+
 		return new ResponseEntity<>(result,HttpStatus.CREATED);	
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Void> modifyAchievement(@RequestBody @Valid Achievement newAchievement, BindingResult br,@PathVariable("id") int id) {
 		Achievement achievementToUpdate=this.findAchievement(id).getBody();
-		if(br.hasErrors())
-			throw new BadRequestException(br.getAllErrors());		
+		if(br.hasErrors()) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
 		else if(newAchievement.getId()==null || !newAchievement.getId().equals(id))
-			throw new BadRequestException("Achievement id is not consistent with resource URL:"+id);
-		else{
+			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+		else {
 			BeanUtils.copyProperties(newAchievement, achievementToUpdate, "id");
 			achievementService.saveAchievement(achievementToUpdate);
-		}			
+		}
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
