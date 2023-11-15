@@ -2,9 +2,9 @@ import {
     Table
 } from "reactstrap";
 import { useState } from "react";
-import tokenService from "../services/token.service";
-import useFetchState from "../util/useFetchState";
-import getErrorModal from "../util/getErrorModal";
+import tokenService from "../../services/token.service";
+import useFetchState from "../../util/useFetchState";
+import getErrorModal from "../../util/getErrorModal";
 const imgnotfound = "https://cdn-icons-png.flaticon.com/512/5778/5778223.png";
 const jwt = tokenService.localAccessToken;
 export default function AchievementList() {
