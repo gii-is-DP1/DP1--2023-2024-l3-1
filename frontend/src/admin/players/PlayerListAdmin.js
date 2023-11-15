@@ -89,26 +89,28 @@ export default function PlayerListAdmin() {
   const modal = getErrorModal(setVisible, visible, message);
 
   return (
-    <div className="admin-page-container">
-      <h1 className="text-center">Players</h1>
-      {alerts.map((a) => a.alert)}
-      {modal}
-      <Button color="success" tag={Link} to="/users/new">
-        Add Player
-      </Button>
-      <div>
-        <Table aria-label="player" className="mt-4">
-          <thead>
-            <tr>
-              <th>Profile Icon</th>
-              <th>Username</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>{playerList}</tbody>
-        </Table>
+    <div className="home-page-container">
+      <div className="admin-page-container">
+        <h1 className="text-center">Players</h1>
+        {alerts.map((a) => a.alert)}
+        {modal}
+        <Button color="success" tag={Link} to="/users/new">
+          Add Player
+        </Button>
+        <div>
+          <Table aria-label="player" className="mt-4">
+            <thead>
+              <tr>
+                <th>Profile Icon</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>{playerList}</tbody>
+          </Table>
+        </div>
       </div>
     </div>
   );
