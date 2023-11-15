@@ -5,6 +5,7 @@ import "../../static/css/auth/authButton.css";
 import DButton from "../../components/DButton";
 import DInput from "../../components/DInput";
 import { formStyle } from "../../components/sharedStyles";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [message, setMessage] = useState(null)
@@ -76,7 +77,7 @@ export default function Login() {
             padding: '50px'
           }}>
             <h3>
-              ¿No tienes una cuenta? <a href="register">Regístrate</a>
+              ¿No tienes una cuenta? <Link to="/register">Regístrate</Link>
             </h3>
           </div>
         </div>
