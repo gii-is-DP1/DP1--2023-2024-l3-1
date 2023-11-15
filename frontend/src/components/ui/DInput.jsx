@@ -7,6 +7,8 @@ export default function DInput(props) {
         style={{
             ...inputStyles,
             ...props.style
-        }} />
+        }}>
+            {props.children}
+        </input>
     );
 }
