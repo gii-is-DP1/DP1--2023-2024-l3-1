@@ -17,9 +17,7 @@ export default function PlayerListAdmin() {
       setLoading(true);
       setMessage(null);
 
-      const response = await axios("player", {
-        method: "GET",
-      });
+      const response = await axios.get("/player");
 
       if (response.status === 401) {
         setMessage("Usuario actual no es administrador");
@@ -29,7 +27,7 @@ export default function PlayerListAdmin() {
         return;
       }
 
-      setPlayers(await response.json());
+      setPlayers(response.data);
     } catch (e) {
       setMessage(String(e));
     } finally {
