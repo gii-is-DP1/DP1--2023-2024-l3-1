@@ -45,13 +45,14 @@ import ConsultationEditClinicOwner from "./clinicOwner/consultations/Consultatio
 import VetListClinicOwner from "./clinicOwner/vets/VetListClinicOwner";
 import VetEditClinicOwner from "./clinicOwner/vets/VetEditClinicOwner";
 import AchievementListPlayer from "./achievement/achievementListPlayer";
-import AchievementList from "./achievement/achievementListAdmin";
-import AchievementEdit from "./achievement/achievementEdit";
+import AchievementListAdmin from "./achievement/achievementListAdmin";
+import AchievementEditAdmin from "./achievement/achievementEditAdmin";
 import MainLobby from "./player/main_lobby";
 import Profile from "./profile";
 import DobbleUserListAdmin from "./admin/dobbleUser/DobbleUserListAdmin";
 import DobbleUserEditAdmin from "./admin/dobbleUser/DobbleUserEditAdmin";
 import './App.css';
+import './static/css/home/home.css';
 import PlayerListAdmin from "./admin/players/PlayerListAdmin";
 import PlayerEditAdmin from "./admin/players/PlayerEditAdmin";
 
@@ -68,7 +69,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 function App() {
   const user = useSelector(state => state.tokenStore.user);
   const location = useLocation();
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
   // let adminRoutes = <></>;
   // let ownerRoutes = <></>;
@@ -185,7 +186,7 @@ function App() {
     ) {
 
       console.info('Redirigiendo a / por falta de permisos');
-      navigator("/");
+      navigate("/");
     }
   }, [location, user]);
   
@@ -201,6 +202,8 @@ function App() {
       return (
         <>
           <Route path="/" exact={true} element={<PlayerListAdmin />} />
+          <Route path="/achievements" element={<AchievementListAdmin />} />
+          <Route path="/achievements/:achievementId" element={<AchievementEditAdmin />} />
           <Route path="/player/:id" element={<PlayerEditAdmin />} />
           <Route path="/docs" element={<SwaggerDocs />} />
         </>
@@ -229,6 +232,7 @@ function App() {
     if (!user?.is_admin) {
       return (
         <>
+          <Route path="/achievements" exact={true} element={<AchievementListPlayer />} />
           <Route path="/" exact={true} element={<MainLobby />} />
         </>
       )

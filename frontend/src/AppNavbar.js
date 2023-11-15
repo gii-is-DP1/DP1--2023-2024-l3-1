@@ -148,9 +148,14 @@ function AppNavbar() {
     function adminRoutes() {
         if (user?.is_admin) {
             return (
-                <NavItem>
-                    <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/docs">Documentación API</NavLink>
-                </NavItem>
+                <>
+                    <NavItem>
+                        <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/docs">Documentación API</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
+                    </NavItem>
+                </>
             )
         }
     }
@@ -184,7 +189,7 @@ function AppNavbar() {
     return (
         <div>
             <Navbar expand="md" dark color="dark">
-                <NavbarBrand href="/">
+                <NavbarBrand tag={Link} to="/">
                     <img alt="Dobble logo" src="logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
                     <NavbarText style={{ color: "white", marginLeft: '0.5rem' }}>
                         Online
