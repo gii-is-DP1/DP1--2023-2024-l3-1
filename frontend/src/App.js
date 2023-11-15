@@ -175,17 +175,18 @@ function App() {
 
   /**
    * Middleware
+   * 
+   * Añadir rutas dependiendo del rol
    */
   useEffect(() => {
     if (
       (
-        (user?.is_admin && (!location.pathname.includes("user_edit") || location.pathname !== "/docs")) || 
-        (!user && (location.pathname !== "/register"))
+        (user?.is_admin && !(location.pathname.includes("player") || location.pathname.includes("docs") || location.pathname.includes("achievements"))) || 
+        (!user && (location.pathname === "/register"))
       ) &&
       location.pathname !== "/"
     ) {
-
-      console.info('Redirigiendo a / por falta de permisos');
+      console.warn('Redirigiendo a / por falta de permisos');
       navigate("/");
     }
   }, [location, user]);
