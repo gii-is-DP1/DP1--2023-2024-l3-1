@@ -1,12 +1,19 @@
 import axios from "axios";
 import TokenService from "./token.service";
 
+
+/**
+ * Utilizar axios para realizar peticiones HTTP. La autenticación ya está automáticamente gestionada por él.
+ * 
+ * Los métodos HTTP se ejecutan de la siguiente manera (para GET como ejemplo):
+ * * axios.get(...)
+ * * axios.('url', { method: 'GET' })
+ */
 const instance = axios.create({
     baseURL: "api/v1",
     headers: {
         "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/json",
-        "Access-Control-Allow-Origin": "*"
+        "Content-Type": "application/json"
     },
 });
 
@@ -17,36 +24,22 @@ instance.interceptors.request.use(
             config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
         }
         return config;
-    },
-    (error) => {
-        return Promise.reject(error);
     }
 );
 
+/**
+ * Verificar que sigue existiendo una sesión iniciada
+ */
 instance.interceptors.response.use(
     (res) => {
         return res;
     },
     async (err) => {
-        const originalConfig = err.config;
+        if (err.response.status === 401) {
+            const request = await instance.get('/player/me');
 
-        if (originalConfig.url !== "/auth/signin" && err.response) {
-            // Access Token was expired
-            if (err.response.status === 401 && !originalConfig._retry) {
-                originalConfig._retry = true;
-
-                try {
-                    const rs = await instance.post("/auth/refreshtoken", {
-                        refreshToken: TokenService.localRefreshToken,
-                    });
-
-                    const { accessToken } = rs.data;
-                    TokenService.localAccessToken = accessToken;
-
-                    return instance(originalConfig);
-                } catch (_error) {
-                    return Promise.reject(_error);
-                }
+            if (request.status === 401) {
+                TokenService.removeUser();
             }
         }
 
