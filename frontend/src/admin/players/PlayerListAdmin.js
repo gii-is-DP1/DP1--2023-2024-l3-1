@@ -17,7 +17,7 @@ export default function PlayerListAdmin() {
       setLoading(true);
       setMessage(null);
 
-      const response = await axios("/api/v1/player", {
+      const response = await axios("player", {
         method: "GET",
       });
 
