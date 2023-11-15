@@ -4,7 +4,7 @@ import tokenService from "../../services/token.service";
 import "../../static/css/auth/authButton.css";
 import DButton from "../../components/DButton";
 import DInput from "../../components/DInput";
-import { formStyle } from "../../components/sharedStyles";
+import { formStyle } from "../../components/styles/forms";
 import { Link } from "react-router-dom";
 
 export default function Login() {
