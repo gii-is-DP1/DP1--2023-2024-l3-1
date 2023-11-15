@@ -56,26 +56,29 @@ export default function Login() {
   }
   
     return (
-      <div style={formStyle}>
-        {message ? (
-          <Alert color="primary">{message}</Alert>
-        ) : (
-          <></>
-        )}
+      <div className="home-page-container">
+        <img alt="Dobble logo" src="logo.png" width="15%" />
+        <div style={formStyle}>
+          {message ? (
+            <Alert color="primary">{message}</Alert>
+          ) : (
+            <></>
+          )}
 
-        <h1>Iniciar sesión</h1>
-        <form onSubmit={handleClick} style={formStyle}>
-          <DInput type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={{ width: '25vw' }} />
-          <DInput type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={{ width: '25vw' }}  />
-          <DButton text={loading ? 'Iniciando sesión...' : 'Iniciar sesión' } style={{ width: '25vw' }} />
-        </form>
+          <h1>Iniciar sesión</h1>
+          <form onSubmit={handleClick} style={formStyle}>
+            <DInput type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={{ width: '25vw' }} />
+            <DInput type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={{ width: '25vw' }}  />
+            <DButton text={loading ? 'Iniciando sesión...' : 'Iniciar sesión' } style={{ width: '25vw' }} />
+          </form>
 
-        <div style={{
-          padding: '50px'
-        }}>
-          <h3>
-            ¿No tienes una cuenta? <a href="register">Regístrate</a>
-          </h3>
+          <div style={{
+            padding: '50px'
+          }}>
+            <h3>
+              ¿No tienes una cuenta? <a href="register">Regístrate</a>
+            </h3>
+          </div>
         </div>
       </div>
     );  
