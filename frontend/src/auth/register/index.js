@@ -1,162 +1,91 @@
-import "../../static/css/auth/authButton.css";
-import "../../static/css/auth/authPage.css";
+import React, { useState } from "react";
+import { Alert } from "reactstrap";
 import tokenService from "../../services/token.service";
-import FormGenerator from "../../components/formGenerator/formGenerator";
-import { registerFormOwnerInputs } from "./form/registerFormOwnerInputs";
-import { registerFormVetInputs } from "./form/registerFormVetInputs";
-import { registerFormClinicOwnerInputs } from "./form/registerFormClinicOwnerInputs";
-import { useEffect, useRef, useState } from "react";
+import "../../static/css/auth/authButton.css";
+import DButton from "../../components/DButton";
+import DInput from "../../components/DInput";
+import { formStyle } from "../../components/sharedStyles";
+import { Link } from "react-router-dom";
 
-export default function Register() {
-  let [type, setType] = useState(null);
-  let [authority, setAuthority] = useState(null);
-  let [clinics, setClinics] = useState([]);
+export default function Login() {
+  const [message, setMessage] = useState(null)
+  const [username, setUsername] = useState(null);
+  const [password, setPassword] = useState(null);
+  const [email, setEmail] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-  const registerFormRef = useRef();
-
-  function handleButtonClick(event) {
-    const target = event.target;
-    let value = target.value;
-    if (value === "Back") value = null;
-    else setAuthority(value);
-    setType(value);
-  }
-
-  function handleSubmit({ values }) {
-
-    if(!registerFormRef.current.validate()) return;
-
-    const request = values;
-    request.clinic = clinics.filter((clinic) => clinic.name === request.clinic)[0];
-    request["authority"] = authority;
-    let state = "";
-
-    fetch("/api/v1/auth/signup", {
-      headers: { "Content-Type": "application/json" },
-      method: "POST",
-      body: JSON.stringify(request),
-    })
-      .then(function (response) {
-        if (response.status === 200) {
-          const loginRequest = {
-            username: request.username,
-            password: request.password,
-          };
-
-          fetch("/api/v1/auth/signin", {
-            headers: { "Content-Type": "application/json" },
-            method: "POST",
-            body: JSON.stringify(loginRequest),
-          })
-            .then(function (response) {
-              if (response.status === 200) {
-                state = "200";
-                return response.json();
-              } else {
-                state = "";
-                return response.json();
-              }
-            })
-            .then(function (data) {
-              if (state !== "200") alert(data.message);
-              else {
-                tokenService.user = data;
-                tokenService.localAccessToken = data.token;
-                window.location.href = "/dashboard";
-              }
-            })
-            .catch((message) => {
-              alert(message);
-            });
-        }
-      })
-      .catch((message) => {
-        alert(message);
+  async function handleSubmit() {
+    try {
+      setLoading(true);
+      setMessage(null);
+      const response = await fetch("/api/v1/player/signup", {
+        headers: { "Content-Type": "application/json" },
+        method: "POST",
+        body: JSON.stringify({
+          username,
+          email,
+          password
+        }),
       });
-  }
 
-  useEffect(() => {
-    if (type === "Owner" || type === "Vet") {
-      if (registerFormOwnerInputs[5].values.length === 1){
-        fetch("/api/v1/clinics")
-        .then(function (response) {
-          if (response.status === 200) {
-            return response.json();
-          } else {
-            return response.json();
-          }
-        })
-        .then(function (data) {
-          setClinics(data);
-          if (data.length !== 0) {
-            let clinicNames = data.map((clinic) => {
-              return clinic.name;
-            });
-
-            registerFormOwnerInputs[5].values = ["None", ...clinicNames];
-          }
-        })
-        .catch((message) => {
-          alert(message);
-        });
+      if (response.status === 226) {
+        setMessage("Ya existe un jugador registrado con el mismo nombre de usuario");
+        return;
+      } else if (response.status >= 500) {
+        setMessage("Error del servidor");
+        return;
       }
-    }
-  }, [type]);
 
-  if (type) {
-    return (
-      <div className="auth-page-container">
-        <h1>Register</h1>
-        <div className="auth-form-container">
-          <FormGenerator
-            ref={registerFormRef}
-            inputs={
-              type === "Owner" ? registerFormOwnerInputs 
-              : type === "Vet" ? registerFormVetInputs
-              : registerFormClinicOwnerInputs
-            }
-            onSubmit={handleSubmit}
-            numberOfColumns={1}
-            listenEnterKey
-            buttonText="Save"
-            buttonClassName="auth-button"
-          />
-        </div>
-      </div>
-    );
-  } else {
-    return (
-      <div className="auth-page-container">
-        <div className="auth-form-container">
-          <h1>Register</h1>
-          <h2 className="text-center text-md">
-            What type of user will you be?
-          </h2>
-          <div className="options-row">
-            <button
-              className="auth-button"
-              value="Owner"
-              onClick={handleButtonClick}
-            >
-              Owner
-            </button>
-            <button
-              className="auth-button"
-              value="Vet"
-              onClick={handleButtonClick}
-            >
-              Vet
-            </button>
-            <button
-              className="auth-button"
-              value="Clinic Owner"
-              onClick={handleButtonClick}
-            >
-              Clinic Owner
-            </button>
-          </div>
-        </div>
-      </div>
-    );
+      const data = await response.json();
+      tokenService.user = data;
+      tokenService.localAccessToken = data.token;
+    } catch (e) {
+      setMessage(String(e));
+    } finally {
+      setLoading(false);
+    }
   }
+
+  async function handleClick(e) {
+    e.preventDefault();
+    setUsername(username?.trim());
+    setPassword(password?.trim());
+    setEmail(email?.trim());
+
+    if (username && password && email) {
+      await handleSubmit();
+    } else {
+      setMessage('El nombre de usuario, la contraseña y el e-mail no pueden estar vacíos');
+    }
+  }
+
+  return (
+    <div>
+      <img alt="Dobble logo" src="logo.png" width="15%" />
+      <div style={formStyle}>
+        {message ? (
+          <Alert color="primary">{message}</Alert>
+        ) : (
+          <></>
+        )}
+
+        <h1>Regístrate</h1>
+        <h3>Es rápido y fácil</h3>
+        <form onSubmit={handleClick} style={formStyle}>
+          <DInput type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={{ width: '25vw' }} />
+          <DInput type="text" placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} style={{ width: '25vw' }} />
+          <DInput type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={{ width: '25vw' }} />
+          <DButton text={loading ? 'Creando cuenta...' : 'Crear cuenta'} style={{ width: '25vw' }} />
+        </form>
+
+        <div style={{
+          padding: '50px'
+        }}>
+          <h3>
+            ¿Ya tienes una cuenta? <Link to="/">Iniciar sesión</Link>
+          </h3>
+        </div>
+      </div>
+    </div>
+  );
 }
