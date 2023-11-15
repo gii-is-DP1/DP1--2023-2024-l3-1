@@ -3,58 +3,17 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
 import AppNavbar from "./AppNavbar";
-import PrivateRoute from "./privateRoute";
-import PricingPlan from "./owner/plan";
 import Register from "./auth/register";
 import Login from "./auth/login";
-import OwnerPetList from "./owner/pets/petList";
-import OwnerPetEdit from "./owner/pets/petEdit";
-import OwnerVisitEdit from "./owner/visits/visitEdit";
-import PlanList from "./public/plan";
-import OwnerDashboard from "./owner/dashboard";
-import OwnerConsultationList from "./owner/consultations/consultationList";
-import OwnerConsultationEdit from "./owner/consultations/consultationEdit";
-import OwnerConsultationTickets from "./owner/consultations/tickets/ticketList";
-import VetConsultationList from "./vet/consultations/consultationList";
-import VetConsultationTickets from "./vet/consultations/tickets/ticketList";
-import PetEditAdmin from "./admin/pets/PetEditAdmin";
-import PetListAdmin from "./admin/pets/PetListAdmin";
-import UserListAdmin from "./admin/users/UserListAdmin";
-import UserEditAdmin from "./admin/users/UserEditAdmin";
-import OwnerListAdmin from "./admin/owners/OwnerListAdmin";
-import OwnerEditAdmin from "./admin/owners/OwnerEditAdmin";
-import SpecialtyListAdmin from "./admin/vets/SpecialtyListAdmin";
-import SpecialtyEditAdmin from "./admin/vets/SpecialtyEditAdmin";
-import VetListAdmin from "./admin/vets/VetListAdmin";
-import VetEditAdmin from "./admin/vets/VetEditAdmin";
-import VisitListAdmin from "./admin/visits/VisitListAdmin";
-import VisitEditAdmin from "./admin/visits/VisitEditAdmin";
-import ConsultationListAdmin from "./admin/consultations/ConsultationListAdmin";
-import TicketListAdmin from "./admin/consultations/TicketListAdmin";
-import ConsultationEditAdmin from "./admin/consultations/ConsultationEditAdmin";
 import SwaggerDocs from "./public/swagger";
-import ClinicsList from "./clinicOwner/clinicsList"
-import EditClinic from "./clinicOwner/clinicEdit"
-import OwnerListClinicOwner from "./clinicOwner/ownersList"
-import ClinicOwnerListAdmin from "./admin/clinicOwners/ClinicOwnerListAdmin";
-import ClinicOwnerEditAdmin from "./admin/clinicOwners/ClinicOwnerEditAdmin";
-import ClinicListAdmin from "./admin/clinics/ClinicListAdmin";
-import ClinicEditAdmin from "./admin/clinics/ClinicEditAdmin";
-import ConsultationListClinicOwner from "./clinicOwner/consultations/ConsultationListClinicOwner";
-import ConsultationEditClinicOwner from "./clinicOwner/consultations/ConsultationEditClinicOwner";
-import VetListClinicOwner from "./clinicOwner/vets/VetListClinicOwner";
-import VetEditClinicOwner from "./clinicOwner/vets/VetEditClinicOwner";
 import AchievementListPlayer from "./achievement/achievementListPlayer";
 import AchievementListAdmin from "./achievement/achievementListAdmin";
 import AchievementEditAdmin from "./achievement/achievementEditAdmin";
 import MainLobby from "./player/main_lobby";
-import Profile from "./profile";
-import DobbleUserListAdmin from "./admin/dobbleUser/DobbleUserListAdmin";
-import DobbleUserEditAdmin from "./admin/dobbleUser/DobbleUserEditAdmin";
-import './App.css';
-import './static/css/home/home.css';
 import PlayerListAdmin from "./admin/players/PlayerListAdmin";
 import PlayerEditAdmin from "./admin/players/PlayerEditAdmin";
+import './App.css';
+import './static/css/home/home.css';
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (

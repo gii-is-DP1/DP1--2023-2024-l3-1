@@ -1,5 +1,5 @@
 import React from 'react';
-import { inputStyles } from './sharedStyles';
+import { inputStyles } from './styles/forms';
 
 export default function DInput(props) {
     return (
