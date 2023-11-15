@@ -3,7 +3,6 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
 import AppNavbar from "./AppNavbar";
-import Home from "./home";
 import PrivateRoute from "./privateRoute";
 import PricingPlan from "./owner/plan";
 import Register from "./auth/register";

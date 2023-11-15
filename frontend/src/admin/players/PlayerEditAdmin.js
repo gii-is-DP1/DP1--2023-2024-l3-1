@@ -78,96 +78,98 @@ export default function PlayerEditAdmin() {
   ));*/
 
   return (
-    <div className="auth-page-container">
-      {<h2>{player.id ? "Edit Player" : "Add Player"}</h2>}
-      {modal}
-      <div className="auth-form-container">
-        <Form onSubmit={handleSubmit}>
-          <div className="custom-form-input">
-            <Label for="username" className="custom-form-input-label">
-              Username
-            </Label>
-            <Input
-              type="text"
-              required
-              name="username"
-              id="username"
-              value={player.username || ""}
-              onChange={handleChange}
-              className="custom-input"
-            />
-          </div>
-          <div className="custom-form-input">
-            <Label for="email" className="custom-form-input-label">
-              Email
-            </Label>
-            <Input
-              type="text"
-              required
-              name="email"
-              id="email"
-              value={player.email || ""}
-              onChange={handleChange}
-              className="custom-input"
-            />
-          </div>
-          <div className="custom-form-input">
-            <Label for="password" className="custom-form-input-label">
-              Password
-            </Label>
-            <Input
-              type="text"
-              required
-              name="password"
-              id="password"
-              value={player.password || ""}
-              onChange={handleChange}
-              className="custom-input"
-            />
-          </div>{/*
-          <Label for="is_admin" className="custom-form-input-label">
-            Is Admin?
-          </Label>
-          <div className="custom-form-input">
-            {player.id ? (
+    <div className="home-page-container">
+      <div className="auth-page-container">
+        {<h2>{player.id ? "Edit Player" : "Add Player"}</h2>}
+        {modal}
+        <div className="auth-form-container">
+          <Form onSubmit={handleSubmit}>
+            <div className="custom-form-input">
+              <Label for="username" className="custom-form-input-label">
+                Username
+              </Label>
               <Input
-                type="select"
-                disabled
-                name="is_admin"
-                id="is_admin"
-                value={player.is_admin?.id || ""}
-                onChange={handleChange}
-                className="custom-input"
-              >
-                <option value="">None</option>
-                {authOptions}
-              </Input>
-            ) : (
-              <Input
-                type="select"
+                type="text"
                 required
-                name="authority"
-                id="authority"
-                value={user.authority?.id || ""}
+                name="username"
+                id="username"
+                value={player.username || ""}
                 onChange={handleChange}
                 className="custom-input"
+              />
+            </div>
+            <div className="custom-form-input">
+              <Label for="email" className="custom-form-input-label">
+                Email
+              </Label>
+              <Input
+                type="text"
+                required
+                name="email"
+                id="email"
+                value={player.email || ""}
+                onChange={handleChange}
+                className="custom-input"
+              />
+            </div>
+            <div className="custom-form-input">
+              <Label for="password" className="custom-form-input-label">
+                Password
+              </Label>
+              <Input
+                type="text"
+                required
+                name="password"
+                id="password"
+                value={player.password || ""}
+                onChange={handleChange}
+                className="custom-input"
+              />
+            </div>{/*
+            <Label for="is_admin" className="custom-form-input-label">
+              Is Admin?
+            </Label>
+            <div className="custom-form-input">
+              {player.id ? (
+                <Input
+                  type="select"
+                  disabled
+                  name="is_admin"
+                  id="is_admin"
+                  value={player.is_admin?.id || ""}
+                  onChange={handleChange}
+                  className="custom-input"
+                >
+                  <option value="">None</option>
+                  {authOptions}
+                </Input>
+              ) : (
+                <Input
+                  type="select"
+                  required
+                  name="authority"
+                  id="authority"
+                  value={user.authority?.id || ""}
+                  onChange={handleChange}
+                  className="custom-input"
+                >
+                  <option value="">None</option>
+                  {authOptions}
+                </Input>
+              )}
+            </div>*/}
+            <div className="custom-button-row">
+              <button className="auth-button">Save</button>
+              <Link
+                to={`/player`}
+                className="auth-button"
+                style={{ textDecoration: "none" }}
               >
-                <option value="">None</option>
-                {authOptions}
-              </Input>
-            )}
-          </div>*/}
-          <div className="custom-button-row">
-            <button className="auth-button">Save</button>
-            <Link
-              to={`/player`}
-              className="auth-button"
-              style={{ textDecoration: "none" }}
-            >
-              Cancel
-            </Link>
-          </div>
-        </Form>
+                Cancel
+              </Link>
+            </div>
+          </Form>
+        </div>
       </div>
     </div>
   );
