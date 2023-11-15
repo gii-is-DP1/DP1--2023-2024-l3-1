@@ -2,9 +2,9 @@ import React, { useState } from "react";
 import { Alert } from "reactstrap";
 import tokenService from "../../services/token.service";
 import "../../static/css/auth/authButton.css";
-import DButton from "../../components/DButton";
-import DInput from "../../components/DInput";
-import { formStyle } from "../../components/styles/forms";
+import DButton from "../ui/DButton";
+import DInput from "../ui/DInput";
+import { formStyle } from "../ui/styles/forms";
 import { Link } from "react-router-dom";
 
 export default function Login() {

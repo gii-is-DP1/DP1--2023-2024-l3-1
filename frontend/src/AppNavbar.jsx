@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import tokenService from './services/token.service';
 
-function AppNavbar() {
+export default function AppNavbar() {
     const user = useSelector(state => state.tokenStore.user);
     const [collapsed, setCollapsed] = useState(true);
 
@@ -209,5 +209,3 @@ function AppNavbar() {
         </div>
     );
 }
-
-export default AppNavbar;

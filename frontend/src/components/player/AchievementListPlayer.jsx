@@ -7,7 +7,7 @@ import useFetchState from "../../util/useFetchState";
 import getErrorModal from "../../util/getErrorModal";
 const imgnotfound = "https://cdn-icons-png.flaticon.com/512/5778/5778223.png";
 const jwt = tokenService.localAccessToken;
-export default function AchievementList() {
+export default function AchievementListPlayer() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [alerts, setAlerts] = useState([]);

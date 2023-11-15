@@ -3,15 +3,15 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
 import AppNavbar from "./AppNavbar";
-import Register from "./auth/register";
-import Login from "./auth/login";
-import SwaggerDocs from "./admin/swagger";
-import AchievementListPlayer from "./player/achievement/achievementListPlayer";
-import AchievementListAdmin from "./achievement/achievementListAdmin";
-import AchievementEditAdmin from "./achievement/achievementEditAdmin";
-import MainLobby from "./player";
-import PlayerListAdmin from "./admin/players/PlayerListAdmin";
-import PlayerEditAdmin from "./admin/players/PlayerEditAdmin";
+import Register from "./components/auth/Register";
+import Login from "./components/auth/Login";
+import AchievementListPlayer from "./components/player/AchievementListPlayer";
+import MainLobby from "./components/player/MainLobby";
+import SwaggerDocs from "./components/admin/SwaggerDocs";
+import AchievementListAdmin from "./components/admin/AchievementListAdmin";
+import AchievementEditAdmin from "./components/admin/AchievementEditAdmin";
+import PlayerListAdmin from "./components/admin/PlayerListAdmin";
+import PlayerEditAdmin from "./components/admin/PlayerEditAdmin";
 import './App.css';
 import './static/css/home/home.css';
 
@@ -137,11 +137,16 @@ function App() {
    * 
    * Añadir rutas dependiendo del rol
    */
+  const adminLocations = ['player', 'docs', 'achievements'];
+  const notLoggedLocations = ['register'];
+
   useEffect(() => {
+    const isInAdminPages = adminLocations.filter((route) => location.pathname.includes(route)).length > 0;
+    const isInNotLoggedInPages = notLoggedLocations.filter((route) => location.pathname.includes(route)).length > 0;
     if (
       (
-        (user?.is_admin && !(location.pathname.includes("player") || location.pathname.includes("docs") || location.pathname.includes("achievements"))) || 
-        (!user && (location.pathname === "/register"))
+        (user?.is_admin && !isInAdminPages) || 
+        (!user && !isInNotLoggedInPages)
       ) &&
       location.pathname !== "/"
     ) {
