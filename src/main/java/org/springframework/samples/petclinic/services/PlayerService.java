@@ -115,7 +115,8 @@ public class PlayerService {
 		}
 	}
 
-	public Boolean existsUser(String username) {
-		return this.repository.findByUsername(username).get().getUsername().equals(username);
+	public Boolean existsUser(String username, String email) {
+		return this.repository.findByUsername(username).get().getUsername().equals(username) ||
+			this.repository.findByEmail(email).get().getEmail().equals(email);
 	}
 }

@@ -129,14 +129,14 @@ public class PlayerController {
 		@ApiResponse(responseCode = "200", description = "El token de inicio de sesión del usuario registrado", 
 			content = { @Content(mediaType = "application/json", 
 			schema = @Schema(implementation = JwtResponseDto.class)) }),
-		@ApiResponse(responseCode = "226", description = "Ya existe un usuario con ese nombre de usuario", 
+		@ApiResponse(responseCode = "226", description = "Ya existe un usuario con ese nombre de usuario y correo electrónico", 
 			content = @Content), 
 		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
     		content = @Content) })
 	@Operation(summary = "Registra a un usuario")
 	@PostMapping("/signup")	
 	public ResponseEntity<JwtResponseDto> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		if (playerService.existsUser(signUpRequest.getUsername()).equals(true)) {
+		if (playerService.existsUser(signUpRequest.getUsername(), signUpRequest.getEmail()).equals(true)) {
 			return new ResponseEntity<>(HttpStatus.IM_USED);
 		} else {
 			playerService.createUser(signUpRequest);
