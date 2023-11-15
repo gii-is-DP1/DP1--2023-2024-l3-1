@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.configuration;
 
-import static org.springframework.security.config.Customizer.withDefaults;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -46,7 +45,6 @@ public class SecurityConfiguration {
 	@Bean
 	protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		http
-			.cors(withDefaults())
 			.csrf(AbstractHttpConfigurer::disable)
 			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 			.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.disable()))
@@ -73,7 +71,8 @@ public class SecurityConfiguration {
 				.requestMatchers("/api/v1/dobbleUsers/**").permitAll()
 				.requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/v1/dobbleUsers/**")).authenticated()
 				.anyRequest().authenticated())
-			.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);		
+			.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+
 		return http.build();
 	}
 
