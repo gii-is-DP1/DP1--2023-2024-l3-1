@@ -166,9 +166,15 @@ export default function AppNavbar() {
     function notAdminRoutes() {
         if (!user?.is_admin) {
             return (
+                <>
                     <NavItem>
                         <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
                     </NavItem>
+                    <NavItem>
+                        <NavLink style={{ color: "white" }} tag={Link} to="/profile">Perfil</NavLink>
+                    </NavItem>
+                </>
+
             )
         }
     }

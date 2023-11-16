@@ -30,7 +30,8 @@ instance.interceptors.request.use(
 /**
  * Verificar que sigue existiendo una sesión iniciada
  */
-instance.interceptors.response.use(
+
+/*instance.interceptors.response.use(
     (res) => {
         return res;
     },
@@ -46,5 +47,6 @@ instance.interceptors.response.use(
         return Promise.reject(err);
     }
 );
+*/
 
 export default instance;
