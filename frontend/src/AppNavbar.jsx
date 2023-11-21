@@ -155,9 +155,6 @@ export default function AppNavbar() {
                     <NavItem>
                         <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/docs">Documentación API</NavLink>
                     </NavItem>
-                    <NavItem>
-                        <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
-                    </NavItem>
                 </>
             )
         }
@@ -169,9 +166,10 @@ export default function AppNavbar() {
     function notAdminRoutes() {
         if (!user?.is_admin) {
             return (
-                    <NavItem>
-                        <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
-                    </NavItem>
+                    // <NavItem>
+                       // <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
+                    // </NavItem> 
+                    null
             )
         }
     }
@@ -198,6 +196,13 @@ export default function AppNavbar() {
                         Online
                     </NavbarText>
                 </NavbarBrand>
+
+                <NavbarBrand tag={Link} to="/achievements">
+                    <NavbarText style={{ color: "white", marginLeft: '1rem' }}>
+                        Logros
+                    </NavbarText>
+                </NavbarBrand>
+
                 <NavbarToggler onClick={toggleNavbar} className="ms-2" />
                 <Collapse isOpen={!collapsed} navbar>
                     <Nav className="me-auto mb-2 mb-lg-0" navbar>

@@ -10,7 +10,7 @@ export default function DButton(Props) {
             backgroundColor: '#61196C',
             color: 'white',
         }}>
-            {Props.text}
+            {Props.children}
         </button>
     );
 }
