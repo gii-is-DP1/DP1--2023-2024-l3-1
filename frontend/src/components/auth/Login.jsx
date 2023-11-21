@@ -70,7 +70,9 @@ export default function Login() {
           <form onSubmit={handleClick} style={formStyle}>
             <DInput type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={{ width: '25vw' }} />
             <DInput type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={{ width: '25vw' }}  />
-            <DButton text={loading ? 'Iniciando sesión...' : 'Iniciar sesión' } style={{ width: '25vw' }} />
+            <DButton style={{ width: '25vw' }}>
+              {loading ? 'Iniciando sesión...' : 'Iniciar sesión' }
+            </DButton>
           </form>
 
           <div style={{

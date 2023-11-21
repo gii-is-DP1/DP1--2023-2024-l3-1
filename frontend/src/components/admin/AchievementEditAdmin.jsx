@@ -5,6 +5,8 @@ import { Form, Input, Label } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
 import useFetchState from "../../util/useFetchState";
+import DInput from "../ui/DInput"
+
 const jwt = tokenService.localAccessToken;
 
 export default function AchievementEditAdmin() {
@@ -66,57 +68,47 @@ export default function AchievementEditAdmin() {
     }
     return (
         <div className="auth-page-container">
-            <h2 className="text-center">
+            <h2 className="text-center" style={{ marginTop: '30px' }}>
                 {achievement.id ? "Editar logro" : "Añadir logro"}
             </h2>
             <div className="auth-form-container">
                 {modal}
                 <Form onSubmit={handleSubmit}>
                     <div className="custom-form-input">
-                        <Label for="name" className="custom-form-input-label">
-                            Nombre
-                        </Label>
-                        <Input
+                        <DInput
                             type="text"
                             required
                             name="name"
                             id="name"
+                            placeholder="Nombre"
                             value={achievement.name || ""}
                             onChange={handleChange}
-                            className="custom-input"
                         />
                     </div>
                     <div className="custom-form-input">
-                        <Label for="description" className="custom-form-input-label">
-                            Descripción
-                        </Label>
-                        <Input
+                        <DInput
                             type="text"
                             required
                             name="description"
                             id="descripction"
+                            placeholder="Descripción"
                             value={achievement.description || ""}
                             onChange={handleChange}
-                            className="custom-input"
                         />
                     </div>
                     <div className="custom-form-input">
-                        <Label for="badgeImage" className="custom-form-input-label">
-                            Url imagen logro:
-                        </Label>
-                        <Input
+                        <DInput
                             type="text"
-                            required
                             name="badgeImage"
                             id="badgeImage"
+                            placeholder="URL imagen logro"
                             value={achievement.badgeImage || ""}
                             onChange={handleChange}
-                            className="custom-input"
                         />
                     </div>
                     <div className="custom-form-input">
-                        <Label for="metric" className="custom-form-input-label">
-                            Métrica
+                        <Label for="metric" style={{ fontSize: '20px' }}>
+                            Métrica:
                         </Label>
                         <Input
                             type="select"
@@ -125,34 +117,35 @@ export default function AchievementEditAdmin() {
                             id="metric"
                             value={achievement.metric || ""}
                             onChange={handleChange}
-                            className="custom-input"
+                            className="custom-input-metric"
                         >
-                            <option value="">None</option>
-                            <option value="GAMES_PLAYED">GAMES_PLAYED</option>
-                            <option value="VICTORIES">VICTORIES</option>
-                            <option value="TOTAL_PLAY_TIME">TOTAL_PLAY_TIME</option>
-                            <option value="REACTION_TIME">REACTION_TIME</option>
+                            <option value="GAMES_PLAYED">Partidas jugadas</option>
+                            <option value="VICTORIES">Victorias</option>
+                            <option value="TOTAL_PLAY_TIME">Tiempo total de juego</option>
+                            <option value="REACTION_TIME">Tiempo de reacción</option>
                         </Input>
                     </div>
                     <div className="custom-form-input">
-                        <Label for="theshold" className="custom-form-input-label">
+                        <Label for="theshold" style={{ fontSize: '20px' }}>
                             Valor límite:
                         </Label>
-                        <Input
+                        <DInput
                             type="number"
                             required
                             name="threshold"
                             id="threshold"
+                            placeholder="test"
                             value={achievement.threshold || ""}
                             onChange={handleChange}
-                            className="custom-input"
+                            style={{width: '300px'}}
+                            //style={{width: '100px'}}
                         />
                     </div>
                     <div className="custom-button-row">
                         <button className="auth-button">Guardar cambios</button>
                         <Link
                             to={`/achievements`}
-                            className="auth-button"
+                            className="auth-button-red"
                             style={{ textDecoration: "none" }}
                         >
                             Descartar cambios

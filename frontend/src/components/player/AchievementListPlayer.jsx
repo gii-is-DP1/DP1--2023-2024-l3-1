@@ -1,12 +1,12 @@
-import {
-    Table
-} from "reactstrap";
+import { Table } from "reactstrap";
 import { useState } from "react";
 import tokenService from "../../services/token.service";
 import useFetchState from "../../util/useFetchState";
 import getErrorModal from "../../util/getErrorModal";
-const imgnotfound = "https://cdn-icons-png.flaticon.com/512/5778/5778223.png";
+
+const imgnotfound = '../../static/images/defaultAchievementImg';
 const jwt = tokenService.localAccessToken;
+
 export default function AchievementListPlayer() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
@@ -20,9 +20,9 @@ export default function AchievementListPlayer() {
         achievements.map((a) => {
             return (
                 <tr key={a.id}>
-                    <td className="text-center"><img src={a.badgeImage ? a.badgeImage : imgnotfound} alt={a.name} width="50px" /></td>
-                    <td className="text-center">{a.name}</td>
-                    <td className="text-center"> {a.description} </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage ? a.badgeImage : imgnotfound} alt={""} width="50px" /></td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}>{a.name}</td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.description} </td>
                     
                 </tr>
             );
@@ -30,9 +30,8 @@ export default function AchievementListPlayer() {
     const modal = getErrorModal(setVisible, visible, message);
     return (
         <div>
-            <div> <h1> </h1> </div>
             <div className="admin-page-container">
-                <h1 className="text-center">Logros</h1>
+                <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
                 {alerts.map((a) => a.alert)}
                 {modal}
                 <div>
