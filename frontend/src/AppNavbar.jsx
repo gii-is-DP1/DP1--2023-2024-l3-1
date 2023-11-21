@@ -149,6 +149,9 @@ export default function AppNavbar() {
         if (user?.is_admin) {
             return (
                 <>
+                   <NavItem>
+                        <NavLink style={{ color: "white" }} tag={Link} to="/player">Listado Jugadores</NavLink>
+                    </NavItem>
                     <NavItem>
                         <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/docs">Documentación API</NavLink>
                     </NavItem>
