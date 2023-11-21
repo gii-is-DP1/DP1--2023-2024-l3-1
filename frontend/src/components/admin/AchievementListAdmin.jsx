@@ -1,7 +1,4 @@
-import {
-    Button,
-    Table
-} from "reactstrap";
+import { Button, Table } from "reactstrap";
 import { useState } from "react";
 import tokenService from "../../services/token.service";
 import useFetchState from "../../util/useFetchState";
@@ -9,7 +6,9 @@ import deleteFromList from "../../util/deleteFromList";
 import getErrorModal from "../../util/getErrorModal";
 import { Link } from "react-router-dom";
 
-const imgnotfound = "https://cdn-icons-png.flaticon.com/512/5778/5778223.png";
+
+const imgnotfound = 'https://cdn-icons-png.flaticon.com/512/5778/5778223.png'; 
+//const imgnotfound = '../../static/images/defaultAchievementImg.png';
 const jwt = tokenService.localAccessToken;
 
 export default function AchievementListAdmin() {
@@ -25,20 +24,21 @@ export default function AchievementListAdmin() {
         achievements.map((a) => {
             return (
                 <tr key={a.id}>
-                    <td className="text-center"> <img src={a.badgeImage ? a.badgeImage : imgnotfound} alt={a.name} width="50px" /></td>
-                    <td className="text-center">{a.name}</td>
-                    <td className="text-center"> {a.description} </td>
-                    <td className="text-center"> {a.threshold} </td>
-                    <td className="text-center"> {a.metric} </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage ? a.badgeImage : imgnotfound} alt={""} width="50px" /></td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}>{a.name}</td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.description} </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.threshold} </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.metric} </td>
                     <td className="text-center">
-                        <Button outline color="warning" >
-                            <Link
-                                to={`/achievements/` + a.id} className="btn sm"
-                                style={{ textDecoration: "none" }}>Editar</Link>
-                        </Button>
+                        <Link to={`/achievements/${a.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
+                            <button className="auth-button-yellow">
+                                Editar
+                            </button>
+                        </Link>
                     </td>
                     <td className="text-center">
-                        <Button outline color="danger"
+                        <button
+                            className="auth-button-red"
                             onClick={() =>
                                 deleteFromList(
                                     `/api/v1/achievements/${a.id}`,
@@ -47,9 +47,11 @@ export default function AchievementListAdmin() {
                                     [alerts, setAlerts],
                                     setMessage,
                                     setVisible
-                                )}>
+                                )
+                            }
+                        >
                             Borrar
-                        </Button>
+                        </button>
                     </td>
                 </tr>
             );
@@ -57,9 +59,8 @@ export default function AchievementListAdmin() {
     const modal = getErrorModal(setVisible, visible, message);
     return (
         <div>
-            <div> <h1> </h1> </div>
             <div className="admin-page-container">
-                <h1 className="text-center">Logros</h1>
+                <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
                 {alerts.map((a) => a.alert)}
                 {modal}
                 <div>
@@ -77,11 +78,14 @@ export default function AchievementListAdmin() {
                         </thead>
                         <tbody>{achievementList}</tbody>
                     </Table>
-                    <Button outline color="success" >
-                        <Link
-                            to={`/achievements/new`} className="btn sm"
-                            style={{ textDecoration: "none" }}>Crear logro</Link>
-                    </Button>
+                    <div className="custom-button-row">
+                        <Link 
+                            to={`/achievements/new`}
+                            style={{ textDecoration: "none" }}
+                        > 
+                            <button className="auth-button"> Crear logro </button>
+                        </Link>
+                    </div>
                 </div>
             </div>
         </div>
