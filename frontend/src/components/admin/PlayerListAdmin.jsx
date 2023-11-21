@@ -5,6 +5,7 @@ import "../../static/css/admin/adminPage.css";
 import deleteFromList from "../../util/deleteFromList";
 import getErrorModal from "../../util/getErrorModal";
 import axios from '../../services/api';
+import DButton from "../ui/DButton";
 
 export default function PlayerListAdmin() {
   const [message, setMessage] = useState(null);
@@ -92,9 +93,12 @@ export default function PlayerListAdmin() {
         <h1 className="text-center">Players</h1>
         {alerts.map((a) => a.alert)}
         {modal}
-        <Button color="success" tag={Link} to="/users/new">
-          Add Player
+        <DButton  text={loading ? 'Creando jugador...' : 'Crear Jugador'}style={{ width: '25vw' }}  />
+        {/* 
+        <Button color="success" tag={Link} to="/player/new">
+          Crear Jugador
         </Button>
+        */}
         <div>
           <Table aria-label="player" className="mt-4">
             <thead>
