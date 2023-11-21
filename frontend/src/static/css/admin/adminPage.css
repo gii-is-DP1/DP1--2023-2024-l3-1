@@ -9,6 +9,11 @@
 
 .custom-form-input {
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:9vh;
+  margin: 0;
 }
 
 .custom-form-input-label {
@@ -42,6 +47,19 @@
 .custom-input{
   border: none !important;
   border-bottom: 1px solid var(--main-button-hover-dark-color) !important;
+}
+
+.custom-input-metric,
+.custom-textarea{
+    width: 300px !important;
+    font-family: inherit !important;
+    font-size: 1.2rem !important;
+    color: var(--color-input) !important;
+    padding: 13px !important;
+    background-color: #F2F9F3 !important;
+    border-radius: 40px !important;
+    margin: 10px;
+
 }
 
 .custom-input:disabled{
