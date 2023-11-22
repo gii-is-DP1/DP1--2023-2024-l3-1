@@ -6,6 +6,7 @@ import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
 import { formStyle } from "../ui/styles/forms";
 import { Link } from "react-router-dom";
+import axios from '../../services/api';
 
 export default function Login() {
   const [message, setMessage] = useState(null)
@@ -17,27 +18,23 @@ export default function Login() {
     try {
       setLoading(true);
       setMessage(null);
-      const response = await fetch("/api/v1/player/login", {
-        headers: { "Content-Type": "application/json" },
-        method: "POST",
-        body: JSON.stringify({
+      const response = await axios.post("/player/login", {
           username,
           password
-        }),
       });
 
-      if (response.status === 401) {
+      tokenService.user = response.data;
+      tokenService.localAccessToken = response.data.token;
+    } catch (e) {
+      console.log(e);
+      if (e.response.status === 401) {
         setMessage("Credenciales incorrectas");
         return;
-      } else if (response.status >= 500) {
+      } else if (e.response.status >= 500) {
         setMessage("Error del servidor");
         return;
       }
 
-      const data = await response.json();
-      tokenService.user = data;
-      tokenService.localAccessToken = data.token;
-    } catch (e) {
       setMessage(String(e));
     } finally {
       setLoading(false);
