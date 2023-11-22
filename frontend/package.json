@@ -11,6 +11,7 @@
     "@testing-library/react": "^14.0.0",
     "@testing-library/user-event": "^14.4.3",
     "@types/jest": "^29.5.1",
+    "axios": "1.6.2",
     "bootstrap": "^5.2.3",
     "filepond": "^4.30.4",
     "filepond-plugin-file-encode": "^2.1.10",
