@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Link } from "react-router-dom";
 import getErrorModal from "../../util/getErrorModal";
 import axios from '../../services/api';
+import DButton from "../ui/DButton";
 
 
 
@@ -28,9 +29,7 @@ export default function PlayerProfile(){
           setCurrentUser(response.data);
         } catch (e) {
           setMessage(String(e));
-        } finally {
-          //setLoading(false);
-        }     
+        } 
       }
 
       
@@ -43,11 +42,6 @@ export default function PlayerProfile(){
 
  
   const modal = getErrorModal(setVisible, visible, message);
-
-
-
-
-
 
     return(
     <div className="profile-page-container">
@@ -73,19 +67,11 @@ export default function PlayerProfile(){
         </div>
 
         <div>
-        <button className="edit-profile-button">
-        <Link
-        to={"/edit"}
-        className="edit-profile-button"
-        >
-         Editar perfil
+        <Link  to={"/edit"}>
+        <DButton text={ 'Editar perfil' } style={{ width: '25vw' } } />
         </Link>
-        </button>
+        
         </div>
     </div>
     );
-
-
-
-
 }
