@@ -8,6 +8,8 @@ import org.springframework.samples.petclinic.repositories.GameRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.validation.Valid;
+
 @Service
 public class GameService {
     private final GameRepository gameRepository; 
@@ -26,5 +28,11 @@ public class GameService {
 	public Optional<Game> findByNameGame(String name) {
 		return gameRepository.findByName(name);
 	}
+
+    @Transactional()
+    public Game saveGame(@Valid Game game){
+        this.gameRepository.save(game); 
+        return game; 
+    }
 
 }
