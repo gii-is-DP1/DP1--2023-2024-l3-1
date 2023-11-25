@@ -35,7 +35,7 @@ instance.interceptors.response.use(
         return res;
     },
     async (err) => {
-        if (err.response.status === 401) {
+        if (err.response.status === 401 && err.config.url !== '/player/me') {
             const request = await instance.get('/player/me');
 
             if (request.status === 401) {
