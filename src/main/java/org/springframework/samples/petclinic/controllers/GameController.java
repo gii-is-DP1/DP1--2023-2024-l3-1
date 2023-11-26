@@ -7,13 +7,16 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.GameService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,18 +44,20 @@ public class GameController {
     public ResponseEntity<Game> findGame(@PathVariable("id") String id ){
         Game gameToGet=gameService.findGame(id);
         if(gameToGet== null){
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         return new ResponseEntity<Game>(gameToGet,HttpStatus.OK); 
     }
 
     @PostMapping
-    public ResponseEntity<Game> createGame(@Valid @RequestBody Game game){
+    public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO){
         try {
             Optional<Player> currentPlayer= playerService.findCurrentPlayer();
             if (currentPlayer.isPresent()) {
+                Game game= new Game(); 
                 Set<Player> ls= Set.of(currentPlayer.get()); 
-
+                
+                game.setName(gameCreateDTO.getName()); 
                 game.setStart(LocalDateTime.now());
                 game.setCreator(currentPlayer.get());
                 game.setPlayers(ls);
@@ -66,6 +71,39 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }  
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Game> updateGameLobby(@Valid @RequestBody GameCreateDto gameCreateDTO,@PathVariable("id") String id ){
+       /*  Game currentGame= gameService.findGame(id);
+        System.out.println("--------------------------------------------------------------------------------------------------");
+        System.out.println(currentGame);
+        if ( currentGame != null){
+            Optional<Player> currentPlayer= playerService.findCurrentPlayer(); 
+            Player creator= currentGame.getCreator();
+            if (currentPlayer.isPresent()) {
+                if(currentPlayer.get().equals(creator) && currentGame.isOnLobby()){
+                    Game newGame= gameService.updateGame(gameCreateDTO, id); 
+                    System.out.println(newGame);
+                    return new ResponseEntity<>(newGame,HttpStatus.OK); 
+                }
+
+            }else{
+                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
+            }
+        }
+        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        */
+        
+        Game gameToUpdate= gameService.findGame(id); 
+        gameToUpdate.setMaxPlayers(gameCreateDTO.getMaxPlayers());
+        gameService.saveGame(gameToUpdate); 
+        
+        return new ResponseEntity<>(gameToUpdate,HttpStatus.OK); 
+        
+
+    }
+
+
 
 
 }
