@@ -116,7 +116,16 @@ public class PlayerService {
 	}
 
 	public Boolean existsUser(String username, String email) {
-		return this.repository.findByUsername(username).get().getUsername().equals(username) ||
-			this.repository.findByEmail(email).get().getEmail().equals(email);
+		Optional<Player> op_usernamePlayer = this.repository.findByUsername(username);
+		Optional<Player> op_emailPlayer = this.repository.findByEmail(email);
+
+		if (op_usernamePlayer.isPresent() && op_emailPlayer.isPresent()) {
+			Player usernamePlayer = op_usernamePlayer.get();
+			Player emailPlayer = op_emailPlayer.get();
+
+			return !(usernamePlayer.getId().equals(emailPlayer.getId()));
+		}
+
+		return false;
 	}
 }
