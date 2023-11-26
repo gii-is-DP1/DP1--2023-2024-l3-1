@@ -47,19 +47,20 @@ public class Game {
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     LocalDateTime finish;
 
-    //@NotNull
+    @NotNull
     @ManyToOne 
     Player creator;
 
-    //@NotNull
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(columnDefinition = "VARCHAR(255) DEFAULT 'LOBBY'")
-    GameState game_state;
+    //@Column(columnDefinition = "VARCHAR(255) DEFAULT 'LOBBY'")
+    //@ColumnDefault("'LOBBY'")
+    GameState game_state = GameState.LOBBY;
 
     @Min(value = 2)
     @Max(value = 8)
-    @ColumnDefault("8")
-    Integer maxPlayers; 
+    //@ColumnDefault("8")
+    Integer maxPlayers = 8; 
 
     @ManyToMany
     @Size(min= 1 ,max = 8)
