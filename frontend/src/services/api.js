@@ -10,7 +10,7 @@ import TokenService from "./token.service";
  * * axios.('url', { method: 'GET' })
  */
 const instance = axios.create({
-    baseURL: "api/v1",
+    baseURL: "/api/v1",
     headers: {
         "Access-Control-Allow-Origin": "*",
         "Content-Type": "application/json"
@@ -30,6 +30,7 @@ instance.interceptors.request.use(
 /**
  * Verificar que sigue existiendo una sesión iniciada
  */
+
 instance.interceptors.response.use(
     (res) => {
         return res;
