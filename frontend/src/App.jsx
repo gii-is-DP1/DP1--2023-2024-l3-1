@@ -14,6 +14,7 @@ import PlayerListAdmin from "./components/admin/PlayerListAdmin";
 import PlayerEditAdmin from "./components/admin/PlayerEditAdmin";
 import './App.css';
 import './static/css/home/home.css';
+import PlayerProfile from "./components/player/PlayerProfile";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -200,6 +201,7 @@ function App() {
         <>
           <Route path="/achievements" exact={true} element={<AchievementListPlayer />} />
           <Route path="/" exact={true} element={<MainLobby />} />
+          <Route path="/profile" exact={true} element={<PlayerProfile />} />
         </>
       )
     }

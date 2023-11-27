@@ -36,13 +36,13 @@ public class JwtUtils {
 		claims.put("authorities",
 				userPrincipal.getAuthorities().stream().map(auth -> auth.getAuthority()).collect(Collectors.toList()));
 
-		return Jwts.builder().setClaims(claims).setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
+		return Jwts.builder().setClaims(claims).setSubject((userPrincipal.getId().toString())).setIssuedAt(new Date())
 				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
 				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
 	}
 
-	public String getUserNameFromJwtToken(String token) {
-		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject();
+	public Integer getIdFromJwtToken(String token) {
+		return Integer.parseInt(Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token).getBody().getSubject());
 	}
 
 	public boolean validateJwtToken(String authToken) {

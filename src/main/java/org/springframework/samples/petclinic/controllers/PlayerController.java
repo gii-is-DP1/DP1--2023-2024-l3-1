@@ -157,6 +157,8 @@ public class PlayerController {
 			content = @Content),
 		@ApiResponse(responseCode = "404", description = "No se encuentra el usuario a modificar", 
 			content = @Content),
+		@ApiResponse(responseCode = "409", description = "Ya existe un usuario con ese e-mail o nombre de usuario", 
+			content = @Content),
 		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
     		content = @Content) })
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario de un usuario. El usuario que realice la edición debe ser administrador")
@@ -175,6 +177,10 @@ public class PlayerController {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
 
+			if (playerService.existsUser(payload.getUsername(), payload.getEmail())) {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
+
 			Player newPlayer = playerService.updatePlayer(payload, id);
 			if (newPlayer != null) {
 				return new ResponseEntity<>(newPlayer, HttpStatus.OK);
@@ -190,6 +196,8 @@ public class PlayerController {
 			schema = @Schema(implementation = Player.class)) }),
 		@ApiResponse(responseCode = "404", description = "No se encuentra el usuario a modificar", 
 			content = @Content),
+		@ApiResponse(responseCode = "409", description = "Ya existe un usuario con ese e-mail o nombre de usuario", 
+			content = @Content),
 		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
     		content = @Content) })
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario del usuario con sesión iniciada")
@@ -199,6 +207,11 @@ public class PlayerController {
 		Optional<Player> user_opt = playerService.findCurrentPlayer();
 
 		if (user_opt.isPresent()) {
+
+			if (playerService.existsUser(payload.getUsername(), payload.getEmail())) {
+				return new ResponseEntity<>(HttpStatus.CONFLICT);
+			}
+
 			Player newPlayer = playerService.updatePlayer(payload, user_opt.get().getId());
 			if (newPlayer != null) {
 				return new ResponseEntity<>(newPlayer, HttpStatus.OK);
