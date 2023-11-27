@@ -1,120 +1,147 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import tokenService from "../../services/token.service";
-import { Link } from "react-router-dom";
+import { Link,  useNavigate } from "react-router-dom";
 import { Form, Input, Label } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
 import useFetchState from "../../util/useFetchState";
-import DInput from "../ui/DInput"
+import DInput from "../ui/DInput";
+import axios from '../../services/api';
+import { formStyle } from "../ui/styles/forms";
+
 
 const jwt = tokenService.localAccessToken;
 
 export default function PlayerEditAdmin() {
+    const [message, setMessage] = useState(null);
+    const [visible, setVisible] = useState(false);
+    const [player, setPlayer] = useState({});
+    const navigate = useNavigate();
+
     const id = getIdFromUrl(2);
-    const emptyPlayer = {
+    /*const emptyPlayer = {
         id: id === "new" ? null : id,
         username: "",
         email: "",
-        password:""
-    };
-    const [message, setMessage] = useState(null);
-    const [visible, setVisible] = useState(false);
-    const [player, setPlayer] = useFetchState(
-        emptyPlayer,
-        `/api/v1/player/${id}`,
-        jwt,
-        setMessage,
-        setVisible,
-        id
-    );
-    const modal = getErrorModal(setVisible, visible, message);
-    function handleSubmit(event) {
-        event.preventDefault();
-        fetch(
-            "/api/v1/player" + (player.id ? "/" + player.id : ""),
-            {
-                method: player.id ? "PUT" : "POST",
-                headers: {
-                    Authorization: `Bearer ${jwt}`,
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(player),
-            }
-        )
-            .then((response) => response.text())
-            .then((data) => {
-                if (data === "")
-                    window.location.href = "/player";
-                else {
-                    let json = JSON.parse(data);
-                    if (json.message) {
-                        setMessage(JSON.parse(data).message);
-                        setVisible(true);
-                    } else
-                        window.location.href = "/player";
-                }
-            })
-            .catch((message) => alert(message));
-    }
+        password: ""
+    };*/
+
     function handleChange(event) {
         const target = event.target;
         const value = target.value;
         const name = target.name;
         setPlayer({ ...player, [name]: value });
     }
+
+    async function request() {
+        try {
+            setMessage(null);
+            if(id){
+                const response = await axios.get(`/player/${id}`);
+                if (response.status === 401) {
+                    setMessage("Usuario no existe");
+                    return;
+                } else if (response.status >= 500) {
+                    setMessage("Error del servidor");
+                    return;
+                }
+                setPlayer(response.data);
+            }else{
+                setPlayer({});
+            }
+        } catch (e) {
+            setMessage(String(e));
+        }
+    }
+
+    useEffect(() => {
+        const run = async () => {
+            await request();
+        }
+        run();
+    }, []);
+
+    async function handleSubmit(event) {
+        try {
+            event.preventDefault();
+            setMessage(null);
+            if (id!=="new" && id!==null) {
+                const response = await axios.patch(`/player/${id}`, player);
+                setPlayer(response);
+            } else {
+                const response = await axios.post(`/player`, player);
+                setPlayer(response);
+            }
+      
+            navigate("/player")
+        } catch (e) {
+            setMessage(String(e));
+        }
+    }
+
+    const modal = getErrorModal(setVisible, visible, message);
+ 
     return (
         <div className="auth-page-container">
             <h2 className="text-center" style={{ marginTop: '30px' }}>
                 {player.id ? "Editar Jugador" : "Añadir Jugador"}
             </h2>
+            {modal}
             <div className="auth-form-container">
-                {modal}
-                <Form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} style={formStyle}>
                     <div className="custom-form-input">
+                        <Label for="username">
+                            Username
+                        </Label>
                         <DInput
                             type="text"
                             required
                             name="username"
                             id="username"
-                            placeholder="Usuario"
                             value={player.username || ""}
                             onChange={handleChange}
                         />
                     </div>
+               
                     <div className="custom-form-input">
+                        <Label for="email">
+                            Email
+                        </Label>
                         <DInput
                             type="text"
                             required
                             name="email"
                             id="email"
-                            placeholder="Correo Electrónico"
                             value={player.email || ""}
                             onChange={handleChange}
                         />
                     </div>
+
                     <div className="custom-form-input">
+                        <Label for="password">
+                            Password
+                        </Label>
                         <DInput
                             type="text"
+                            required
                             name="password"
                             id="password"
-                            placeholder="Contraseña"
                             value={player.password || ""}
                             onChange={handleChange}
                         />
                     </div>
-                   
-                    <div className="custom-button-row">
-                        <button className="auth-button">Guardar cambios</button>
+                    <div className="custom-button-row">                        
+                        <button type="submit"
+                         className="auth-button">Guardar</button>
                         <Link
                             to={`/player`}
-                            className="auth-button-red"
+                            className="auth-button"
                             style={{ textDecoration: "none" }}
                         >
-                            Descartar cambios
+                            Cancelar
                         </Link>
                     </div>
-                </Form>
+                </form>
             </div>
         </div>
     );
