@@ -15,6 +15,8 @@ import PlayerEditAdmin from "./components/admin/PlayerEditAdmin";
 import './App.css';
 import './static/css/home/home.css';
 import PlayerProfile from "./components/player/PlayerProfile";
+import PlayPage from "./components/player/PlayPage";
+import GameJoinPage from "./components/player/GameJoinPage";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -201,6 +203,8 @@ function App() {
           <Route path="/achievements" exact={true} element={<AchievementListPlayer />} />
           <Route path="/" exact={true} element={<MainLobby />} />
           <Route path="/profile" exact={true} element={<PlayerProfile />} />
+          <Route path="/play" exact={true} element={<PlayPage />} />
+          <Route path="/play/join" exact={true} element={<GameJoinPage />} />
         </>
       )
     }
