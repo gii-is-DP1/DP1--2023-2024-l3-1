@@ -3,6 +3,7 @@ package org.springframework.samples.petclinic.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.dto.JwtResponseDto;
 import org.springframework.samples.petclinic.dto.LoginRequest;
 import org.springframework.samples.petclinic.dto.SignupRequest;
+import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,6 +21,7 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -401,5 +404,35 @@ public class PlayerController {
 		}
 
 		return new ResponseEntity<>(playerList.get(), HttpStatus.OK);
+	}
+
+	@GetMapping("/{id}")
+	@SecurityRequirement(name = "bearerAuth")
+	public ResponseEntity<Player> getById(@PathVariable int id) {
+		Optional<Player> target = playerService.findCurrentPlayer();
+
+		if (!target.isPresent() || !target.get().getIs_admin()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		Optional<Player> playerList = playerService.findById(id);
+
+		if (!playerList.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		
+		return new ResponseEntity<>(playerList.get(), HttpStatus.OK);
+	}
+	
+	@PostMapping("/new")
+	@SecurityRequirement(name = "bearerAuth")
+	public ResponseEntity<Player> createPlayer(@RequestBody @Valid EditPlayerDto newPLayer, BindingResult br){ 
+		Player result = null;
+		if(!br.hasErrors()) {
+			result = playerService.savePlayer(newPLayer);
+		} else {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity<>(result,HttpStatus.CREATED);	
 	}
 }
