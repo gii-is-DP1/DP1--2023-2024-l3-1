@@ -1,24 +1,14 @@
-import { Button, Table } from "reactstrap";
+import { Table } from "reactstrap";
 import { useState, useEffect } from "react";
-import tokenService from "../../services/token.service";
-import useFetchState from "../../util/useFetchState";
 import deleteFromList from "../../util/deleteFromList";
 import getErrorModal from "../../util/getErrorModal";
 import { Link } from "react-router-dom";
 import axios from '../../services/api';
 
-
-const jwt = tokenService.localAccessToken;
-
 export default function PlayerListAdmin() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [alerts, setAlerts] = useState([]);
-    /*const [players, setPlayers] = useFetchState(
-        [],
-        `/player`,
-        jwt
-    );*/
     const [players, setPlayers] = useState([]); // Estado para almacenar los datos de los jugadores
 
     useEffect(() => {
@@ -33,8 +23,6 @@ export default function PlayerListAdmin() {
         fetchData();
     }, []);
 
-
-    
     const playerList =
         players.map((p) => {
             return (
@@ -70,7 +58,9 @@ export default function PlayerListAdmin() {
                 </tr>
             );
         });
+
     const modal = getErrorModal(setVisible, visible, message);
+
     return (
         <div>
             <div className="admin-page-container">

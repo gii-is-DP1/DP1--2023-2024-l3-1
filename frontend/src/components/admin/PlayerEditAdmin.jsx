@@ -1,16 +1,11 @@
 import { useState, useEffect } from "react";
-import tokenService from "../../services/token.service";
 import { Link,  useNavigate } from "react-router-dom";
-import { Form, Input, Label } from "reactstrap";
+import { Label } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
-import useFetchState from "../../util/useFetchState";
 import DInput from "../ui/DInput";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";
-
-
-const jwt = tokenService.localAccessToken;
 
 export default function PlayerEditAdmin() {
     const [message, setMessage] = useState(null);
@@ -19,13 +14,7 @@ export default function PlayerEditAdmin() {
     const navigate = useNavigate();
 
     const id = getIdFromUrl(2);
-    /*const emptyPlayer = {
-        id: id === "new" ? null : id,
-        username: "",
-        email: "",
-        password: ""
-    };*/
-
+ 
     function handleChange(event) {
         const target = event.target;
         const value = target.value;
@@ -69,7 +58,7 @@ export default function PlayerEditAdmin() {
                 const response = await axios.patch(`/player/${id}`, player);
                 setPlayer(response);
             } else {
-                const response = await axios.post(`/player`, player);
+                const response = await axios.post(`/player/new`, player);
                 setPlayer(response);
             }
       
@@ -135,7 +124,7 @@ export default function PlayerEditAdmin() {
                          className="auth-button">Guardar</button>
                         <Link
                             to={`/player`}
-                            className="auth-button"
+                            className="auth-button-red"
                             style={{ textDecoration: "none" }}
                         >
                             Cancelar
