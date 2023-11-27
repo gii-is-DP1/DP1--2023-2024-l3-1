@@ -19,13 +19,7 @@ export default function PlayerEditAdmin() {
     const navigate = useNavigate();
 
     const id = getIdFromUrl(2);
-    /*const emptyPlayer = {
-        id: id === "new" ? null : id,
-        username: "",
-        email: "",
-        password: ""
-    };*/
-
+ 
     function handleChange(event) {
         const target = event.target;
         const value = target.value;
@@ -69,7 +63,7 @@ export default function PlayerEditAdmin() {
                 const response = await axios.patch(`/player/${id}`, player);
                 setPlayer(response);
             } else {
-                const response = await axios.post(`/player`, player);
+                const response = await axios.post(`/player/new`, player);
                 setPlayer(response);
             }
       
@@ -135,7 +129,7 @@ export default function PlayerEditAdmin() {
                          className="auth-button">Guardar</button>
                         <Link
                             to={`/player`}
-                            className="auth-button"
+                            className="auth-button-red"
                             style={{ textDecoration: "none" }}
                         >
                             Cancelar
