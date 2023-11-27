@@ -223,7 +223,7 @@ public class PlayerController {
 
 		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 	}
-/* 
+
 	@ApiResponses(value = { 
 		@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", 
 			content = @Content),
@@ -250,7 +250,7 @@ public class PlayerController {
 
 		playerService.deletePlayer(id);
 		return new ResponseEntity<>(HttpStatus.OK);		
-	}*/
+	}
 
 	@ApiResponses(value = { 
 		@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", 
@@ -408,7 +408,6 @@ public class PlayerController {
 
 	@GetMapping("/{id}")
 	@SecurityRequirement(name = "bearerAuth")
-
 	public ResponseEntity<Player> getById(@PathVariable int id) {
 		Optional<Player> target = playerService.findCurrentPlayer();
 
@@ -421,47 +420,19 @@ public class PlayerController {
 		if (!playerList.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-
+		
 		return new ResponseEntity<>(playerList.get(), HttpStatus.OK);
 	}
-/* 
-	@PostMapping
+	
+	@PostMapping("/new")
 	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<Player> createPlayer(@RequestBody @Valid Player newPLayer, BindingResult br){ 
+	public ResponseEntity<Player> createPlayer(@RequestBody @Valid EditPlayerDto newPLayer, BindingResult br){ 
 		Player result = null;
 		if(!br.hasErrors()) {
 			result = playerService.savePlayer(newPLayer);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
-
 		return new ResponseEntity<>(result,HttpStatus.CREATED);	
 	}
-
-	@PatchMapping("/{id}")
-	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<Void> modifyPlayer(@RequestBody @Valid Player newPlayer, BindingResult br,@PathVariable("id") int id) {
-		Player playerToUpdate=this.getById(id).getBody();
-		if(br.hasErrors()) {
-			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		}
-		else if(newPlayer.getId()==null || !newPlayer.getId().equals(id))
-			return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-		else {
-			BeanUtils.copyProperties(newPlayer, playerToUpdate, "id");
-			playerService.savePlayer(playerToUpdate);
-		}
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-*/
-	@DeleteMapping("/{id}")
-	@SecurityRequirement(name = "bearerAuth")
-	public ResponseEntity<Void> deletePlayer(@PathVariable("id") int id){
-		getById(id);
-		playerService.deletePlayerById(id);
-		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	}
-
-
-
 }

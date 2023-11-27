@@ -131,15 +131,16 @@ public class PlayerService {
 		return false;
 	}
 
-	/*@Transactional(readOnly = true)
-    public Player findById(int id) {
-		Optional<Player> result=repository.findById(id);
-		return result.isPresent()?result.get():null;    
-	}*/
 	@Transactional
-    public Player savePlayer(@Valid Player newPlayer) {
-        return this.repository.save(newPlayer);
+    public Player savePlayer(@Valid EditPlayerDto newPlayer) {
+		Player player = new Player();
+		player.setUsername(newPlayer.getUsername());
+        player.setEmail(newPlayer.getEmail());
+		player.setPassword(encoder.encode(newPlayer.getPassword()));
+		this.repository.save(player);
+        return this.repository.save(player);
     }
+
 	@Transactional
     public void deletePlayerById(int id){
         repository.deleteById(id);
