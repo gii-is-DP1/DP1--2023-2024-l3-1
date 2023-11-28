@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -50,6 +50,7 @@ public class GameController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO){
         try {
             Optional<Player> currentPlayer= playerService.findCurrentPlayer();
@@ -64,7 +65,7 @@ public class GameController {
                 gameService.saveGame(game);
                 return new ResponseEntity<>(game, HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED); 
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
             }
             
         } catch (Exception e) {
@@ -73,34 +74,66 @@ public class GameController {
     }
 
     @PatchMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Game> updateGameLobby(@Valid @RequestBody GameCreateDto gameCreateDTO,@PathVariable("id") String id ){
-       /*  Game currentGame= gameService.findGame(id);
-        System.out.println("--------------------------------------------------------------------------------------------------");
-        System.out.println(currentGame);
+        Game currentGame= gameService.findGame(id);
+        Game newGame;
         if ( currentGame != null){
             Optional<Player> currentPlayer= playerService.findCurrentPlayer(); 
             Player creator= currentGame.getCreator();
             if (currentPlayer.isPresent()) {
                 if(currentPlayer.get().equals(creator) && currentGame.isOnLobby()){
-                    Game newGame= gameService.updateGame(gameCreateDTO, id); 
-                    System.out.println(newGame);
-                    return new ResponseEntity<>(newGame,HttpStatus.OK); 
+                    newGame= gameService.updateGame(gameCreateDTO, id); 
+                   
+                }else{
+                     return new ResponseEntity<>(HttpStatus.CONFLICT); 
                 }
 
             }else{
-                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST); 
+                 return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
             }
-        }
-        return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        */
-        
-        Game gameToUpdate= gameService.findGame(id); 
-        gameToUpdate.setMaxPlayers(gameCreateDTO.getMaxPlayers());
-        gameService.saveGame(gameToUpdate); 
-        
-        return new ResponseEntity<>(gameToUpdate,HttpStatus.OK); 
+        }else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+            
+        return new ResponseEntity<>(newGame,HttpStatus.OK); 
         
 
+    }
+
+    @PostMapping("/join/{gameId}")
+    public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
+        Game gameToJoin = gameService.findGame(gameId);
+        Game savedGame;
+        if (gameToJoin != null && gameToJoin.isOnLobby()) {
+            Optional<Player> currentPlayer = playerService.findCurrentPlayer();
+            if (currentPlayer.isPresent()) {
+                if (!gameToJoin.getPlayers().contains(currentPlayer.get())) {
+                    if (gameToJoin.getMaxPlayers() >= gameToJoin.getPlayers().size()) {
+                        Player joiningPlayer = currentPlayer.get();
+                        gameToJoin.getPlayers().add(joiningPlayer);
+                        savedGame = gameService.saveGame(gameToJoin);
+                    } else {
+                        // Error 409
+                        return new ResponseEntity<>(HttpStatus.CONFLICT);
+                    }
+                } else {
+                    // Error 409 Ya se encuentra en la partida
+                    return new ResponseEntity<>(HttpStatus.CONFLICT);
+                }
+            } else {
+                // Error 404
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+        } else {
+            if (gameToJoin == null)
+                // Error 404 Lanza una excepción si el juego no está en el estado correcto para unirse
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            else
+                // Error 409
+                return new ResponseEntity<>(HttpStatus.CONFLICT);
+
+        }
+        return new ResponseEntity<>(savedGame, HttpStatus.OK);
     }
 
 
