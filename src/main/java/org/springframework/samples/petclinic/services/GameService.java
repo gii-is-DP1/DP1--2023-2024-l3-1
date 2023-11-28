@@ -40,14 +40,14 @@ public class GameService {
     public Game updateGame(@Valid GameCreateDto payload, String idToUpdate){
         Game gameToUpdate= findGame(idToUpdate); 
         if(gameToUpdate!=null){
-            String newGame= payload.getName(); 
-            Integer newMaxPlayers= payload.getMaxPlayers(); 
+            String newGameName= payload.getName(); 
+            Integer newGameMaxPlayers= payload.getMaxPlayers(); 
             
-            if(newGame!= null && !newGame.isBlank()){
-                gameToUpdate.setName(newGame);
+            if(newGameName!= null && !newGameName.isBlank()){
+                gameToUpdate.setName(newGameName);
             }
-            if(newMaxPlayers!= null ){
-                gameToUpdate.setMaxPlayers(newMaxPlayers);
+            if(newGameMaxPlayers!= null ){
+                gameToUpdate.setMaxPlayers(newGameMaxPlayers);
             }
             this.gameRepository.save(gameToUpdate); 
             
@@ -55,5 +55,6 @@ public class GameService {
         return gameToUpdate; 
         
     }
+
 
 }
