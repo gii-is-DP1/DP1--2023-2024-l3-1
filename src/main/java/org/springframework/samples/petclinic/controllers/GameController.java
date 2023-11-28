@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.model.enums.GameState;
 import org.springframework.samples.petclinic.services.GameService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -49,6 +50,7 @@ public class GameController {
         return new ResponseEntity<Game>(gameToGet,HttpStatus.OK); 
     }
 
+    //Crear una partida nueva con su nombre y máximo numero de jugadores
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO){
@@ -73,6 +75,7 @@ public class GameController {
         }  
     }
 
+    //Cambiar el número máximo de usuarios de una partida en el lobby
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Game> updateGameLobby(@Valid @RequestBody GameCreateDto gameCreateDTO,@PathVariable("id") String id ){
@@ -100,6 +103,7 @@ public class GameController {
 
     }
 
+    //Unirse a partida
     @PostMapping("/join/{gameId}")
     public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
         Game gameToJoin = gameService.findGame(gameId);
@@ -134,6 +138,31 @@ public class GameController {
 
         }
         return new ResponseEntity<>(savedGame, HttpStatus.OK);
+    }
+
+    //Iniciar partida
+    @PostMapping("/start/{gameId}")
+    public ResponseEntity<Game> startGame(@PathVariable String gameId) {
+        Game currentGame= gameService.findGame(gameId);
+        Player creator= currentGame.getCreator();
+        Game savedGame; 
+        if (currentGame!=null && currentGame.isOnLobby()){
+            Optional<Player> currentPlayer = playerService.findCurrentPlayer(); 
+            if (currentPlayer.isPresent()) {
+                if(currentPlayer.get().equals(creator) && currentGame.getPlayers().size()>=2){
+                    currentGame.setGame_state(GameState.ONGOING);
+                    savedGame=gameService.saveGame(currentGame);
+                }else{
+                    return new ResponseEntity<>(HttpStatus.CONFLICT); 
+                }
+            }else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+        }else{
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(savedGame,HttpStatus.OK); 
     }
 
 
