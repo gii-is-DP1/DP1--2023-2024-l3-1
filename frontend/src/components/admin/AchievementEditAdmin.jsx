@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import tokenService from "../../services/token.service";
 import { Link } from "react-router-dom";
 import { Form, Input, Label } from "reactstrap";
@@ -6,66 +6,75 @@ import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
 import useFetchState from "../../util/useFetchState";
 import DInput from "../ui/DInput"
+import { useNavigate } from "react-router-dom";
+import axios from '../../services/api';
+import { formStyle } from "../ui/styles/forms";
 
 const jwt = tokenService.localAccessToken;
 
 export default function AchievementEditAdmin() {
-    const id = getIdFromUrl(2);
-    const emptyAchievement = {
-        id: id === "new" ? null : id,
-        name: "",
-        description: "",
-        badgeImage: "",
-        threshold: 1,
-        metric: "GAMES_PLAYED",
-        actualDescription: ""
-    };
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
-    const [achievement, setAchievement] = useFetchState(
-        emptyAchievement,
-        `/api/v1/achievements/${id}`,
-        jwt,
-        setMessage,
-        setVisible,
-        id
-    );
-    const modal = getErrorModal(setVisible, visible, message);
-    function handleSubmit(event) {
-        event.preventDefault();
-        fetch(
-            "/api/v1/achievements" + (achievement.id ? "/" + achievement.id : ""),
-            {
-                method: achievement.id ? "PUT" : "POST",
-                headers: {
-                    Authorization: `Bearer ${jwt}`,
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify(achievement),
-            }
-        )
-            .then((response) => response.text())
-            .then((data) => {
-                if (data === "")
-                    window.location.href = "/achievements";
-                else {
-                    let json = JSON.parse(data);
-                    if (json.message) {
-                        setMessage(JSON.parse(data).message);
-                        setVisible(true);
-                    } else
-                        window.location.href = "/achievements";
-                }
-            })
-            .catch((message) => alert(message));
-    }
+    const [achievement, setAchievement] = useState({});
+    const navigate = useNavigate();
+
+    const id = getIdFromUrl(2);
+
     function handleChange(event) {
         const target = event.target;
         const value = target.value;
         const name = target.name;
         setAchievement({ ...achievement, [name]: value });
     }
+
+    async function request() {
+        try {
+            setMessage(null);
+            if(id){
+                const response = await axios.get(`/achievements/${id}`);
+                if (response.status === 401) {
+                    setMessage("Logro no existe");
+                    return;
+                } else if (response.status >= 500) {
+                    setMessage("Error del servidor");
+                    return;
+                }
+                setAchievement(response.data);
+            }else{
+                setAchievement({});
+            }
+        } catch (e) {
+            setMessage(String(e));
+        }
+    }
+
+    useEffect(() => {
+        const run = async () => {
+            await request();
+        }
+        run();
+    }, []);
+    
+    async function handleSubmit(event) {
+        try {
+            event.preventDefault();
+            setMessage(null);
+            if (id!=="new" && id!==null) {
+                const response = await axios.patch(`/achievements/${id}`, achievement);
+                setAchievement(response);
+            } else {
+                const response = await axios.post(`/achievements/new`, achievement);
+                setAchievement(response);
+            }
+      
+            navigate("/achievements")
+        } catch (e) {
+            setMessage(String(e));
+        }
+    }
+    
+    const modal = getErrorModal(setVisible, visible, message);
+
     return (
         <div className="auth-page-container">
             <h2 className="text-center" style={{ marginTop: '30px' }}>
@@ -73,7 +82,7 @@ export default function AchievementEditAdmin() {
             </h2>
             <div className="auth-form-container">
                 {modal}
-                <Form onSubmit={handleSubmit}>
+                <Form onSubmit={handleSubmit} style={formStyle}>
                     <div className="custom-form-input">
                         <DInput
                             type="text"
@@ -90,7 +99,7 @@ export default function AchievementEditAdmin() {
                             type="text"
                             required
                             name="description"
-                            id="descripction"
+                            id="description"
                             placeholder="Descripción"
                             value={achievement.description || ""}
                             onChange={handleChange}
@@ -99,6 +108,7 @@ export default function AchievementEditAdmin() {
                     <div className="custom-form-input">
                         <DInput
                             type="text"
+                            required
                             name="badgeImage"
                             id="badgeImage"
                             placeholder="URL imagen logro"
@@ -107,9 +117,9 @@ export default function AchievementEditAdmin() {
                         />
                     </div>
                     <div className="custom-form-input">
-                        <Label for="metric" style={{ fontSize: '20px' }}>
+                        {/* <Label for="metric" style={{ fontSize: '20px' }}>
                             Métrica:
-                        </Label>
+                        </Label> */}
                         <Input
                             type="select"
                             required
@@ -119,6 +129,7 @@ export default function AchievementEditAdmin() {
                             onChange={handleChange}
                             className="custom-input-metric"
                         >
+                            <option value="">Métrica</option>
                             <option value="GAMES_PLAYED">Partidas jugadas</option>
                             <option value="VICTORIES">Victorias</option>
                             <option value="TOTAL_PLAY_TIME">Tiempo total de juego</option>
@@ -126,23 +137,18 @@ export default function AchievementEditAdmin() {
                         </Input>
                     </div>
                     <div className="custom-form-input">
-                        <Label for="theshold" style={{ fontSize: '20px' }}>
-                            Valor límite:
-                        </Label>
                         <DInput
                             type="number"
                             required
                             name="threshold"
                             id="threshold"
-                            placeholder="test"
+                            placeholder="Valor límite de la métrica"
                             value={achievement.threshold || ""}
                             onChange={handleChange}
-                            style={{width: '300px'}}
-                            //style={{width: '100px'}}
                         />
                     </div>
                     <div className="custom-button-row">
-                        <button className="auth-button">Guardar cambios</button>
+                        <button type="submit" className="auth-button">Guardar cambios</button>
                         <Link
                             to={`/achievements`}
                             className="auth-button-red"
