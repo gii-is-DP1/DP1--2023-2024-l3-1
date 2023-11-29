@@ -6,7 +6,6 @@ import axios from '../../services/api';
 import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
 
-
 export default function PlayerProfile() {
   const [originalUser, setOriginalUser] = useState({});
   const [currentUser, setCurrentUser] = useState({});
@@ -97,7 +96,23 @@ export default function PlayerProfile() {
           <h1>Mi perfil</h1>
 
           <h6>Logo:</h6>
-
+          {currentUser.profile_icon != null ? (
+        <div style={{ width: '120px', height: '120px', backgroundColor: 'white', borderRadius: '100%', overflow: 'hidden' }}>
+            <img
+                src={`icons/${currentUser.profile_icon.toLowerCase()}.png`}
+                style={{ width: '100%', height: 'auto' }}
+                alt="Profile Icon"
+            />
+        </div>
+    ) : (
+        <div style={{ width: '120px', height: '120px', backgroundColor: 'white', borderRadius: '50%', overflow: 'hidden' }}>
+            <img
+                src="../../../src/static/images/default_icon.png"
+                style={{ width: '100%', height: 'auto' }}
+                alt="Default Icon"
+            />
+        </div>
+    )}
           <div className="profile-field">
             <h6>Nombre de usuario: </h6>
             <DInput type="text" value={currentUser.username} disabled={!editing} style={{ width: '25vw', color: 'black' }} onChange={(e) => setCurrentUser({ ...currentUser, username: e.target.value?.trim() }) } />
