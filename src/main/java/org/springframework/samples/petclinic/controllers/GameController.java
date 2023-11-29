@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
-import org.springframework.samples.petclinic.model.enums.GameState;
 import org.springframework.samples.petclinic.services.GameService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,140 +31,129 @@ import jakarta.validation.Valid;
 @SecurityRequirement(name = "bearerAuth")
 public class GameController {
 
-    private final GameService gameService; 
-    private final PlayerService playerService; 
+    private final GameService gameService;
+    private final PlayerService playerService;
 
     @Autowired
-    public GameController(GameService gameService,PlayerService playerService){
-        this.gameService= gameService; 
-        this.playerService = playerService; 
+    public GameController(GameService gameService, PlayerService playerService) {
+        this.gameService = gameService;
+        this.playerService = playerService;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Game> findGame(@PathVariable("id") String id ){
-        Game gameToGet=gameService.findGame(id);
-        if(gameToGet== null){
+    public ResponseEntity<Game> findGame(@PathVariable("id") String id) {
+        Game gameToGet = gameService.findGame(id);
+        if (gameToGet == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Game>(gameToGet,HttpStatus.OK); 
+        return new ResponseEntity<Game>(gameToGet, HttpStatus.OK);
     }
 
-    //Crear una partida nueva con su nombre y máximo numero de jugadores
+    // Crear una partida nueva con su nombre y máximo numero de jugadores
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO){
+    public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO) {
         try {
-            Optional<Player> currentPlayer= playerService.findCurrentPlayer();
+            Optional<Player> currentPlayer = playerService.findCurrentPlayer();
             if (currentPlayer.isPresent()) {
-                Game game= new Game(); 
-                Set<Player> ls= Set.of(currentPlayer.get()); 
-                
-                game.setName(gameCreateDTO.getName()); 
-                game.setStart(LocalDateTime.now());
+                Game game = new Game();
+                Set<Player> ls = Set.of(currentPlayer.get());
+
+                game.setName(gameCreateDTO.getName());
                 game.setCreator(currentPlayer.get());
                 game.setPlayers(ls);
                 gameService.saveGame(game);
                 return new ResponseEntity<>(game, HttpStatus.CREATED);
             } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
-            
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }  
+        }
     }
 
-    //Cambiar el número máximo de usuarios de una partida en el lobby
+    // Cambiar el número máximo de usuarios de una partida en el lobby
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity<Game> updateGameLobby(@Valid @RequestBody GameCreateDto gameCreateDTO,@PathVariable("id") String id ){
-        Game currentGame= gameService.findGame(id);
+    public ResponseEntity<Game> updateGameLobby(@Valid @RequestBody GameCreateDto gameCreateDTO,
+            @PathVariable("id") String id) {
+        Game currentGame = gameService.findGame(id);
         Game newGame;
-        if ( currentGame != null){
-            Optional<Player> currentPlayer= playerService.findCurrentPlayer(); 
-            Player creator= currentGame.getCreator();
+        if (currentGame != null) {
+            Optional<Player> currentPlayer = playerService.findCurrentPlayer();
+            Player creator = currentGame.getCreator();
             if (currentPlayer.isPresent()) {
-                if(currentPlayer.get().equals(creator) && currentGame.isOnLobby()){
-                    newGame= gameService.updateGame(gameCreateDTO, id); 
-                   
-                }else{
-                     return new ResponseEntity<>(HttpStatus.CONFLICT); 
+                if (currentPlayer.get().equals(creator) && currentGame.isOnLobby()) {
+                    newGame = gameService.updateGame(gameCreateDTO, id);
+
+                } else {
+                    return new ResponseEntity<>(HttpStatus.CONFLICT);
                 }
 
-            }else{
-                 return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
-        }else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); 
-            
-        return new ResponseEntity<>(newGame,HttpStatus.OK); 
-        
+        } else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        return new ResponseEntity<>(newGame, HttpStatus.OK);
 
     }
 
-    //Unirse a partida
+    // Unirse a partida
     @PostMapping("/join/{gameId}")
     public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
         Game gameToJoin = gameService.findGame(gameId);
-        Game savedGame;
-        if (gameToJoin != null && gameToJoin.isOnLobby()) {
-            Optional<Player> currentPlayer = playerService.findCurrentPlayer();
-            if (currentPlayer.isPresent()) {
-                if (!gameToJoin.getPlayers().contains(currentPlayer.get())) {
-                    if (gameToJoin.getMaxPlayers() >= gameToJoin.getPlayers().size()) {
-                        Player joiningPlayer = currentPlayer.get();
-                        gameToJoin.getPlayers().add(joiningPlayer);
-                        savedGame = gameService.saveGame(gameToJoin);
-                    } else {
-                        // Error 409
-                        return new ResponseEntity<>(HttpStatus.CONFLICT);
-                    }
-                } else {
-                    // Error 409 Ya se encuentra en la partida
-                    return new ResponseEntity<>(HttpStatus.CONFLICT);
-                }
-            } else {
-                // Error 404
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } else {
-            if (gameToJoin == null)
-                // Error 404 Lanza una excepción si el juego no está en el estado correcto para unirse
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            else
-                // Error 409
-                return new ResponseEntity<>(HttpStatus.CONFLICT);
+        Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
-        }
-        return new ResponseEntity<>(savedGame, HttpStatus.OK);
-    }
-
-    //Iniciar partida
-    @PostMapping("/start/{gameId}")
-    public ResponseEntity<Game> startGame(@PathVariable String gameId) {
-        Game currentGame= gameService.findGame(gameId);
-        Player creator= currentGame.getCreator();
-        Game savedGame; 
-        if (currentGame!=null && currentGame.isOnLobby()){
-            Optional<Player> currentPlayer = playerService.findCurrentPlayer(); 
-            if (currentPlayer.isPresent()) {
-                if(currentPlayer.get().equals(creator) && currentGame.getPlayers().size()>=2){
-                    currentGame.setGame_state(GameState.ONGOING);
-                    savedGame=gameService.saveGame(currentGame);
-                }else{
-                    return new ResponseEntity<>(HttpStatus.CONFLICT); 
-                }
-            }else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-
-        }else{
+        if (gameToJoin == null && !currentPlayer.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>(savedGame,HttpStatus.OK); 
+
+        if (!gameToJoin.isOnLobby()) {
+            return new ResponseEntity<>(HttpStatus.LOCKED);
+        }
+
+        if (gameToJoin.getPlayers().contains(currentPlayer.get())) {
+            return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
+        }
+
+        if (gameToJoin.getMaxPlayers() >= gameToJoin.getPlayers().size() + 1) {
+            Player joiningPlayer = currentPlayer.get();
+            gameToJoin.getPlayers().add(joiningPlayer);
+            return new ResponseEntity<>(gameService.saveGame(gameToJoin), HttpStatus.OK);
+        } else {
+            // Error 409
+            return new ResponseEntity<>(HttpStatus.CONFLICT);
+        }
     }
 
+    // Iniciar partida
+    @PostMapping("/start/{gameId}")
+    public ResponseEntity<Game> startGame(@PathVariable String gameId) {
+        Game currentGame = gameService.findGame(gameId);
+        Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
+        if (currentGame == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
+        if (!currentGame.isOnLobby()) {
+            return new ResponseEntity<>(HttpStatus.LOCKED);
+        }
 
+        Player creator = currentGame.getCreator();
+
+        if (!currentPlayer.isPresent() || !currentPlayer.get().equals(creator)) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        if (currentGame.getPlayers().size() >= 2) {
+            currentGame.setStart(LocalDateTime.now());
+            return new ResponseEntity<>(gameService.saveGame(currentGame), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
+        }
+    }
 }
