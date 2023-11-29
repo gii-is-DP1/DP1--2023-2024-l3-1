@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.model.Achievement;
+import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.model.enums.Metric;
 import org.springframework.samples.petclinic.repositories.AchievementRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,7 +39,41 @@ public class AchievementService {
     public Achievement saveAchievement(@Valid Achievement newAchievement) {
         return repo.save(newAchievement);
     }
-    
+
+    @Transactional
+	public Achievement updateAchievement(@Valid Achievement achievement, Integer idToUpdate) {
+		Optional<Achievement> toUpdate_opt = getAchievementById(idToUpdate);
+
+		if (toUpdate_opt.isPresent()) {
+			Achievement toUpdate = toUpdate_opt.get();
+			String newName = achievement.getName();
+			String newDescription = achievement.getDescription();
+            String newBadgeImage = achievement.getBadgeImage();
+            Double newThreshold = achievement.getThreshold();
+            Metric newMetric = achievement.getMetric();
+			if (newName != null && !newName.isBlank()) {
+				toUpdate.setName(achievement.getName());
+			}
+			if (newDescription != null && !newDescription.isBlank()) {
+				toUpdate.setDescription(achievement.getDescription());
+			}
+			if (newBadgeImage != null && !newBadgeImage.isBlank()) {
+				toUpdate.setBadgeImage(achievement.getBadgeImage());
+			}
+			if (newThreshold != null) {
+				toUpdate.setThreshold(achievement.getThreshold());
+			}
+			if (newMetric != null) {
+				toUpdate.setMetric(achievement.getMetric());
+			}
+
+			this.repo.save(toUpdate);
+
+			return toUpdate;
+		}
+
+		return null;
+	}
     
     @Transactional
     public void deleteAchievementById(int id){
@@ -46,6 +83,11 @@ public class AchievementService {
     @Transactional(readOnly = true)
     public Achievement getAchievementByName(String name){
         return repo.findByName(name);
+    }
+
+    @Transactional(readOnly = true)
+    public Optional<Achievement> getAchievementById(int id){
+        return repo.findById(id);
     }
     
 
