@@ -9,6 +9,5 @@ import org.springframework.samples.petclinic.model.Game;
 
 public interface GameRepository extends CrudRepository<Game,String> {
 
-    public Optional<Game> findByName(@Param("name") String name); 
-    
+    public Optional<Game> findByName(@Param("name") String name);
 }

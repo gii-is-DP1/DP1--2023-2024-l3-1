@@ -3,14 +3,10 @@ package org.springframework.samples.petclinic.model;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import org.hibernate.annotations.ColumnDefault;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.samples.petclinic.model.enums.GameState;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -41,31 +37,23 @@ public class Game {
 	@Column(name = "name")
 	private String name;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime start;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime finish;
 
     @NotNull
     @ManyToOne 
     Player creator;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    //@Column(columnDefinition = "VARCHAR(255) DEFAULT 'LOBBY'")
-    //@ColumnDefault("'LOBBY'")
-    GameState game_state = GameState.LOBBY;
-
     @Min(value = 2)
     @Max(value = 8)
-    //@ColumnDefault("8")
     Integer maxPlayers = 8; 
 
     @ManyToMany
     @Size(min= 1 ,max = 8)
     Set<Player> players;
-
 
 	@Override
 	public String toString() {
@@ -74,18 +62,14 @@ public class Game {
 
     @Transient
     public boolean isOnLobby(){
-        return this.game_state == GameState.LOBBY;
+        return this.start == null && !isFinished();
     }
     @Transient
     public boolean isOngoing(){
-        return this.game_state ==GameState.ONGOING; 
+        return this.start != null && !isFinished(); 
     }
     @Transient
     public boolean isFinished(){
-        return this.game_state == GameState.FINISHED; 
+        return this.finish != null; 
     }
-    
-
-    
-
 }
