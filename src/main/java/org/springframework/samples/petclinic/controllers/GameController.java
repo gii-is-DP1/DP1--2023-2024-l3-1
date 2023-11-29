@@ -94,7 +94,7 @@ public class GameController {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
             @ApiResponse(responseCode = "401", description = "El usuario actual no está autorizado para realizar esta operación.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida a actualizar.", content = @Content),
-            @ApiResponse(responseCode = "409", description = "La partida no está en el estado correcto para ser actualizada (lobby).", content = @Content),
+            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para ser actualizada (está en curso o finalizada).", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
     @PatchMapping("/{id}")
@@ -118,7 +118,7 @@ public class GameController {
             Game newGame = gameService.updateGame(gameCreateDTO, id);
             return new ResponseEntity<>(newGame, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
+            return new ResponseEntity<>(HttpStatus.LOCKED);
         }
 
     }
@@ -127,7 +127,7 @@ public class GameController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida o jugador.", content = @Content),
-            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para unirse (lobby).", content = @Content),
+            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para unirse (está en curso o finalizada).", content = @Content),
             @ApiResponse(responseCode = "509", description = "El jugador ya se encuentra en la partida.", content = @Content),
             @ApiResponse(responseCode = "409", description = "La partida está completa y no se puede unir más jugadores.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
@@ -163,7 +163,7 @@ public class GameController {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
             @ApiResponse(responseCode = "401", description = "El jugador actual no es el creador de la partida.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida.", content = @Content),
-            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para iniciar (lobby).", content = @Content),
+            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para iniciar (está en curso o finalizada).", content = @Content),
             @ApiResponse(responseCode = "428", description = "No hay suficientes jugadores para iniciar la partida.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
