@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.dto.SignupRequest;
-import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.repositories.PlayerRepository;
