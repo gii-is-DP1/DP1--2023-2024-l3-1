@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import tokenService from "../../services/token.service";
-import { Link,  useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Form, Input, Label } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
@@ -8,7 +8,7 @@ import useFetchState from "../../util/useFetchState";
 import DInput from "../ui/DInput";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";
-
+import DButton from "../ui/DButton";
 
 const jwt = tokenService.localAccessToken;
 
@@ -16,10 +16,11 @@ export default function PlayerEditAdmin() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [player, setPlayer] = useState({});
+    const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     const id = getIdFromUrl(2);
- 
+
     function handleChange(event) {
         const target = event.target;
         const value = target.value;
@@ -30,7 +31,7 @@ export default function PlayerEditAdmin() {
     async function request() {
         try {
             setMessage(null);
-            if(id){
+            if (id) {
                 const response = await axios.get(`/player/${id}`);
                 if (response.status === 401) {
                     setMessage("Usuario no existe");
@@ -40,7 +41,7 @@ export default function PlayerEditAdmin() {
                     return;
                 }
                 setPlayer(response.data);
-            }else{
+            } else {
                 setPlayer({});
             }
         } catch (e) {
@@ -58,23 +59,26 @@ export default function PlayerEditAdmin() {
     async function handleSubmit(event) {
         try {
             event.preventDefault();
+            setLoading(true);
             setMessage(null);
-            if (id!=="new" && id!==null) {
+            if (id !== "new" && id !== null) {
                 const response = await axios.patch(`/player/${id}`, player);
                 setPlayer(response);
             } else {
                 const response = await axios.post(`/player/new`, player);
                 setPlayer(response);
             }
-      
+
             navigate("/player")
         } catch (e) {
             setMessage(String(e));
+        } finally {
+            setLoading(false);
         }
     }
 
     const modal = getErrorModal(setVisible, visible, message);
- 
+
     return (
         <div className="auth-page-container">
             <h2 className="text-center" style={{ marginTop: '30px' }}>
@@ -82,7 +86,7 @@ export default function PlayerEditAdmin() {
             </h2>
             {modal}
             <div className="auth-form-container">
-            <form onSubmit={handleSubmit} style={formStyle}>
+                <form onSubmit={handleSubmit} style={formStyle}>
                     <div className="custom-form-input">
                         <Label for="username">
                             Username
@@ -96,7 +100,7 @@ export default function PlayerEditAdmin() {
                             onChange={handleChange}
                         />
                     </div>
-               
+
                     <div className="custom-form-input">
                         <Label for="email">
                             Email
@@ -124,15 +128,17 @@ export default function PlayerEditAdmin() {
                             onChange={handleChange}
                         />
                     </div>
-                    <div className="custom-button-row">                        
-                        <button type="submit"
-                         className="auth-button">Guardar</button>
+                    <div className="custom-button-row">
+                        <DButton style={{ width: '25vw' }}>
+                            {loading ? 'Guardando...' : 'Guardar'}
+                        </DButton>
                         <Link
                             to={`/player`}
-                            className="auth-button-red"
                             style={{ textDecoration: "none" }}
                         >
-                            Cancelar
+                            <DButton style={{ width: '25vw', backgroundColor: '#ff3300' }}>
+                                Cancelar
+                            </DButton>
                         </Link>
                     </div>
                 </form>
