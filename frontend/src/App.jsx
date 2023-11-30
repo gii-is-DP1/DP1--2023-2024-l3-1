@@ -19,6 +19,7 @@ import PlayPage from "./components/player/PlayPage";
 import GameJoinPage from "./components/player/GameJoinPage";
 import CreationGamePage from "./components/player/CreationGamePage";
 import FinishedGameListAdmin from "./components/admin/FinishedGameListAdmin";
+import OnGoingGameListAdmin from "./components/admin/OnGoingGameListAdmin";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -177,6 +178,8 @@ function App() {
           <Route path="/player/:id" element={<PlayerEditAdmin />} />
           <Route path="/docs" element={<SwaggerDocs />} />
           <Route path="/games" element={<FinishedGameListAdmin />} />
+          <Route path="/games/onGoing" element={<OnGoingGameListAdmin />} />
+
         </>
       )
     }

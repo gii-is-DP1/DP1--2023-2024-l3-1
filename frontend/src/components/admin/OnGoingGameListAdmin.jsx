@@ -28,8 +28,9 @@ export default function FinishedGameListAdmin() {
 
     const finishedGameList =
         games.map((game) => {
+            console.log(game)
             return (
-                game.finished ? (
+                game.ongoing ? (
                     <tr key={game.id}>
                         <td className="text-center" style={{ verticalAlign: 'middle' }}>{game.name}</td>
                         <td className="text-center" style={{ verticalAlign: 'middle' }}> {game.creator.username} </td>
@@ -49,14 +50,6 @@ export default function FinishedGameListAdmin() {
                             minute: '2-digit',
                             second: '2-digit'
                         })} </td>
-                        <td className="text-center" style={{ verticalAlign: 'middle' }}> {new Date(game.finish).toLocaleString('es-ES', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit'
-                        })} </td>
                     </tr>) : undefined
             )
         });
@@ -64,7 +57,7 @@ export default function FinishedGameListAdmin() {
     return (
         <div>
             <div className="admin-page-container">
-                <h1 className="text-center" style={{ marginTop: '30px' }}>Listado Partidas Finalizadas</h1>
+                <h1 className="text-center" style={{ marginTop: '30px' }}>Listado Partidas en curso</h1>
                 {alerts.map((a) => a.alert)}
                 {modal}
                 <div>
@@ -75,7 +68,6 @@ export default function FinishedGameListAdmin() {
                                 <th className="text-center">Creador</th>
                                 <th className="text-center">Jugadores</th>
                                 <th className="text-center">Fecha de creación</th>
-                                <th className="text-center">Fecha de finalización</th>
                                 <th className="text-center"></th>
                             </tr>
                         </thead>
