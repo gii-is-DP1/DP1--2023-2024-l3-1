@@ -1,10 +1,12 @@
 package org.springframework.samples.petclinic.services;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
+import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.repositories.GameRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,6 +55,10 @@ public class GameService {
             
         }
         return gameToUpdate; 
-        
+    }
+
+    public Optional<List<Game>> findAll() {
+        List<Game> games = gameRepository.findAll();
+        return Optional.ofNullable(games);
     }
 }
