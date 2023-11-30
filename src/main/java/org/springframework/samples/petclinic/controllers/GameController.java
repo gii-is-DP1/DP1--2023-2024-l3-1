@@ -64,7 +64,7 @@ public class GameController {
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
-    @PostMapping
+    @PostMapping("/creation")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO) {
         try {

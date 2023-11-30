@@ -17,6 +17,7 @@ import './static/css/home/home.css';
 import PlayerProfile from "./components/player/PlayerProfile";
 import PlayPage from "./components/player/PlayPage";
 import GameJoinPage from "./components/player/GameJoinPage";
+import CreationGamePage from "./components/player/CreationGamePage";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -205,6 +206,8 @@ function App() {
           <Route path="/profile" exact={true} element={<PlayerProfile />} />
           <Route path="/play" exact={true} element={<PlayPage />} />
           <Route path="/play/join" exact={true} element={<GameJoinPage />} />
+          <Route path="/games/creation" exact={true} element={<CreationGamePage />} />
+
         </>
       )
     }

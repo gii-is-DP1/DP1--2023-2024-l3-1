@@ -55,6 +55,7 @@ public class SecurityConfiguration {
 				.requestMatchers("/api/v1/player/login", "/api/v1/player/validate", "/api/v1/player/signup").permitAll()
 				.requestMatchers("/api/v1/player/**").authenticated()
 				.requestMatchers("/api/v1/achievements/**").authenticated()
+				.requestMatchers("/api/v1/games/**").authenticated()
 				.requestMatchers("/api/v1/plan").hasAuthority("OWNER")
 				.requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/users/**")).hasAuthority(ADMIN)
 				.requestMatchers("/api/v1/clinicOwners/all").hasAuthority(ADMIN)
