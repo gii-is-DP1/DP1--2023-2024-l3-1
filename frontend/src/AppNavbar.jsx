@@ -196,7 +196,7 @@ export default function AppNavbar() {
         <div>
             <Navbar expand="md" dark color="dark">
                 <NavbarBrand tag={Link} to="/">
-                    <img alt="Dobble logo" src="logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
+                    <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
                     <NavbarText style={{ color: "white", marginLeft: '0.5rem' }}>
                         Online
                     </NavbarText>
