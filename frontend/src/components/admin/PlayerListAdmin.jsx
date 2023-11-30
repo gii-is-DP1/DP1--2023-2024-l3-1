@@ -6,6 +6,7 @@ import deleteFromList from "../../util/deleteFromList";
 import getErrorModal from "../../util/getErrorModal";
 import { Link } from "react-router-dom";
 import axios from '../../services/api';
+import DButton from "../ui/DButton";
 
 
 const jwt = tokenService.localAccessToken;
@@ -34,7 +35,7 @@ export default function PlayerListAdmin() {
     }, []);
 
 
-    
+
     const playerList =
         players.map((p) => {
             return (
@@ -42,17 +43,16 @@ export default function PlayerListAdmin() {
                     <td className="text-center" style={{ verticalAlign: 'middle' }}>{p.profile_icon}</td>
                     <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.username} </td>
                     <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.email} </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.is_admin ? "ADMIN" : "PLAYER" } </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.is_admin ? "ADMIN" : "PLAYER"} </td>
                     <td className="text-center">
                         <Link to={`/player/${p.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
-                            <button className="auth-button-yellow">
+                            <DButton style={{ width: '15vw', backgroundColor: '#ffcc24' }}>
                                 Editar
-                            </button>
+                            </DButton>
                         </Link>
                     </td>
                     <td className="text-center">
-                        <button
-                            className="auth-button-red"
+                        <DButton style={{ width: '15vw', backgroundColor: '#ff3300' }}
                             onClick={() =>
                                 deleteFromList(
                                     `/api/v1/player/${p.id}`,
@@ -65,7 +65,7 @@ export default function PlayerListAdmin() {
                             }
                         >
                             Borrar
-                        </button>
+                        </DButton>
                     </td>
                 </tr>
             );
@@ -92,11 +92,11 @@ export default function PlayerListAdmin() {
                         <tbody>{playerList}</tbody>
                     </Table>
                     <div className="custom-button-row">
-                        <Link 
+                        <Link
                             to={`/player/new`}
                             style={{ textDecoration: "none" }}
-                        > 
-                            <button className="auth-button"> Crear Jugador </button>
+                        >
+                            <DButton style={{ width: '25vw'}}> Crear Jugador </DButton>
                         </Link>
                     </div>
                 </div>
