@@ -1,33 +1,42 @@
 import { Table } from "reactstrap";
-import { useState } from "react";
-import tokenService from "../../services/token.service";
-import useFetchState from "../../util/useFetchState";
+import { useEffect, useState } from "react";
 import getErrorModal from "../../util/getErrorModal";
-
-const imgnotfound = '../../static/images/defaultAchievementImg';
-const jwt = tokenService.localAccessToken;
+import axios from '../../services/api';
+import imgnotfound from '../../static/images/defaultAchievementImg.png';
 
 export default function AchievementListPlayer() {
+
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [alerts, setAlerts] = useState([]);
-    const [achievements, setAchievements] = useFetchState(
-        [],
-        `/api/v1/achievements`,
-        jwt
-    );
+    const [achievements, setAchievements] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('/achievements');
+                setAchievements(response.data);
+            } catch(error) {
+                console.error('Error al obtener los logros: ', error);
+            }
+        };
+        fetchData();
+    } , []);
+
     const achievementList =
         achievements.map((a) => {
+
             return (
                 <tr key={a.id}>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage ? a.badgeImage : imgnotfound} alt={""} width="50px" /></td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}>{a.name}</td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.description} </td>
-                    
+                    <td style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage || imgnotfound} alt={" "} width="50px" /></td>
+                    <td style={{ verticalAlign: 'middle' }}> {a.name} :</td>
+                    <td style={{ verticalAlign: 'middle' }}> {a.description} </td>
                 </tr>
             );
         });
+
     const modal = getErrorModal(setVisible, visible, message);
+
     return (
         <div>
             <div className="admin-page-container">
@@ -36,14 +45,7 @@ export default function AchievementListPlayer() {
                 {modal}
                 <div>
                     <Table aria-label="achievements" className="mt-4">
-                        <thead>
-                            <tr>
-                                <th className="text-center">Icono</th>
-                                <th className="text-center">Descripción</th>
-                                <th className="text-center">Nombre</th>
-                            </tr>
-                        </thead>
-                        <tbody>{achievementList}</tbody>
+                        <tbody> {achievementList} </tbody>
                     </Table>
                 </div>
             </div>

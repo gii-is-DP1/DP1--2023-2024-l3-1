@@ -1,20 +1,17 @@
 import { useState, useEffect } from "react";
-import tokenService from "../../services/token.service";
 import { Link } from "react-router-dom";
-import { Form, Input, Label } from "reactstrap";
+import { Form, Input } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
-import useFetchState from "../../util/useFetchState";
 import DInput from "../ui/DInput"
 import { useNavigate } from "react-router-dom";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";
 
-const jwt = tokenService.localAccessToken;
-
 export default function AchievementEditAdmin() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [achievement, setAchievement] = useState({});
     const navigate = useNavigate();
 
@@ -30,7 +27,7 @@ export default function AchievementEditAdmin() {
     async function request() {
         try {
             setMessage(null);
-            if(id){
+            if (id) {
                 const response = await axios.get(`/achievements/${id}`);
                 if (response.status === 401) {
                     setMessage("Logro no existe");
@@ -40,7 +37,7 @@ export default function AchievementEditAdmin() {
                     return;
                 }
                 setAchievement(response.data);
-            }else{
+            } else {
                 setAchievement({});
             }
         } catch (e) {
@@ -54,25 +51,26 @@ export default function AchievementEditAdmin() {
         }
         run();
     }, []);
-    
+
     async function handleSubmit(event) {
         try {
             event.preventDefault();
+            setLoading(true);
             setMessage(null);
-            if (id!=="new" && id!==null) {
+            if (id !== "new" && id !== null) {
                 const response = await axios.patch(`/achievements/${id}`, achievement);
                 setAchievement(response);
             } else {
                 const response = await axios.post(`/achievements/new`, achievement);
                 setAchievement(response);
             }
-      
+
             navigate("/achievements")
         } catch (e) {
             setMessage(String(e));
         }
     }
-    
+
     const modal = getErrorModal(setVisible, visible, message);
 
     return (
@@ -80,8 +78,8 @@ export default function AchievementEditAdmin() {
             <h2 className="text-center" style={{ marginTop: '30px' }}>
                 {achievement.id ? "Editar logro" : "Añadir logro"}
             </h2>
+            {modal}
             <div className="auth-form-container">
-                {modal}
                 <Form onSubmit={handleSubmit} style={formStyle}>
                     <div className="custom-form-input">
                         <DInput
@@ -108,7 +106,6 @@ export default function AchievementEditAdmin() {
                     <div className="custom-form-input">
                         <DInput
                             type="text"
-                            required
                             name="badgeImage"
                             id="badgeImage"
                             placeholder="URL imagen logro"
@@ -117,9 +114,6 @@ export default function AchievementEditAdmin() {
                         />
                     </div>
                     <div className="custom-form-input">
-                        {/* <Label for="metric" style={{ fontSize: '20px' }}>
-                            Métrica:
-                        </Label> */}
                         <Input
                             type="select"
                             required
@@ -148,7 +142,7 @@ export default function AchievementEditAdmin() {
                         />
                     </div>
                     <div className="custom-button-row">
-                        <button type="submit" className="auth-button">Guardar cambios</button>
+                        <button type="submit" className="auth-button"> {loading ? 'Guardando...' : 'Guardar cambios'} </button>
                         <Link
                             to={`/achievements`}
                             className="auth-button-red"

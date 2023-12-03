@@ -1,30 +1,34 @@
-import { Button, Table } from "reactstrap";
-import { useState } from "react";
-import tokenService from "../../services/token.service";
-import useFetchState from "../../util/useFetchState";
+import { Table } from "reactstrap";
+import { useEffect, useState } from "react";
 import deleteFromList from "../../util/deleteFromList";
 import getErrorModal from "../../util/getErrorModal";
 import { Link } from "react-router-dom";
-
-
-const imgnotfound = 'https://cdn-icons-png.flaticon.com/512/5778/5778223.png'; 
-//const imgnotfound = '../../static/images/defaultAchievementImg.png';
-const jwt = tokenService.localAccessToken;
+import axios from '../../services/api';
+import imgnotfound from '../../static/images/defaultAchievementImg.png'; 
 
 export default function AchievementListAdmin() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [alerts, setAlerts] = useState([]);
-    const [achievements, setAchievements] = useFetchState(
-        [],
-        `/api/v1/achievements`,
-        jwt
-    );
+    const [achievements, setAchievements] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await axios.get('/achievements');
+                setAchievements(response.data);
+            } catch(error) {
+                console.error('Error al obtener los logros: ', error);
+            }
+        };
+        fetchData();
+    } , []);
+
     const achievementList =
         achievements.map((a) => {
             return (
                 <tr key={a.id}>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage ? a.badgeImage : imgnotfound} alt={""} width="50px" /></td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage || imgnotfound} alt={""} width="50px" /></td>
                     <td className="text-center" style={{ verticalAlign: 'middle' }}>{a.name}</td>
                     <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.description} </td>
                     <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.threshold} </td>
