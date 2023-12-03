@@ -3,12 +3,9 @@ package org.springframework.samples.petclinic.controllers;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.AchievementService;
@@ -19,11 +16,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -31,7 +32,6 @@ import jakarta.validation.Valid;
 @RestController
 @RequestMapping("/api/v1/achievements")
 @Tag(name = "Achievements", description = "The Achievements management API")
-@SecurityRequirement(name = "bearerAuth")
 public class AchievementController {
     
     private final AchievementService achievementService;
@@ -44,12 +44,26 @@ public class AchievementController {
 		this.playerService = playerService;
 	}
 
+	
     @GetMapping
+	@Operation(summary = "Obtiene una lista de todos los logros.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+		@ApiResponse(responseCode = "404", description = "No se encuentran los logros solicitados.", content = @Content)
+	})
+
 	public ResponseEntity<List<Achievement>> findAll() {
 		return new ResponseEntity<>((List<Achievement>) achievementService.getAchievements(), HttpStatus.OK);
 	}
 
+
 	@GetMapping("/{id}")
+	@Operation(summary = "Obtiene un logro a partir de su identificador.")
+	@ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "No se encuentra el logro solicitada.", content = @Content)
+    })
+
 	public ResponseEntity<Achievement> findAchievement(@PathVariable("id") int id){
 		Achievement achievementToGet = achievementService.getById(id);
 
@@ -60,7 +74,17 @@ public class AchievementController {
 		return new ResponseEntity<Achievement>(achievementToGet, HttpStatus.OK);
 	}
 
+
 	@PostMapping("/new")
+	@Operation(summary = "Crea un logro. El usuario que realica la creación debe ser administrador.")
+	@SecurityRequirement(name = "bearerAuth")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "201", description = "Logro creado correctamente.", content = @Content),
+		@ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
+	})
+	@ResponseStatus(HttpStatus.CREATED)
+
 	public ResponseEntity<Achievement> createAchievement(@RequestBody @Valid Achievement newAchievement, BindingResult br){ 
 		Achievement result = null;
 
@@ -73,20 +97,18 @@ public class AchievementController {
 		return new ResponseEntity<>(result,HttpStatus.CREATED);	
 	}
 
+
 	@PatchMapping("/{id}")
-	// public ResponseEntity<Void> modifyAchievement(@RequestBody @Valid Achievement newAchievement, BindingResult br,@PathVariable("id") int id) {
-	// 	Achievement achievementToUpdate=this.findAchievement(id).getBody();
-	// 	if(br.hasErrors()) {
-	// 		return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-	// 	}
-	// 	else if(newAchievement.getId()==null || !newAchievement.getId().equals(id))
-	// 		return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
-	// 	else {
-	// 		BeanUtils.copyProperties(newAchievement, achievementToUpdate, "id");
-	// 		achievementService.saveAchievement(achievementToUpdate);
-	// 	}
-	// 	return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-	// }
+	@Operation(summary = "Edita nombre, descripción, imagen, métrica y umbral de un logro. El usuario que realica la creación debe ser administrador.")
+	@SecurityRequirement(name = "bearerAuth")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+		@ApiResponse(responseCode = "401", description = "El usuario actual no está autorizado para realizar esta operación.", content = @Content),
+		@ApiResponse(responseCode = "404", description = "No se encuentra el logro a actualizar.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
+	})
+
+	@ResponseStatus(HttpStatus.OK)
 	public ResponseEntity<Achievement> modifyAchievement(@PathVariable("id") Integer id, @Valid @RequestBody Achievement payload) {
 		Optional<Player> user = playerService.findCurrentPlayer();
 		Optional<Achievement> target = achievementService.getAchievementById(id);
@@ -108,7 +130,18 @@ public class AchievementController {
 		return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 
+
 	@DeleteMapping("/{id}")
+	@Operation(summary = "Elimina un logro. El usuario que realica la creación debe ser administrador.")
+	@SecurityRequirement(name = "bearerAuth")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+		@ApiResponse(responseCode = "401", description = "El usuario actual no está autorizado para realizar esta operación.", content = @Content),
+		@ApiResponse(responseCode = "404", description = "No se encuentra el logro a eliminar.", content = @Content),
+		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
+	})
+	@ResponseStatus(HttpStatus.OK)
+	
 	public ResponseEntity<Void> deleteAchievement(@PathVariable("id") int id){
 		findAchievement(id);
 		achievementService.deleteAchievementById(id);
