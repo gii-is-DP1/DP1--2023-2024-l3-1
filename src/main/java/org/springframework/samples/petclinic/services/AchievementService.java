@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.model.Achievement;
-import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.model.enums.Metric;
 import org.springframework.samples.petclinic.repositories.AchievementRepository;
 import org.springframework.stereotype.Service;
