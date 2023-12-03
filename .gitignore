@@ -41,11 +41,6 @@ target/*
 *.iml
 /target
 .sts4-cache/
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
 _site/
 .metadata/.lock
 .metadata/.log
@@ -100,7 +95,6 @@ _site/
 .metadata/.plugins/org.eclipse.ui.workbench/dialog_settings.xml
 .metadata/.plugins/org.eclipse.ui.workbench/workingsets.xml
 
-.vscode/
 /.apt_generated/
 coverage/jacoco.xml
 .gitignore

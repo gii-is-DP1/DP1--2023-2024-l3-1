@@ -1,0 +1,21 @@
+{
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
+  },
+  "editor.tabSize": 2,
+  "eslint.format.enable": true,
+  "eslint.workingDirectories": [
+    {
+      "mode": "auto"
+    }
+  ],
+  "git.autoStash": true,
+  "git.autofetch": true,
+  "git.alwaysSignOff": true,
+  "git.fetchOnPull": true,
+  "git.pruneOnFetch": true,
+  "git.rebaseWhenSync": true,
+  "git.terminalGitEditor": true
+}
