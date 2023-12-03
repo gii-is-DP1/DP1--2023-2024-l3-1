@@ -2,28 +2,24 @@ import { Link } from "react-router-dom";
 import "../../static/css/play/playPage.css";
 import DButton from "../ui/DButton";
 
-export const inputStyles = {
-    /*background-color: 'white';
-    color: black !important;
-    padding: 8px 40px !important;
-    margin: 40px !important;
-    border: 1px solid #ccc !important;
-    border-radius: 15px !important;
-    */
+const lobbyButtonStyle = {
+    backgroundColor: 'white',
+    color: 'black',
+    padding: '8px 40px',
+    margin: '40px',
+    border: '1px solid #ccc',
+    borderRadius: '15px',
 }
 
 export default function PlayPage() {
-    
     return (
         <div className="page-container">
             <div className="button-container">
-            <Link to={"join"}>
-            <DButton className="button">Unirse a partida</DButton>   
-            </Link>
-            <DButton className="button">Crear partida</DButton>
-            
+                <Link to={"join"}>
+                    <DButton style={lobbyButtonStyle}>Unirse a partida</DButton>
+                </Link>
+                <DButton style={lobbyButtonStyle}>Crear partida</DButton>
             </div>
         </div>
-
     );
 }
