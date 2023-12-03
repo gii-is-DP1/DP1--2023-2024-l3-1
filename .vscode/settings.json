@@ -11,6 +11,7 @@
       "mode": "auto"
     }
   ],
+  "files.insertFinalNewline": true,
   "git.autoStash": true,
   "git.autofetch": true,
   "git.alwaysSignOff": true,
