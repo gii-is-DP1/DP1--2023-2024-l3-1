@@ -65,7 +65,7 @@ export default function PlayerEditAdmin() {
                 const response = await axios.patch(`/player/${id}`, player);
                 setPlayer(response);
             } else {
-                const response = await axios.post(`/player/new`, player);
+                const response = await axios.post(`/player/signup`, player);
                 setPlayer(response);
             }
 

@@ -129,23 +129,4 @@ public class PlayerService {
 
 		return false;
 	}
-
-	@Transactional
-    public Player savePlayer(@Valid EditPlayerDto newPlayer) {
-		Player player = new Player();
-		player.setUsername(newPlayer.getUsername());
-        player.setEmail(newPlayer.getEmail());
-		player.setPassword(encoder.encode(newPlayer.getPassword()));
-		this.repository.save(player);
-        return this.repository.save(player);
-    }
-
-	@Transactional
-    public void deletePlayerById(int id){
-        repository.deleteById(id);
-    }
-
-    public Optional<Player> findById(int id) {
-        return repository.findById(id);
-    }
 }

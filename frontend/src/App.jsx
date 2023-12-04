@@ -171,7 +171,7 @@ function App() {
           <Route path="/achievements" element={<AchievementListAdmin />} />
           <Route path="/achievements/:achievementId" element={<AchievementEditAdmin />} />
           <Route path="/player" element={<PlayerListAdmin />} />
-          <Route path="/player/:palyerId" element={<PlayerEditAdmin />} />
+          <Route path="/player/:playerId" element={<PlayerEditAdmin />} />
           <Route path="/docs" element={<SwaggerDocs />} />
         </>
       )
