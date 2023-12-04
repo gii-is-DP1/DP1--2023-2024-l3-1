@@ -13,7 +13,6 @@ import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.dto.JwtResponseDto;
 import org.springframework.samples.petclinic.dto.LoginRequest;
 import org.springframework.samples.petclinic.dto.SignupRequest;
-import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -415,7 +414,7 @@ public class PlayerController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		Optional<Player> playerList = playerService.findById(id);
+		Optional<Player> playerList = playerService.findPlayer(id);
 
 		if (!playerList.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);

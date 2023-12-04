@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.dto.SignupRequest;
-import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.repositories.PlayerRepository;
@@ -139,14 +138,5 @@ public class PlayerService {
 		player.setPassword(encoder.encode(newPlayer.getPassword()));
 		this.repository.save(player);
         return this.repository.save(player);
-    }
-
-	@Transactional
-    public void deletePlayerById(int id){
-        repository.deleteById(id);
-    }
-
-    public Optional<Player> findById(int id) {
-        return repository.findById(id);
     }
 }
