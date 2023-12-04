@@ -8,25 +8,17 @@ import { Link } from "react-router-dom";
 import axios from '../../services/api';
 import DButton from "../ui/DButton";
 
-
-const jwt = tokenService.localAccessToken;
-
 export default function PlayerListAdmin() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [alerts, setAlerts] = useState([]);
-    /*const [players, setPlayers] = useFetchState(
-        [],
-        `/player`,
-        jwt
-    );*/
-    const [players, setPlayers] = useState([]); // Estado para almacenar los datos de los jugadores
+    const [players, setPlayers] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('/player');
-                setPlayers(response.data); // Establecer los datos de los jugadores en el estado
+                setPlayers(response.data);
             } catch (error) {
                 console.error('Error al obtener jugadores:', error);
             }
@@ -96,7 +88,7 @@ export default function PlayerListAdmin() {
                             to={`/player/new`}
                             style={{ textDecoration: "none" }}
                         >
-                            <DButton style={{ width: '25vw'}}> Crear Jugador </DButton>
+                            <DButton style={{ width: '25vw' }}> Crear Jugador </DButton>
                         </Link>
                     </div>
                 </div>
