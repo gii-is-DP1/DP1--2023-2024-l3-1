@@ -9,7 +9,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
+import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.services.GamePlayerService;
 import org.springframework.samples.petclinic.services.GameService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,11 +39,13 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
+    private final GamePlayerService gamePlayerService;
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService) {
+    public GameController(GameService gameService, PlayerService playerService, GamePlayerService gamePlayerService) {
         this.gameService = gameService;
         this.playerService = playerService;
+        this.gamePlayerService = gamePlayerService;
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -71,12 +75,16 @@ public class GameController {
             Optional<Player> currentPlayer = playerService.findCurrentPlayer();
             if (currentPlayer.isPresent()) {
                 Game game = new Game();
-                Set<Player> ls = Set.of(currentPlayer.get());
+                GamePlayer gamePlayer = gamePlayerService.addPlayerToGame(game.getId(), currentPlayer.get().getId());
+                Set<GamePlayer> ls = Set.of(gamePlayer);
+
+                // Set<Player> ls = Set.of(currentPlayer.get());
 
                 game.setName(gameCreateDTO.getName());
                 game.setMaxPlayers(gameCreateDTO.getMaxPlayers());
                 game.setCreator(currentPlayer.get());
-                game.setPlayers(ls);
+                game.setGame_players(ls);
+                // game.setPlayers(ls);
                 gameService.saveGame(game);
                 return new ResponseEntity<>(game, HttpStatus.CREATED);
             } else {
@@ -136,6 +144,8 @@ public class GameController {
     public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
         Game gameToJoin = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
+        Player joiningPlayer = currentPlayer.get();
+        GamePlayer gamePlayer = new GamePlayer(joiningPlayer, gameToJoin);
 
         if (gameToJoin == null && !currentPlayer.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -145,13 +155,13 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
 
-        if (gameToJoin.getPlayers().contains(currentPlayer.get())) {
+        if (gameToJoin.getGame_players().contains(gamePlayer)) {
             return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
 
-        if (gameToJoin.getMaxPlayers() >= gameToJoin.getPlayers().size() + 1) {
-            Player joiningPlayer = currentPlayer.get();
-            gameToJoin.getPlayers().add(joiningPlayer);
+        if (gameToJoin.getMaxPlayers() >= gameToJoin.getGame_players().size() + 1) {
+
+            gameToJoin.getGame_players().add(gamePlayer);
             return new ResponseEntity<>(gameService.saveGame(gameToJoin), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -186,7 +196,7 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
-        if (currentGame.getPlayers().size() >= 2) {
+        if (currentGame.getGame_players().size() >= 2) {
             currentGame.setStart(LocalDateTime.now());
             return new ResponseEntity<>(gameService.saveGame(currentGame), HttpStatus.OK);
         } else {

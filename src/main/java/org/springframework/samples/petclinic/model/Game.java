@@ -10,8 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
@@ -29,13 +29,13 @@ import lombok.Setter;
 public class Game {
 
     @Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-    protected String id; 
+    @GeneratedValue(strategy = GenerationType.UUID)
+    protected String id;
 
     @Size(min = 3, max = 50)
-	@NotBlank
-	@Column(name = "name")
-	private String name;
+    @NotBlank
+    @Column(name = "name")
+    private String name;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime start;
@@ -44,32 +44,40 @@ public class Game {
     LocalDateTime finish;
 
     @NotNull
-    @ManyToOne 
+    @ManyToOne
     Player creator;
 
     @Min(value = 2)
     @Max(value = 8)
-    Integer maxPlayers = 8; 
+    Integer maxPlayers = 8;
+    /*
+     * @ManyToMany
+     * 
+     * @Size(min= 1 ,max = 8)
+     * Set<Player> players;
+     */
 
-    @ManyToMany
-    @Size(min= 1 ,max = 8)
-    Set<Player> players;
+    @OneToMany(mappedBy = "game")
+    @Size(min = 1, max = 8)
+    Set<GamePlayer> game_players;
 
-	@Override
-	public String toString() {
-		return this.getName();
-	}
+    @Override
+    public String toString() {
+        return this.getName();
+    }
 
     @Transient
-    public boolean isOnLobby(){
+    public boolean isOnLobby() {
         return this.start == null && !isFinished();
     }
+
     @Transient
-    public boolean isOngoing(){
-        return this.start != null && !isFinished(); 
+    public boolean isOngoing() {
+        return this.start != null && !isFinished();
     }
+
     @Transient
-    public boolean isFinished(){
-        return this.finish != null; 
+    public boolean isFinished() {
+        return this.finish != null;
     }
 }
