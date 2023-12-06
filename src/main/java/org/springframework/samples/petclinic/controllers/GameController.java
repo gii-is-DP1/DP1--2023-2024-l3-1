@@ -75,15 +75,15 @@ public class GameController {
             Optional<Player> currentPlayer = playerService.findCurrentPlayer();
             if (currentPlayer.isPresent()) {
                 Game game = new Game();
-                GamePlayer gamePlayer = gamePlayerService.addPlayerToGame(game.getId(), currentPlayer.get().getId());
-                Set<GamePlayer> ls = Set.of(gamePlayer);
+                
+                
 
                 // Set<Player> ls = Set.of(currentPlayer.get());
 
                 game.setName(gameCreateDTO.getName());
                 game.setMaxPlayers(gameCreateDTO.getMaxPlayers());
                 game.setCreator(currentPlayer.get());
-                game.setGame_players(ls);
+                gamePlayerService.addPlayerToGame(game, currentPlayer.get());
                 // game.setPlayers(ls);
                 gameService.saveGame(game);
                 return new ResponseEntity<>(game, HttpStatus.CREATED);
