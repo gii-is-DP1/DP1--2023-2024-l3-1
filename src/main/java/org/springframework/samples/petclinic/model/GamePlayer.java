@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
@@ -15,12 +17,13 @@ import lombok.Setter;
 @Setter
 @IdClass(GamePlayerId.class)
 @Table(name = "game_players")
+@JsonIgnoreProperties({"game", "player"})
 public class GamePlayer{
   
   @Id
   @NotNull
   @ManyToOne
-  @JoinColumn(name = "game_id", columnDefinition = "VARCHAR(255)")
+  @JoinColumn(name = "game_id")
   private Game game; 
 
   @Id
