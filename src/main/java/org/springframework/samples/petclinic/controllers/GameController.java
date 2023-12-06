@@ -145,7 +145,9 @@ public class GameController {
         Game gameToJoin = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
         Player joiningPlayer = currentPlayer.get();
-        GamePlayer gamePlayer = new GamePlayer(joiningPlayer, gameToJoin);
+        GamePlayer gamePlayer = new GamePlayer();
+        gamePlayer.setPlayer(joiningPlayer);
+        gamePlayer.setGame(gameToJoin);
 
         if (gameToJoin == null && !currentPlayer.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

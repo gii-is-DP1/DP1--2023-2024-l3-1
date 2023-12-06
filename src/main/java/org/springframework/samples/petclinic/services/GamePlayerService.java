@@ -34,7 +34,9 @@ public class GamePlayerService {
     Game gameToJoin= gameService.findGame(gameId); 
     Optional<Player> playerToJoin= playerService.findPlayer(playerId); 
 
-    GamePlayer gamePlayer= new GamePlayer(playerToJoin.get(),gameToJoin); 
+    GamePlayer gamePlayer= new GamePlayer(); 
+    gamePlayer.setGame(gameToJoin);
+    gamePlayer.setPlayer(playerToJoin.get());
     saveGamePlayer(gamePlayer);
     return gamePlayer;
   }
