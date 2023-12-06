@@ -405,6 +405,16 @@ public class PlayerController {
 		return new ResponseEntity<>(playerList.get(), HttpStatus.OK);
 	}
 
+	@ApiResponses(value = { 
+		@ApiResponse(responseCode = "200", description = "Usuario encontrado", 
+			content = @Content),
+		@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", 
+			content = @Content),
+		@ApiResponse(responseCode = "404", description = "Usuario no encontrado", 
+			content = @Content),
+		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
+    		content = @Content) })
+	@Operation(summary = "Obtiene un usuario por su ID")
 	@GetMapping("/{id}")
 	@SecurityRequirement(name = "bearerAuth")
 	public ResponseEntity<Player> getById(@PathVariable int id) {
