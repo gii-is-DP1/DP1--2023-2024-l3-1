@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Label } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
-import getIdFromUrl from "../../util/getIdFromUrl";
 import DInput from "../ui/DInput";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";
@@ -15,7 +14,7 @@ export default function PlayerEditAdmin() {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
-    const id = getIdFromUrl(2);
+    const { id } = useParams();
 
     function handleChange(event) {
         const target = event.target;

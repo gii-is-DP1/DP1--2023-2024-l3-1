@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import getErrorModal from "../../util/getErrorModal";
 import DInput from "../ui/DInput";
 import axios from '../../services/api';
 import DButton from "../ui/DButton";
-import getIdFromUrl from "../../util/getIdFromUrl";
 
 export default function GameLobby() {
     const [message, setMessage] = useState(null);
@@ -12,7 +11,7 @@ export default function GameLobby() {
     const [game, setGame] = useState({ maxPlayers: 8, start: null });
     const [isCreator, setIsCreator] = useState(false);
 
-    const id = getIdFromUrl(2);
+    const { id } = useParams();
 
     async function request() {
         try {

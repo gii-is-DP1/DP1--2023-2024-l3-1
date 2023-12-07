@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form, Input } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
-import getIdFromUrl from "../../util/getIdFromUrl";
 import DInput from "../ui/DInput"
-import { useNavigate } from "react-router-dom";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";
 
@@ -15,7 +13,7 @@ export default function AchievementEditAdmin() {
     const [achievement, setAchievement] = useState({});
     const navigate = useNavigate();
 
-    const id = getIdFromUrl(2);
+    const { id } = useParams();
 
     function handleChange(event) {
         const target = event.target;
@@ -57,7 +55,7 @@ export default function AchievementEditAdmin() {
             event.preventDefault();
             setLoading(true);
             setMessage(null);
-            if (id !== "new" && id !== null) {
+            if (id) {
                 const response = await axios.patch(`/achievements/${id}`, achievement);
                 setAchievement(response);
             } else {
