@@ -107,7 +107,7 @@ export default function AppNavbar() {
     //             <NavItem>
     //                 <NavLink style={{ color: "white" }} id="register" tag={Link} to="/register">Registro</NavLink>
     //             </NavItem>
-             
+
     //             <NavItem>
     //                 <NavLink style={{ color: "white" }} id="login" tag={Link} to="/login">Inicio de sesión</NavLink>
     //             </NavItem>
@@ -119,7 +119,7 @@ export default function AppNavbar() {
     //             <NavItem>
     //                 <NavLink style={{ color: "white" }} tag={Link} to="/dashboard">Dashboard</NavLink>
     //             </NavItem>
-            
+
     //         </>
     //     )
     //     userLogout = (
@@ -149,6 +149,15 @@ export default function AppNavbar() {
         if (user?.is_admin) {
             return (
                 <>
+                    <NavItem>
+                        <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/games/onGoing">Partidas en curso</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/games">Partidas finalizadas</NavLink>
+                    </NavItem>
+                    <NavItem>
+                        <NavLink style={{ color: "white" }} tag={Link} to="/player">Jugadores</NavLink>
+                    </NavItem>
                     <NavItem>
                         <NavLink style={{ color: "white" }} id="docs" tag={Link} to="/docs">Documentación API</NavLink>
                     </NavItem>

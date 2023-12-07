@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.controllers;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -193,4 +194,32 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
         }
     }
+
+    	@ApiResponses(value = { 
+		@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", 
+			content = @Content),
+		@ApiResponse(responseCode = "204", description = "No hay partidas que mostrar", 
+			content = @Content),
+		@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", 
+			content = @Content),
+		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
+    		content = @Content) })
+	@Operation(summary = "Lista todas las partidas. El usuario de este método debe ser administrador")
+	@SecurityRequirement(name = "bearerAuth")
+	@GetMapping
+	public ResponseEntity<?> getAll() {
+		Optional<Player> target = playerService.findCurrentPlayer();
+
+		if (!target.isPresent() || !target.get().getIs_admin()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		Optional<List<Game>> gameList = gameService.findAll();
+
+	 	if (!gameList.isPresent() || (gameList.isPresent() && gameList.get().isEmpty())) {
+			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+		}
+
+		return new ResponseEntity<>(gameList, HttpStatus.OK);
+	}
 }

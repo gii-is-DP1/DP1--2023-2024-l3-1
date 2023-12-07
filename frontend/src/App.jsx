@@ -18,6 +18,8 @@ import PlayerProfile from "./components/player/PlayerProfile";
 import PlayPage from "./components/player/PlayPage";
 import GameJoinPage from "./components/player/GameJoinPage";
 import CreationGamePage from "./components/player/CreationGamePage";
+import FinishedGameListAdmin from "./components/admin/FinishedGameListAdmin";
+import OnGoingGameListAdmin from "./components/admin/OnGoingGameListAdmin";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -141,7 +143,7 @@ function App() {
    * 
    * Añadir rutas dependiendo del rol
    */
-  const adminLocations = ['player', 'docs', 'achievements'];
+  const adminLocations = ['player', 'docs', 'achievements', 'games'];
   const notLoggedLocations = ['register'];
 
   useEffect(() => {
@@ -175,6 +177,9 @@ function App() {
           <Route path="/achievements/:achievementId" element={<AchievementEditAdmin />} />
           <Route path="/player/:id" element={<PlayerEditAdmin />} />
           <Route path="/docs" element={<SwaggerDocs />} />
+          <Route path="/games" element={<FinishedGameListAdmin />} />
+          <Route path="/games/onGoing" element={<OnGoingGameListAdmin />} />
+
         </>
       )
     }
