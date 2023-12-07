@@ -1,16 +1,12 @@
 import { useState, useEffect } from "react";
-import tokenService from "../../services/token.service";
 import { Link, useNavigate } from "react-router-dom";
-import { Form, Input, Label } from "reactstrap";
+import { Label } from "reactstrap";
 import getErrorModal from "../../util/getErrorModal";
 import getIdFromUrl from "../../util/getIdFromUrl";
-import useFetchState from "../../util/useFetchState";
 import DInput from "../ui/DInput";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";
 import DButton from "../ui/DButton";
-
-const jwt = tokenService.localAccessToken;
 
 export default function PlayerEditAdmin() {
     const [message, setMessage] = useState(null);

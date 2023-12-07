@@ -1,12 +1,7 @@
-import { Button, Table } from "reactstrap";
+import { Table } from "reactstrap";
 import { useState, useEffect } from "react";
-import tokenService from "../../services/token.service";
-import useFetchState from "../../util/useFetchState";
-import deleteFromList from "../../util/deleteFromList";
 import getErrorModal from "../../util/getErrorModal";
-import { Link } from "react-router-dom";
 import axios from '../../services/api';
-import DButton from "../ui/DButton";
 
 export default function FinishedGameListAdmin() {
     const [message, setMessage] = useState(null);
