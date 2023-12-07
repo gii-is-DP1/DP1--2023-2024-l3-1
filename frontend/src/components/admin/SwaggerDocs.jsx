@@ -1,22 +1,17 @@
 import { useState, useEffect } from "react";
+import axios from '../../services/api';
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css"
 
 export default function SwaggerDocs(){
-    const [docs,setDocs]=useState({});
-    useEffect(() =>{loadDocs()},[]);
+    const [spec, setSpec] = useState({});
 
-    async function loadDocs() {
-        const mydocs = await (await fetch(`/v3/api-docs`, {
-            headers: {
-                "Content-Type": "application/json",
-            },
-        })).json();
-        setDocs(mydocs);
-    }
+    useEffect(() =>{
+        (async () => {
+            const response = await axios.get("/docs");
+            setSpec(response.data);
+        })();
+    }, []);
 
-    return (
-        <SwaggerUI spec={docs} url="" />
-    );
-    
+    return spec ? <SwaggerUI spec={spec} /> : (<></>);    
 }

@@ -75,8 +75,8 @@ function App() {
           <Route path="/achievements/:id" element={<AchievementEditAdmin />} />
           <Route path="/player/:id" element={<PlayerEditAdmin />} />
           <Route path="/docs" element={<SwaggerDocs />} />
-          <Route path="/games" element={<FinishedGameListAdmin />} />
-          <Route path="/games/onGoing" element={<OnGoingGameListAdmin />} />
+          <Route path="/games/finished" element={<FinishedGameListAdmin />} />
+          <Route path="/games/ongoing" element={<OnGoingGameListAdmin />} />
 
         </>
       )
