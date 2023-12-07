@@ -31,7 +31,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
-@RequestMapping("/api/v1/games")
+@RequestMapping("/api/games")
 @Tag(name = "Games", description = "The Games management API")
 @SecurityRequirement(name = "bearerAuth")
 public class GameController {

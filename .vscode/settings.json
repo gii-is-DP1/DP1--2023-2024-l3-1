@@ -18,5 +18,6 @@
   "git.fetchOnPull": true,
   "git.pruneOnFetch": true,
   "git.rebaseWhenSync": true,
-  "git.terminalGitEditor": true
+  "git.terminalGitEditor": true,
+  "java.compile.nullAnalysis.mode": "automatic"
 }

@@ -19,7 +19,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
-@RequestMapping("/api/v1/developers")
+@RequestMapping("/api/developers")
 @Tag(name = "Developers", description = "Información sobre los desarrolladores del sistema")
 public class DevelopersController {
 
