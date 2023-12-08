@@ -78,7 +78,7 @@ public class GameController {
             Optional<Player> currentPlayer = playerService.findCurrentPlayer();
             if (currentPlayer.isPresent()) {
                 Game game = new Game();
-                Set<Player> ls = Set.of(currentPlayer.get());
+                List<Player> ls = List.of(currentPlayer.get());
 
                 game.setName(gameCreateDTO.getName());
                 game.setMaxPlayers(gameCreateDTO.getMaxPlayers());
@@ -124,8 +124,8 @@ public class GameController {
         }
 
         if (currentGame.isOnLobby()) {
-            Game newGame = gameService.updateGame(gameCreateDTO, id);
-            return new ResponseEntity<Game>(newGame, HttpStatus.OK);
+            Optional<Game> newGame = gameService.updateGame(gameCreateDTO, id);
+            return new ResponseEntity<Game>(newGame.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }

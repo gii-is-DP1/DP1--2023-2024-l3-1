@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.samples.petclinic.dto.JwtResponseDto;
 import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.AchievementService;
@@ -55,8 +54,6 @@ public class AchievementController {
 				content = { @Content(mediaType = "application/json", 
 				schema = @Schema(implementation = Achievement.class, type="array" ))}),
 			@ApiResponse(responseCode = "204", description = "No hay contenido que mostrar",
-				content = @Content),
-			@ApiResponse(responseCode = "404", description = "No se encuentran los logros solicitados",
 				content = @Content)
 	})
 	public ResponseEntity<List<Achievement>> findAll() {
@@ -78,13 +75,13 @@ public class AchievementController {
             @ApiResponse(responseCode = "404", description = "No se encuentra el logro solicitado", content = @Content)
     })
     public ResponseEntity<Achievement> findAchievement(@PathVariable("id") int id) {
-        Achievement achievementToGet = achievementService.getById(id);
+        Optional<Achievement> achievementToGet = achievementService.getAchievementById(id);
 
-        if (achievementToGet == null) {
+        if (!achievementToGet.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        return new ResponseEntity<Achievement>(achievementToGet, HttpStatus.OK);
+        return new ResponseEntity<Achievement>(achievementToGet.get(), HttpStatus.OK);
     }
 
     @PostMapping("/new")
@@ -93,13 +90,18 @@ public class AchievementController {
             @ApiResponse(responseCode = "201", description = "Logro creado correctamente", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Achievement.class)) }),
             @ApiResponse(responseCode = "400", description = "Los datos proporcionados no han pasado la validación", content = @Content),
-            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado", content = @Content),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado o no es administrador", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content)
     })
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Achievement> createAchievement(@RequestBody @Valid Achievement newAchievement,
             BindingResult br) {
+        Optional<Player> user = playerService.findCurrentPlayer();
         Achievement result = null;
+
+        if (user.isPresent() && !user.get().getIs_admin()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
         if (!br.hasErrors()) {
             result = achievementService.saveAchievement(newAchievement);
@@ -152,8 +154,17 @@ public class AchievementController {
     })
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteAchievement(@PathVariable("id") int id) {
-        findAchievement(id);
+        Optional<Player> optionalCurrentPlayer = playerService.findCurrentPlayer();
+        if(optionalCurrentPlayer.isPresent() || !optionalCurrentPlayer.get().getIs_admin()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Optional<Achievement> optionalAchievement = achievementService.getAchievementById(id);
+        if (!optionalAchievement.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
         achievementService.deleteAchievementById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

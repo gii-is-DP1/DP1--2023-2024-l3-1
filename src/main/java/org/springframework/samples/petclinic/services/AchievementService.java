@@ -28,9 +28,8 @@ public class AchievementService {
     }
 
     @Transactional(readOnly = true)
-    public Achievement getById(int id) {
-        Optional<Achievement> result = repo.findById(id);
-        return result.isPresent() ? result.get() : null;
+    public Optional<Achievement> getAchievementById(int id) {
+        return repo.findById(id);
     }
 
     @Transactional
@@ -81,10 +80,5 @@ public class AchievementService {
     @Transactional(readOnly = true)
     public Achievement getAchievementByName(String name) {
         return repo.findByName(name);
-    }
-
-    @Transactional(readOnly = true)
-    public Optional<Achievement> getAchievementById(int id) {
-        return repo.findById(id);
     }
 }

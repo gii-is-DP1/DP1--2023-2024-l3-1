@@ -8,7 +8,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.persistence.SequenceGenerator;
 import jakarta.validation.constraints.NotNull;
 
 /**
@@ -18,8 +17,7 @@ import jakarta.validation.constraints.NotNull;
 @MappedSuperclass
 public class UUIDEntity {
 	@Id
-	@SequenceGenerator(name = "entity_seq", sequenceName = "entity_sequence")
-	@GeneratedValue(strategy = GenerationType.UUID, generator = "entity_seq")
+	@GeneratedValue(strategy = GenerationType.UUID)
 	@NotNull
 	protected UUID id;
 
