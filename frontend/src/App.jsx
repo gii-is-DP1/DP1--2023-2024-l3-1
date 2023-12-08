@@ -73,7 +73,7 @@ function App() {
           <Route path="/" exact={true} element={<PlayerListAdmin />} />
           <Route path="/achievements" element={<AchievementListAdmin />} />
           <Route path="/achievements/:id" element={<AchievementEditAdmin />} />
-          <Route path="/player/:id" element={<PlayerEditAdmin />} />
+          <Route path="/player/edit/:id" element={<PlayerEditAdmin />} />
           <Route path="/docs" element={<SwaggerDocs />} />
           <Route path="/games/finished" element={<FinishedGameListAdmin />} />
           <Route path="/games/ongoing" element={<OnGoingGameListAdmin />} />

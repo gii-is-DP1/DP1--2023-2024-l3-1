@@ -26,7 +26,6 @@ export default function Login() {
       tokenService.user = response.data;
       tokenService.localAccessToken = response.data.token;
     } catch (e) {
-      console.log(e);
       if (e.response.status === 401) {
         setMessage("Credenciales incorrectas");
         return;

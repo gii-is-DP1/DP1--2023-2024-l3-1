@@ -23,7 +23,6 @@ export default function FinishedGameListAdmin() {
 
     const finishedGameList =
         games.map((game) => {
-            console.log(game)
             return (
                 game.ongoing ? (
                     <tr key={game.id}>
