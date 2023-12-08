@@ -11,17 +11,13 @@ import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.SequenceGenerator;
 
 /**
- * Simple JavaBean domain object with an id property. Used as a base class for objects
- * needing this property.
- *
- * @author Ken Krebs
- * @author Juergen Hoeller
+ * Simple JavaBean domain object with an id property (but as UUID to ensure uniqueness). Used as a base class for
+ * objects needing this property.
  */
 @MappedSuperclass
 public class UUIDEntity {
 	@Id
-	@SequenceGenerator(name = "entity_seq", 
-        sequenceName = "entity_sequence")
+	@SequenceGenerator(name = "entity_seq", sequenceName = "entity_sequence")
 	@GeneratedValue(strategy = GenerationType.UUID, generator = "entity_seq")
 	protected UUID id;
 

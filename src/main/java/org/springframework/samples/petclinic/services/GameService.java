@@ -14,45 +14,48 @@ import jakarta.validation.Valid;
 
 @Service
 public class GameService {
-    private final GameRepository gameRepository; 
+    private final GameRepository gameRepository;
 
     @Autowired
-    public GameService(GameRepository gameRepository){
-        this.gameRepository= gameRepository; 
-    }   
+    public GameService(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
+    }
+
     @Transactional(readOnly = true)
     public Optional<Game> findGame(String id) {
         return gameRepository.findById(id);
     }
 
     @Transactional(readOnly = true)
-	public Optional<Game> findByNameGame(String name) {
-		return gameRepository.findByName(name);
-	}
+    public Optional<Game> findByNameGame(String name) {
+        return gameRepository.findByName(name);
+    }
 
     @Transactional()
-    public Game saveGame(@Valid Game game){
-        this.gameRepository.save(game); 
-        return game; 
+    public Game saveGame(@Valid Game game) {
+        this.gameRepository.save(game);
+        return game;
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public Game updateGame(@Valid GameCreateDto payload, String idToUpdate){
-        Game gameToUpdate = findGame(idToUpdate); 
-        if(gameToUpdate!=null){
-            String newGameName= payload.getName(); 
-            Integer newGameMaxPlayers= payload.getMaxPlayers(); 
-            
-            if(newGameName!= null && !newGameName.isBlank()){
+    public Optional<Game> updateGame(@Valid GameCreateDto payload, String idToUpdate) {
+        Optional<Game> optionalGameToUpdate = findGame(idToUpdate);
+
+        if (optionalGameToUpdate.isPresent()) {
+            Game gameToUpdate = optionalGameToUpdate.get();
+            String newGameName = payload.getName();
+            Integer newGameMaxPlayers = payload.getMaxPlayers();
+
+            if (newGameName != null && !newGameName.isBlank()) {
                 gameToUpdate.setName(newGameName);
             }
-            if(newGameMaxPlayers!= null ){
+            if (newGameMaxPlayers != null) {
                 gameToUpdate.setMaxPlayers(newGameMaxPlayers);
             }
-            this.gameRepository.save(gameToUpdate); 
-            
+            this.gameRepository.save(gameToUpdate);
         }
-        return gameToUpdate; 
+
+        return optionalGameToUpdate;
     }
 
     public Optional<List<Game>> findAll() {

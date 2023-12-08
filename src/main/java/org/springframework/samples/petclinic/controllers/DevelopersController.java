@@ -28,14 +28,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class DevelopersController {
 
     @GetMapping
-    @ApiResponses(value = { 
-		@ApiResponse(responseCode = "200", description = "Solicitud correcta", 
-			content = { @Content(mediaType = "application/json", 
-			schema = @Schema(implementation = Developer.class )) }),
-		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
-    		content = @Content) })
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Solicitud correcta", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Developer.class)) }),
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
     @Operation(summary = "Obtiene una lista de los desarrolladores de la aplicación")
-    public ResponseEntity<List<Developer>> getDevelopers(){
+    public ResponseEntity<List<Developer>> getDevelopers() {
         MavenXpp3Reader reader = new MavenXpp3Reader();
         try {
             Model model = reader.read(new FileReader("pom.xml", StandardCharsets.UTF_8));
@@ -43,6 +41,6 @@ public class DevelopersController {
         } catch (IOException | XmlPullParserException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }      
+        }
     }
 }

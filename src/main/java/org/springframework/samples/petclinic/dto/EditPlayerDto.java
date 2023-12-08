@@ -14,5 +14,5 @@ public class EditPlayerDto {
 
 	private String password;
 
-    private Icon profileIcon;
+	private Icon profileIcon;
 }

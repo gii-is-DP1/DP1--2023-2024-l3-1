@@ -29,8 +29,8 @@ import lombok.Setter;
 @Table(name = "games")
 public class Game extends UUIDEntity {
     @Size(min = 3, max = 50)
-	@NotBlank
-	private String name;
+    @NotBlank
+    private String name;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime start;
@@ -39,33 +39,33 @@ public class Game extends UUIDEntity {
     LocalDateTime finish;
 
     @NotNull
-    @ManyToOne 
+    @ManyToOne
     Player creator;
 
     @Min(value = 2)
     @Max(value = 8)
-    Integer maxPlayers = 8; 
+    Integer maxPlayers = 8;
 
     @ManyToMany
-    @Size(min= 1 ,max = 8)
+    @Size(min = 1, max = 8)
     Set<Player> players;
 
     @JsonIgnore
     @Transient
-    public boolean isOnLobby(){
+    public boolean isOnLobby() {
         return this.start == null && !isFinished();
     }
 
     @JsonIgnore
     @Transient
-    public boolean isOngoing(){
-        return this.start != null && !isFinished(); 
+    public boolean isOngoing() {
+        return this.start != null && !isFinished();
     }
 
     @JsonIgnore
     @Transient
-    public boolean isFinished(){
-        return this.finish != null; 
+    public boolean isFinished() {
+        return this.finish != null;
     }
 
     @Transient

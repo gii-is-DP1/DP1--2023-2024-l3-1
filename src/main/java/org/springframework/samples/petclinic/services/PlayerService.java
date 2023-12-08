@@ -19,7 +19,7 @@ import jakarta.validation.Valid;
 
 @Service
 public class PlayerService {
-    private final PasswordEncoder encoder;
+	private final PasswordEncoder encoder;
 	private final PlayerRepository repository;
 
 	@Autowired
@@ -44,7 +44,7 @@ public class PlayerService {
 		return repository.findByUsername(username);
 	}
 
-	//Nos coge todos los usuarios que no son admin
+	// Nos coge todos los usuarios que no son admin
 	@Transactional(readOnly = true)
 	public Optional<List<Player>> findAll() {
 		return repository.findAllNonAdmin();
@@ -54,10 +54,10 @@ public class PlayerService {
 	public void createUser(@Valid SignupRequest request) {
 		Player player = new Player();
 		player.setUsername(request.getUsername());
-        player.setEmail(request.getEmail());
+		player.setEmail(request.getEmail());
 		player.setPassword(encoder.encode(request.getPassword()));
 		this.repository.save(player);
-    }
+	}
 
 	@Transactional
 	public Player updatePlayer(@Valid EditPlayerDto payload, Integer idToUpdate) {
@@ -81,7 +81,7 @@ public class PlayerService {
 			if (newProfileIcon != null) {
 				toUpdate.setProfile_icon(newProfileIcon);
 			}
-			
+
 			this.repository.save(toUpdate);
 
 			return toUpdate;

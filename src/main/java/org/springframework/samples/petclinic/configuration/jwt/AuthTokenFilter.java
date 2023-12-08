@@ -33,7 +33,7 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		response.addHeader("Access-Control-Allow-Headers", "*");
 		response.addHeader("Access-Control-Allow-Methods", "*");
 		response.addHeader("Access-Control-Allow-Credentials", "true");
-		
+
 		try {
 			String jwt = parseJwt(request);
 			if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
@@ -45,7 +45,8 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 				SecurityContextHolder.getContext().setAuthentication(authentication);
 			}
-		} catch (Exception e) {}
+		} catch (Exception e) {
+		}
 
 		filterChain.doFilter(request, response);
 	}

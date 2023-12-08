@@ -42,36 +42,41 @@ public class SecurityConfiguration {
 	@Bean
 	protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
 		http
-			.csrf(AbstractHttpConfigurer::disable)
-			.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-			.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.disable()))
-			.exceptionHandling((exepciontHandling) -> exepciontHandling.authenticationEntryPoint(unauthorizedHandler))
-			.authorizeHttpRequests(authorizeRequests ->	authorizeRequests
-				.requestMatchers("/webjars/**", "/static/**", "/v3/api-docs/**", "/swagger-resources/**", "/swagger-ui.html", "/swagger-ui/**").permitAll()
-				.requestMatchers("/api/docs/**").permitAll()
-				.requestMatchers("/api/developers/**").permitAll()
-				.requestMatchers("/api/player/login", "/api/player/validate", "/api/player/signup").permitAll()
-				.requestMatchers("/api/player/**").authenticated()
-				.requestMatchers("/api/achievements/**").authenticated()
-				.requestMatchers("/api/games/**").authenticated()
-				// .requestMatchers("/api/v1/plan").hasAuthority("OWNER")
-				// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/users/**")).hasAuthority(ADMIN)
-				// .requestMatchers("/api/v1/clinicOwners/all").hasAuthority(ADMIN)
-				// .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE, "/api/v1/consultations/**")).hasAuthority(ADMIN)
-				// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/owners/**")).hasAuthority(ADMIN)
-				// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/visits/**")).authenticated()			
-				// .requestMatchers(HttpMethod.GET, "/api/v1/pets/stats").hasAuthority(ADMIN)
-				// .requestMatchers("/api/v1/pets").authenticated()
-				// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/pets/**")).authenticated()
-				// .requestMatchers(HttpMethod.GET, "/api/v1/vets/stats").hasAuthority(ADMIN)
-				// .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/v1/vets/**")).authenticated()
-				.requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
-				// .requestMatchers("/api/v1/dobbleUsers").authenticated()
-				// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/dobbleUsers/**")).permitAll()
-				// .requestMatchers("/api/v1/dobbleUsers/**").permitAll()
-				// .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET, "/api/v1/dobbleUsers/**")).authenticated()
-				.anyRequest().authenticated())
-			.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
+				.csrf(AbstractHttpConfigurer::disable)
+				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+				.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.disable()))
+				.exceptionHandling((exepciontHandling) -> exepciontHandling.authenticationEntryPoint(unauthorizedHandler))
+				.authorizeHttpRequests(authorizeRequests -> authorizeRequests
+						.requestMatchers("/webjars/**", "/static/**", "/v3/api-docs/**", "/swagger-resources/**",
+								"/swagger-ui.html", "/swagger-ui/**")
+						.permitAll()
+						.requestMatchers("/api/docs/**").permitAll()
+						.requestMatchers("/api/developers/**").permitAll()
+						.requestMatchers("/api/player/login", "/api/player/validate", "/api/player/signup").permitAll()
+						.requestMatchers("/api/player/**").authenticated()
+						.requestMatchers("/api/achievements/**").authenticated()
+						.requestMatchers("/api/games/**").authenticated()
+						// .requestMatchers("/api/v1/plan").hasAuthority("OWNER")
+						// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/users/**")).hasAuthority(ADMIN)
+						// .requestMatchers("/api/v1/clinicOwners/all").hasAuthority(ADMIN)
+						// .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.DELETE,
+						// "/api/v1/consultations/**")).hasAuthority(ADMIN)
+						// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/owners/**")).hasAuthority(ADMIN)
+						// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/visits/**")).authenticated()
+						// .requestMatchers(HttpMethod.GET, "/api/v1/pets/stats").hasAuthority(ADMIN)
+						// .requestMatchers("/api/v1/pets").authenticated()
+						// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/pets/**")).authenticated()
+						// .requestMatchers(HttpMethod.GET, "/api/v1/vets/stats").hasAuthority(ADMIN)
+						// .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,
+						// "/api/v1/vets/**")).authenticated()
+						.requestMatchers(AntPathRequestMatcher.antMatcher("/h2-console/**")).permitAll()
+						// .requestMatchers("/api/v1/dobbleUsers").authenticated()
+						// .requestMatchers(AntPathRequestMatcher.antMatcher("/api/v1/dobbleUsers/**")).permitAll()
+						// .requestMatchers("/api/v1/dobbleUsers/**").permitAll()
+						// .requestMatchers(AntPathRequestMatcher.antMatcher(HttpMethod.GET,
+						// "/api/v1/dobbleUsers/**")).authenticated()
+						.anyRequest().authenticated())
+				.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
 		return http.build();
 	}
@@ -82,12 +87,12 @@ public class SecurityConfiguration {
 	}
 
 	@Bean
-	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception{
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
 		return config.getAuthenticationManager();
-	}	
+	}
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
-	}	
+	}
 }

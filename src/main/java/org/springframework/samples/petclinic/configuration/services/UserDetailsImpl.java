@@ -49,7 +49,6 @@ public class UserDetailsImpl implements UserDetails {
 		return authorities;
 	}
 
-
 	public Integer getId() {
 		return id;
 	}

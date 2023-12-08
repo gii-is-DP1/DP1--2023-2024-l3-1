@@ -20,15 +20,15 @@ public class Achievement extends NamedEntity {
     private String description;
 
     private String badgeImage;
-    
+
     @Min(0)
     private double threshold;
-    
+
     @Enumerated(EnumType.STRING)
     @NotNull
     Metric metric;
 
-    public String getActualDescription(){
-        return description.replace("<THRESHOLD>",String.valueOf(threshold));
+    public String getActualDescription() {
+        return description.replace("<THRESHOLD>", String.valueOf(threshold));
     }
 }

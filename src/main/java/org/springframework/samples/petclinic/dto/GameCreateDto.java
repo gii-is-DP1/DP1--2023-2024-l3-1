@@ -8,8 +8,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class GameCreateDto {
-    private String name; 
-    
+    private String name;
+
     @Min(value = 2)
     @Max(value = 8)
     private Integer maxPlayers;

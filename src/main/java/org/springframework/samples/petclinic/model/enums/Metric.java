@@ -6,4 +6,3 @@ public enum Metric {
     TOTAL_PLAY_TIME,
     REACTION_TIME
 }
-
