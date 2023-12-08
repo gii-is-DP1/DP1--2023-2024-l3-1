@@ -1,7 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDateTime;
-import java.util.Set;
+import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.samples.petclinic.model.base.UUIDEntity;
@@ -9,7 +9,6 @@ import org.springframework.samples.petclinic.model.enums.GameStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -44,11 +43,12 @@ public class Game extends UUIDEntity {
 
     @Min(value = 2)
     @Max(value = 8)
+    @NotNull
     Integer maxPlayers = 8;
 
     @ManyToMany
     @Size(min = 1, max = 8)
-    Set<Player> players;
+    List<Player> players;
 
     @JsonIgnore
     @Transient
@@ -69,6 +69,7 @@ public class Game extends UUIDEntity {
     }
 
     @Transient
+    @NotNull
     public GameStatus getStatus() {
         if (this.isOnLobby()) {
             return GameStatus.LOBBY;

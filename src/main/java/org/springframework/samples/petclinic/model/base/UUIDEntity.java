@@ -9,6 +9,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import jakarta.persistence.SequenceGenerator;
+import jakarta.validation.constraints.NotNull;
 
 /**
  * Simple JavaBean domain object with an id property (but as UUID to ensure uniqueness). Used as a base class for
@@ -19,6 +20,7 @@ public class UUIDEntity {
 	@Id
 	@SequenceGenerator(name = "entity_seq", sequenceName = "entity_sequence")
 	@GeneratedValue(strategy = GenerationType.UUID, generator = "entity_seq")
+	@NotNull
 	protected UUID id;
 
 	public UUID getId() {

@@ -63,7 +63,7 @@ public class AchievementController {
 		List<Achievement> achievements = achievementService.getAchievements();
 
 		if (achievements.size() > 0) {
-			return new ResponseEntity<>(, HttpStatus.OK);
+			return new ResponseEntity<>(achievements, HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 		}
