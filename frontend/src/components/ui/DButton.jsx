@@ -6,7 +6,6 @@ export default function DButton(Props) {
         <button {...Props}
         style={{
             ...inputStyles,
-            paddingBottom: '0',
             backgroundColor: '#61196C',
             color: 'white',
             ...Props.style,

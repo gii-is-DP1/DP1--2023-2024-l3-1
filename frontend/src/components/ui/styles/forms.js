@@ -4,6 +4,7 @@ export const inputStyles = {
     backgroundColor: '#F2F9F3',
     borderRadius: '40px',
     padding: '10px',
+    paddingBottom: '0',
     margin: '10px',
     fontSize: '1.5rem'
 }
