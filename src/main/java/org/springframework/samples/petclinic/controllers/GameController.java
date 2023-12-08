@@ -21,9 +21,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -31,6 +33,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 @RestController
+@RestControllerAdvice
 @RequestMapping("/api/games")
 @Tag(name = "Games", description = "The Games management API")
 @SecurityRequirement(name = "bearerAuth")
@@ -47,21 +50,24 @@ public class GameController {
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida solicitada.", content = @Content)
     })
     @GetMapping("/{id}")
-    public ResponseEntity<Game> findGame(@PathVariable("id") String id) {
-        Game gameToGet = gameService.findGame(id);
-        if (gameToGet == null) {
+    public ResponseEntity<?> findGame(@PathVariable("id") String id) {
+        Optional<Game> gameToGet = gameService.findGame(id);
+        if (!gameToGet.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<Game>(gameToGet, HttpStatus.OK);
+
+        return new ResponseEntity<Game>(gameToGet.get(), HttpStatus.OK);
     }
 
     @Operation(summary = "Crea una nueva partida si el jugador actual está autenticado.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Partida creada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "201", description = "Partida creada correctamente.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
@@ -79,7 +85,7 @@ public class GameController {
                 game.setCreator(currentPlayer.get());
                 game.setPlayers(ls);
                 gameService.saveGame(game);
-                return new ResponseEntity<>(game, HttpStatus.CREATED);
+                return new ResponseEntity<Game>(game, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
@@ -92,7 +98,8 @@ public class GameController {
     // Cambiar el número máximo de usuarios de una partida en el lobby
     @Operation(summary = "Actualiza una partida en el estado de lobby si el jugador actual es el creador y la partida está en el lobby.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "401", description = "El usuario actual no está autorizado para realizar esta operación.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida a actualizar.", content = @Content),
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para ser actualizada (está en curso o finalizada).", content = @Content),
@@ -102,12 +109,13 @@ public class GameController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Game> updateGameLobby(@Valid @RequestBody GameCreateDto gameCreateDTO,
             @PathVariable("id") String id) {
-        Game currentGame = gameService.findGame(id);
+        Optional<Game> optionalGame = gameService.findGame(id);
 
-        if (currentGame == null) {
+        if (!optionalGame.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
+        Game currentGame = optionalGame.get();
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
         Player creator = currentGame.getCreator();
 
@@ -117,7 +125,7 @@ public class GameController {
 
         if (currentGame.isOnLobby()) {
             Game newGame = gameService.updateGame(gameCreateDTO, id);
-            return new ResponseEntity<>(newGame, HttpStatus.OK);
+            return new ResponseEntity<Game>(newGame, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
@@ -126,7 +134,8 @@ public class GameController {
 
     @Operation(summary = "Permite a un jugador unirse a una partida existente.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida o jugador.", content = @Content),
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para unirse (está en curso o finalizada).", content = @Content),
             @ApiResponse(responseCode = "509", description = "El jugador ya se encuentra en la partida.", content = @Content),
@@ -135,12 +144,14 @@ public class GameController {
     })
     @PostMapping("/join/{gameId}")
     public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
-        Game gameToJoin = gameService.findGame(gameId);
+        Optional<Game> optionalGameToJoin = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
-        if (gameToJoin == null && !currentPlayer.isPresent()) {
+        if (!optionalGameToJoin.isPresent() && !currentPlayer.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        Game gameToJoin = optionalGameToJoin.get();
 
         if (!gameToJoin.isOnLobby()) {
             return new ResponseEntity<>(HttpStatus.LOCKED);
@@ -153,7 +164,7 @@ public class GameController {
         if (gameToJoin.getMaxPlayers() >= gameToJoin.getPlayers().size() + 1) {
             Player joiningPlayer = currentPlayer.get();
             gameToJoin.getPlayers().add(joiningPlayer);
-            return new ResponseEntity<>(gameService.saveGame(gameToJoin), HttpStatus.OK);
+            return new ResponseEntity<Game>(gameService.saveGame(gameToJoin), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -161,7 +172,8 @@ public class GameController {
 
     @Operation(summary = "Inicia una partida si se cumplen las condiciones requeridas.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "401", description = "El jugador actual no es el creador de la partida.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida.", content = @Content),
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para iniciar (está en curso o finalizada).", content = @Content),
@@ -170,12 +182,14 @@ public class GameController {
     })
     @PostMapping("/start/{gameId}")
     public ResponseEntity<Game> startGame(@PathVariable String gameId) {
-        Game currentGame = gameService.findGame(gameId);
+        Optional<Game> optionalCurrentGame = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
-        if (currentGame == null) {
+        if (!optionalCurrentGame.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+
+        Game currentGame = optionalCurrentGame.get();
 
         if (!currentGame.isOnLobby()) {
             return new ResponseEntity<>(HttpStatus.LOCKED);
@@ -189,37 +203,33 @@ public class GameController {
 
         if (currentGame.getPlayers().size() >= 2) {
             currentGame.setStart(LocalDateTime.now());
-            return new ResponseEntity<>(gameService.saveGame(currentGame), HttpStatus.OK);
+            return new ResponseEntity<Game>(gameService.saveGame(currentGame), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
         }
     }
 
-    	@ApiResponses(value = { 
-		@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", 
-			content = @Content),
-		@ApiResponse(responseCode = "204", description = "No hay partidas que mostrar", 
-			content = @Content),
-		@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", 
-			content = @Content),
-		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
-    		content = @Content) })
-	@Operation(summary = "Lista todas las partidas. El usuario de este método debe ser administrador")
-	@SecurityRequirement(name = "bearerAuth")
-	@GetMapping
-	public ResponseEntity<?> getAll() {
-		Optional<Player> target = playerService.findCurrentPlayer();
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class, type = "array")) }),
+            @ApiResponse(responseCode = "204", description = "No hay partidas que mostrar", content = @Content),
+            @ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+    @Operation(summary = "Lista todas las partidas. El usuario de este método debe ser administrador")
+    @GetMapping
+    public ResponseEntity<List<Game>> getAll() {
+        Optional<Player> target = playerService.findCurrentPlayer();
 
-		if (!target.isPresent() || !target.get().getIs_admin()) {
-			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-		}
+        if (!target.isPresent() || !target.get().getIs_admin()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
 
-		Optional<List<Game>> gameList = gameService.findAll();
+        Optional<List<Game>> gameList = gameService.findAll();
 
-	 	if (!gameList.isPresent() || (gameList.isPresent() && gameList.get().isEmpty())) {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
+        if (!gameList.isPresent() || (gameList.isPresent() && gameList.get().isEmpty())) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
-		return new ResponseEntity<>(gameList, HttpStatus.OK);
-	}
+        return new ResponseEntity<List<Game>>(gameList.get(), HttpStatus.OK);
+    }
 }

@@ -4,12 +4,13 @@ import java.time.LocalDateTime;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.model.base.UUIDEntity;
+import org.springframework.samples.petclinic.model.enums.GameStatus;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -26,15 +27,9 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "games")
-public class Game {
-
-    @Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-    protected String id; 
-
+public class Game extends UUIDEntity {
     @Size(min = 3, max = 50)
 	@NotBlank
-	@Column(name = "name")
 	private String name;
 
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
@@ -55,21 +50,32 @@ public class Game {
     @Size(min= 1 ,max = 8)
     Set<Player> players;
 
-	@Override
-	public String toString() {
-		return this.getName();
-	}
-
+    @JsonIgnore
     @Transient
     public boolean isOnLobby(){
         return this.start == null && !isFinished();
     }
+
+    @JsonIgnore
     @Transient
     public boolean isOngoing(){
         return this.start != null && !isFinished(); 
     }
+
+    @JsonIgnore
     @Transient
     public boolean isFinished(){
         return this.finish != null; 
+    }
+
+    @Transient
+    public GameStatus getStatus() {
+        if (this.isOnLobby()) {
+            return GameStatus.LOBBY;
+        } else if (this.isOngoing()) {
+            return GameStatus.STARTED;
+        } else {
+            return GameStatus.FINISHED;
+        }
     }
 }

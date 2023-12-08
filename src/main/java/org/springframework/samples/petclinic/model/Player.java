@@ -9,6 +9,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
@@ -36,6 +38,7 @@ public class Player extends BaseEntity {
     @JsonIgnore
     String password;
 
+    @Enumerated(EnumType.STRING)
     Icon profile_icon;
 
     @NotNull

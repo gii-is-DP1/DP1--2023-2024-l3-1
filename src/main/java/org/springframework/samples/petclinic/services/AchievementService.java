@@ -87,6 +87,4 @@ public class AchievementService {
     public Optional<Achievement> getAchievementById(int id){
         return repo.findById(id);
     }
-    
-
 }

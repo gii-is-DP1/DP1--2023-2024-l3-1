@@ -17,7 +17,6 @@ package org.springframework.samples.petclinic.model.base;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
-import jakarta.validation.constraints.Size;
 
 /**
  * Simple JavaBean domain object adds a name property to <code>BaseEntity</code>. Used as
@@ -29,7 +28,6 @@ import jakarta.validation.constraints.Size;
 @MappedSuperclass
 public class NamedEntity extends BaseEntity {
 
-    @Size(min = 3, max = 50)
 	@Column(name = "name")
 	private String name;
 

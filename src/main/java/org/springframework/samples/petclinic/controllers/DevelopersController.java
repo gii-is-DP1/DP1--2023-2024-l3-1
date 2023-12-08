@@ -16,6 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @RestController
@@ -24,6 +28,12 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 public class DevelopersController {
 
     @GetMapping
+    @ApiResponses(value = { 
+		@ApiResponse(responseCode = "200", description = "Solicitud correcta", 
+			content = { @Content(mediaType = "application/json", 
+			schema = @Schema(implementation = Developer.class )) }),
+		@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", 
+    		content = @Content) })
     @Operation(summary = "Obtiene una lista de los desarrolladores de la aplicación")
     public ResponseEntity<List<Developer>> getDevelopers(){
         MavenXpp3Reader reader = new MavenXpp3Reader();
