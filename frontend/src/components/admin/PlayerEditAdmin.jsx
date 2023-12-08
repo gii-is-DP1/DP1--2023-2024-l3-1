@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Label } from "reactstrap";
-import getErrorModal from "../../util/getErrorModal";
+import getErrorModal from "../../util/getModal";
 import DInput from "../ui/DInput";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";

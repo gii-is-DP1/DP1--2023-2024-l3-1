@@ -1,6 +1,6 @@
 import { Table } from "reactstrap";
 import { useEffect, useState } from "react";
-import getErrorModal from "../../util/getErrorModal";
+import getErrorModal from "../../util/getModal";
 import axios from '../../services/api';
 import imgnotfound from '../../static/images/defaultAchievementImg.png';
 

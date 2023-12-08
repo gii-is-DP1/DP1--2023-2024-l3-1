@@ -1,6 +1,6 @@
 import { Table } from "reactstrap";
 import { useState, useEffect } from "react";
-import getErrorModal from "../../util/getErrorModal";
+import getErrorModal from "../../util/getModal";
 import axios from '../../services/api';
 
 export default function FinishedGameListAdmin() {

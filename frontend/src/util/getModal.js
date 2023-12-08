@@ -13,14 +13,14 @@ function handleVisible(setVisible, visible) {
  * @param {*} actions - Establece los botones de la alerta
  * @returns 
  */
-export default function getErrorModal(setMessage, message = undefined, header = 'Error', actions = undefined) {
+export default function getModal(setMessage, message = undefined, header = 'Error', actions = undefined) {
     if (message) {
         const closeBtn = (
             <DButton onClick={() => handleVisible(setMessage, message)} type="button">X</DButton>
         );
         return (
             <div>
-                <Modal isOpen={Boolean(message)} style={{ color: 'white' }} toggle={() => handleVisible(setMessage, message)}
+                <Modal centered isOpen={Boolean(message)} style={{ color: 'white' }} toggle={() => handleVisible(setMessage, message)}
                     keyboard={false}>
                     {header ? <ModalHeader toggle={() => handleVisible(setMessage, message)} close={closeBtn}>{header}</ModalHeader> : <></>}
                     <ModalBody>

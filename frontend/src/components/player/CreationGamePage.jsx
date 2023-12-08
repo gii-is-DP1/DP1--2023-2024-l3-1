@@ -2,7 +2,7 @@ import { useState } from "react";
 import tokenService from "../../services/token.service";
 import { Link, useNavigate } from "react-router-dom";
 import { Label } from "reactstrap";
-import getErrorModal from "../../util/getErrorModal";
+import getErrorModal from "../../util/getModal";
 import DInput from "../ui/DInput";
 import axios from '../../services/api';
 import { formStyle } from "../ui/styles/forms";
