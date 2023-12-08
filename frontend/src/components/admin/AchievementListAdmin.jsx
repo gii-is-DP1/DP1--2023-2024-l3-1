@@ -1,6 +1,6 @@
 import { Table } from "reactstrap";
 import { useEffect, useState } from "react";
-import deleteFromList from "../../util/deleteFromList";
+import deleteFromList from "../../../deprecations/util/deleteFromList";
 import getErrorModal from "../../util/getModal";
 import { Link } from "react-router-dom";
 import axios from '../../services/api';

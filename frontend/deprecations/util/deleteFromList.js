@@ -1,4 +1,4 @@
-import tokenService from "../services/token.service";
+import tokenService from "../../src/services/token.service";
 import getDeleteAlertsOrModal from "./getDeleteAlertsOrModal";
 
 export default function deleteFromList(url, id, [state, setState], [alerts, setAlerts], setMessage, setVisible, options = {}) {
