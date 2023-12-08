@@ -18,8 +18,7 @@ import PlayerProfile from "./components/player/PlayerProfile";
 import PlayPage from "./components/player/PlayPage";
 import GameJoinPage from "./components/player/GameJoinPage";
 import CreationGamePage from "./components/player/CreationGamePage";
-import FinishedGameListAdmin from "./components/admin/FinishedGameListAdmin";
-import OnGoingGameListAdmin from "./components/admin/OnGoingGameListAdmin";
+import GameListAdmin from "./components/admin/GameListAdmin";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -76,8 +75,7 @@ function App() {
           <Route path="/achievements/edit/:id" element={<AchievementEditAdmin />} />
           <Route path="/player/edit/:id" element={<PlayerEditAdmin />} />
           <Route path="/docs" element={<SwaggerDocs />} />
-          <Route path="/games/finished" element={<FinishedGameListAdmin />} />
-          <Route path="/games/ongoing" element={<OnGoingGameListAdmin />} />
+          <Route path="/games" element={<GameListAdmin />} />
 
         </>
       )

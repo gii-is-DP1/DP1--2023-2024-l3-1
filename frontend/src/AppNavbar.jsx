@@ -21,10 +21,7 @@ export default function AppNavbar() {
             return (
                 <>
                     <NavItem>
-                        <NavLink style={{ color: "white" }} tag={Link} to="/games/ongoing">Partidas en curso</NavLink>
-                    </NavItem>
-                    <NavItem>
-                        <NavLink style={{ color: "white" }} tag={Link} to="/games/finished">Partidas finalizadas</NavLink>
+                        <NavLink style={{ color: "white" }} tag={Link} to="/games">Partidas</NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink style={{ color: "white" }} tag={Link} to="/docs">Documentación API</NavLink>
