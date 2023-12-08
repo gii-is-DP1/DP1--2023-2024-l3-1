@@ -1,6 +1,6 @@
 import { Table } from "reactstrap";
 import { useState, useEffect } from "react";
-import getErrorModal from "../../util/getModal";
+import getModal from "../../util/getModal";
 import { Link } from "react-router-dom";
 import axios from '../../services/api';
 import DButton from "../ui/DButton";
@@ -42,7 +42,8 @@ export default function PlayerListAdmin() {
     function setConfirmActions(id) {
         const clear = () => {
             setMessage();
-            setModalActions(undefined);
+            setModalActions();
+            setModalHeader();
         };
         setModalActions(
         <>
@@ -74,13 +75,13 @@ export default function PlayerListAdmin() {
                     <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.is_admin ? "Administrador" : "Jugador"} </td>
                     <td className="text-center">
                         <Link to={`/player/edit/${p.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
-                            <DButton style={{ width: '15vw', backgroundColor: '#ffcc24' }}>
+                            <DButton style={{ width: '15vw', backgroundColor: '#ffcc24', color: 'black' }}>
                                 Editar
                             </DButton>
                         </Link>
                     </td>
                     <td className="text-center">
-                        <DButton style={{ width: '15vw', backgroundColor: '#ff3300' }}
+                        <DButton style={{ width: '15vw', backgroundColor: '#ff3300', color: 'black' }}
                             onClick={() => setConfirmActions(p.id)}>
                             Borrar
                         </DButton>
@@ -89,7 +90,7 @@ export default function PlayerListAdmin() {
             );
         });
 
-    const modal = getErrorModal(setMessage, message, modalHeader, modalActions);
+    const modal = getModal(setMessage, message, modalHeader, modalActions);
 
     return (
         <div>
@@ -97,6 +98,17 @@ export default function PlayerListAdmin() {
                 <h1 className="text-center" style={{ marginTop: '30px' }}>Listado Jugadores</h1>
                 {modal}
                 <div>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}>
+                        <Link
+                            to={`/player/new`}
+                            style={{ textDecoration: "none" }}
+                        >
+                            <DButton style={{ width: '25vw' }}>Crear Jugador</DButton>
+                        </Link>
+                    </div>
                     <Table aria-label="player" className="mt-4">
                         <thead>
                             <tr>
@@ -110,14 +122,6 @@ export default function PlayerListAdmin() {
                         </thead>
                         <tbody>{playerList}</tbody>
                     </Table>
-                    <div className="custom-button-row">
-                        <Link
-                            to={`/player/new`}
-                            style={{ textDecoration: "none" }}
-                        >
-                            <DButton style={{ width: '25vw' }}> Crear Jugador </DButton>
-                        </Link>
-                    </div>
                 </div>
             </div>
         </div>

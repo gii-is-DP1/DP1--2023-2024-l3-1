@@ -1,26 +1,69 @@
 import { Table } from "reactstrap";
 import { useEffect, useState } from "react";
-import deleteFromList from "../../../deprecations/util/deleteFromList";
-import getErrorModal from "../../util/getModal";
+import DButton from "../ui/DButton";
+import getModal from "../../util/getModal";
 import { Link } from "react-router-dom";
 import axios from '../../services/api';
 import imgnotfound from '../../static/images/defaultAchievementImg.png'; 
 
 export default function AchievementListAdmin() {
-    const [message, setMessage] = useState(null);
-    const [visible, setVisible] = useState(false);
-    const [alerts, setAlerts] = useState([]);
+    const [message, setMessage] = useState();
+    const [modalHeader, setModalHeader] = useState();
+    const [modalActions, setModalActions] = useState();
     const [achievements, setAchievements] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('/achievements');
-                setAchievements(response.data);
-            } catch(error) {
-                console.error('Error al obtener los logros: ', error);
+    async function fetchData() {
+        try {
+            const response = await axios.get('/achievements');
+            setAchievements(response.data);
+        } catch (error) {
+            setModalHeader('Error');
+            setMessage("Error al obtener logros.");
+        }
+    }
+
+    async function deleteAchievement(id) {
+        try {
+            await axios.delete(`/achievements/${id}`);
+        } catch (e) {
+            setModalHeader("Error al borrar el logro");
+            if (e.response.status === 401) {
+                setMessage("El usuario actual no es administrador, no tiene permisos para borrar este logro");
+            } else if (e.response.status === 404) {
+                setMessage("El logro no existe");
+            } else if (e.response.status === 500) {
+                setMessage("Error interno del servidor.");
+            } else {
+                setMessage(String(e));
             }
+        } finally {
+            await fetchData();
+        }
+    }
+
+    function setConfirmActions(id) {
+        const clear = () => {
+            setMessage();
+            setModalActions();
+            setModalHeader();
         };
+        setModalActions(
+        <>
+            <DButton style={{ backgroundColor: 'red' }} onClick={() => clear()}>
+                Cancelar
+            </DButton>
+            <DButton onClick={() => {
+                deleteAchievement(id);
+                clear();
+                }}>
+                    Confirmar
+            </DButton>
+        </>);
+        setModalHeader("Va a eliminar un logro");
+        setMessage("¿Continuar?");
+    }
+
+    useEffect(() => {
         fetchData();
     } , []);
 
@@ -34,40 +77,42 @@ export default function AchievementListAdmin() {
                     <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.threshold} </td>
                     <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.metric} </td>
                     <td className="text-center">
-                        <Link to={`/achievements/${a.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
-                            <button className="auth-button-yellow">
+                        <Link to={`/achievements/edit/${a.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
+                            <DButton style={{ width: '15vw', backgroundColor: '#ffcc24', color: 'black' }}>
                                 Editar
-                            </button>
+                            </DButton>
                         </Link>
                     </td>
                     <td className="text-center">
-                        <button
-                            className="auth-button-red"
-                            onClick={() =>
-                                deleteFromList(
-                                    `/api/v1/achievements/${a.id}`,
-                                    a.id,
-                                    [achievements, setAchievements],
-                                    [alerts, setAlerts],
-                                    setMessage,
-                                    setVisible
-                                )
-                            }
-                        >
+                        <DButton
+                            style={{ width: '15vw', backgroundColor: '#ff3300', color: 'black' }}
+                            onClick={() => setConfirmActions(a.id)}>
                             Borrar
-                        </button>
+                        </DButton>
                     </td>
                 </tr>
             );
         });
-    const modal = getErrorModal(setVisible, visible, message);
+
+    const modal = getModal(setMessage, message, modalHeader, modalActions);
+
     return (
         <div>
             <div className="admin-page-container">
                 <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
-                {alerts.map((a) => a.alert)}
                 {modal}
                 <div>
+                    <div style={{
+                        display: 'flex',
+                        justifyContent: 'center',
+                    }}>
+                        <Link 
+                            to={`/achievements/new`}
+                            style={{ textDecoration: "none" }}
+                        > 
+                            <DButton style={{ width: '25vw' }}>Crear logro</DButton>
+                        </Link>
+                    </div>
                     <Table aria-label="achievements" className="mt-4">
                         <thead>
                             <tr>
@@ -82,14 +127,6 @@ export default function AchievementListAdmin() {
                         </thead>
                         <tbody>{achievementList}</tbody>
                     </Table>
-                    <div className="custom-button-row">
-                        <Link 
-                            to={`/achievements/new`}
-                            style={{ textDecoration: "none" }}
-                        > 
-                            <button className="auth-button"> Crear logro </button>
-                        </Link>
-                    </div>
                 </div>
             </div>
         </div>
