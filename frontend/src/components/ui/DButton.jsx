@@ -8,6 +8,7 @@ export default function DButton(Props) {
             ...inputStyles,
             backgroundColor: '#61196C',
             color: 'white',
+            ...(Props.disabled && { filter: 'grayscale(100%)' }),
             ...Props.style,
         }}>
             {Props.children}

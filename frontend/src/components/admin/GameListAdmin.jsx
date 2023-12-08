@@ -3,19 +3,24 @@ import { useState, useEffect } from "react";
 import { GameStatus } from "../../models/enums";
 import getModal from "../../util/getModal";
 import axios from '../../services/api';
+import DButton from "../ui/DButton";
+import { dividirArray } from "../../util/dataManipulation";
 
 export default function FinishedGameListAdmin() {
     const [message, setMessage] = useState();
     const [refreshCounter, setRefreshCounter] = useState(5);
-    const [games, setGames] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [games, setGames] = useState([[]]);
 
     async function fetchData() {
         try {
             const response = await axios.get('/games');
             if (response.status === 204) {
                 setMessage("No hay partidas finalizadas que mostrar");
+                return;
             }
-            setGames(response.data);
+            // Para probar la paginación, cambiar este número
+            setGames(dividirArray(response.data, 10));
         } catch (error) {
             if (error.response.status === 401) {
                 setMessage("El usuario actual no es administrador o no ha iniciado sesión: no tiene permisos para obtener partidas")
@@ -65,7 +70,7 @@ export default function FinishedGameListAdmin() {
     }
 
     const finishedGameList =
-        games.map((game) => {
+        games[currentPage].map((game) => {
             return (
                 <tr key={game.id}>
                     <td className="text-center">{game.name}</td>
@@ -111,7 +116,15 @@ export default function FinishedGameListAdmin() {
                 <div className="admin-page-container">
                     <h1 className="text-center" style={{ marginTop: '30px' }}>Partidas</h1>
                     <p style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        La información se actualiza automáticamente cada 5 segundos. Próxima actualización en {refreshCounter} segundos...
+                        {refreshCounter > 0 ?
+                            <>
+                                Próxima actualización en {refreshCounter} segundos
+                            </>
+                            :
+                            <>
+                                Actualizando...
+                            </>
+                        }
                     </p>
                     <div>
                         <Table aria-label="games" className="mt-4">
@@ -129,6 +142,24 @@ export default function FinishedGameListAdmin() {
                                 {finishedGameList}
                             </tbody>
                         </Table>
+                        <p>La información se actualiza automáticamente cada 5 segundos</p>
+                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+                            <DButton onClick={() => {
+                                if (currentPage > 0) {
+                                    setCurrentPage(prevPage => prevPage - 1)
+                                }
+                            }} disabled={games.length === 1 || currentPage === 0}>
+                                Página anterior
+                            </DButton>
+                            {currentPage + 1}
+                            <DButton onClick={() => {
+                                if (currentPage < games.length - 1) {
+                                    setCurrentPage(prevPage => prevPage + 1)
+                                }
+                            }} disabled={games.length === 1 || currentPage === games.length - 1}>
+                                Página siguiente
+                            </DButton>
+                        </div>
                     </div>
                 </div>
             </div>
