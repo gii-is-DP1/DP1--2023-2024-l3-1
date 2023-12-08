@@ -125,7 +125,7 @@ public class PlayerController {
 	@Operation(summary = "Registra a un usuario")
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
-		if (playerService.existsUser(signUpRequest.getUsername(), signUpRequest.getEmail()).equals(true)) {
+		if (playerService.existsUser(signUpRequest.getUsername(), signUpRequest.getEmail())) {
 			return new ResponseEntity<>(HttpStatus.IM_USED);
 		} else {
 			playerService.createUser(signUpRequest);
@@ -161,7 +161,7 @@ public class PlayerController {
 				return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 			}
 
-			if (playerService.existsUser(payload.getUsername(), payload.getEmail())) {
+			if (playerService.existsUser(target.get(), payload)) {
 				return new ResponseEntity<>(HttpStatus.CONFLICT);
 			}
 
@@ -187,8 +187,7 @@ public class PlayerController {
 		Optional<Player> user_opt = playerService.findCurrentPlayer();
 
 		if (user_opt.isPresent()) {
-
-			if (playerService.existsUser(payload.getUsername(), payload.getEmail())) {
+			if (playerService.existsUser(user_opt.get(), payload)) {
 				return new ResponseEntity<>(HttpStatus.CONFLICT);
 			}
 

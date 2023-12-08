@@ -120,13 +120,14 @@ public class PlayerService {
 		Optional<Player> op_usernamePlayer = this.repository.findByUsername(username);
 		Optional<Player> op_emailPlayer = this.repository.findByEmail(email);
 
-		if (op_usernamePlayer.isPresent() && op_emailPlayer.isPresent()) {
-			Player usernamePlayer = op_usernamePlayer.get();
-			Player emailPlayer = op_emailPlayer.get();
+		return op_usernamePlayer.isPresent() || op_emailPlayer.isPresent();
+	}
 
-			return !(usernamePlayer.getId().equals(emailPlayer.getId()));
-		}
+	public Boolean existsUser(Player targetPlayer, EditPlayerDto editPayload) {
+		Optional<Player> op_usernamePlayer = this.repository.findByUsername(editPayload.getUsername());
+		Optional<Player> op_emailPlayer = this.repository.findByEmail(editPayload.getEmail());
 
-		return false;
+		return (op_usernamePlayer.isPresent() && op_usernamePlayer.get().getId() != targetPlayer.getId()) ||
+			(op_emailPlayer.isPresent() && op_emailPlayer.get().getId() != targetPlayer.getId()) ;
 	}
 }
