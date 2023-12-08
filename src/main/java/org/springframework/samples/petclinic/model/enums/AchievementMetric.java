@@ -1,6 +1,6 @@
 package org.springframework.samples.petclinic.model.enums;
 
-public enum Metric {
+public enum AchievementMetric {
     GAMES_PLAYED,
     VICTORIES,
     TOTAL_PLAY_TIME,

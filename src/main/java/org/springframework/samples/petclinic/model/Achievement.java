@@ -1,7 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import org.springframework.samples.petclinic.model.base.NamedEntity;
-import org.springframework.samples.petclinic.model.enums.Metric;
+import org.springframework.samples.petclinic.model.enums.AchievementMetric;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -26,7 +26,7 @@ public class Achievement extends NamedEntity {
 
     @Enumerated(EnumType.STRING)
     @NotNull
-    Metric metric;
+    AchievementMetric metric;
 
     public String getActualDescription() {
         return description.replace("<THRESHOLD>", String.valueOf(threshold));

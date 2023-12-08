@@ -5,7 +5,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Achievement;
-import org.springframework.samples.petclinic.model.enums.Metric;
+import org.springframework.samples.petclinic.model.enums.AchievementMetric;
 import org.springframework.samples.petclinic.repositories.AchievementRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,7 +48,7 @@ public class AchievementService {
             String newDescription = achievement.getDescription();
             String newBadgeImage = achievement.getBadgeImage();
             Double newThreshold = achievement.getThreshold();
-            Metric newMetric = achievement.getMetric();
+            AchievementMetric newMetric = achievement.getMetric();
             if (newName != null && !newName.isBlank()) {
                 toUpdate.setName(achievement.getName());
             }

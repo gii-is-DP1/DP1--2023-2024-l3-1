@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.model.Achievement;
-import org.springframework.samples.petclinic.model.enums.Metric;
+import org.springframework.samples.petclinic.model.enums.AchievementMetric;
 
 import jakarta.transaction.Transactional;
 
@@ -43,7 +43,7 @@ public class AchievementServiceTest {
         Achievement newAchievement= new Achievement(); 
         newAchievement.setName("New Achievement");
         newAchievement.setDescription("Description for New Achievement");
-        newAchievement.setMetric(Metric.GAMES_PLAYED);
+        newAchievement.setMetric(AchievementMetric.GAMES_PLAYED);
         achievementService.saveAchievement(newAchievement);
 
         Achievement achievement= achievementService.getAchievementByName("New Achievement"); 
