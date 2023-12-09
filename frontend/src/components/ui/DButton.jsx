@@ -34,11 +34,12 @@ export default function DButton(Props) {
     }
     return (
         <button {...Props}
+        onClick={!Props.disabled ? Props.onClick : undefined}
         style={{
             ...inputStyles,
             backgroundColor: `${getBackgroundColor()}`,
             color: `${getTextColor()}`,
-            ...(Props.disabled && { filter: 'grayscale(100%)' }),
+            ...(Props.disabled && { filter: 'grayscale(100%)', pointerEvents: 'none' }),
             ...Props.style,
         }}>
             {Props.children}

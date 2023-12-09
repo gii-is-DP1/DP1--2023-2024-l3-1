@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
-import { Navigate, Route, Routes, useLocation, useNavigate, matchRoutes } from "react-router-dom";
+import { Navigate, Route, Routes, matchRoutes, useLocation, useNavigate } from "react-router-dom";
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
 import PlayerProfile from "./components/player/PlayerProfile";
@@ -15,8 +15,9 @@ import SignUpPage from "./pages/auth/SignUpPage";
 import AchievementListPlayer from "./pages/player/AchievementListPlayer";
 import CreationGamePage from "./pages/player/CreationGamePage";
 import GameJoinPage from "./pages/player/GameJoinPage";
-import PlayButtonPage from "./pages/player/PlayButtonPage";
+import GamePage from "./pages/player/GamePage";
 import PlayPage from "./pages/player/PlayPage";
+import PlayerHomepage from "./pages/player/PlayerHomepage";
 import './static/css/home.css';
 
 function ErrorFallback({ error, resetErrorBoundary }) {
@@ -81,12 +82,13 @@ function App() {
     if (user && !user?.is_admin) {
       return (
         <>
-          <Route exact path="/" element={<PlayButtonPage />} />
+          <Route exact path="/" element={<PlayerHomepage />} />
           <Route exact path="/achievements" element={<AchievementListPlayer />} />
           <Route exact path="/profile" element={<PlayerProfile />} />
           <Route exact path="/play/choose" element={<PlayPage />} />
           <Route exact path="/play/join" element={<GameJoinPage />} />
           <Route exact path="/play/new" element={<CreationGamePage />} />
+          <Route exact path="/play/:id" element={<GamePage />} />
         </>
       )
     }

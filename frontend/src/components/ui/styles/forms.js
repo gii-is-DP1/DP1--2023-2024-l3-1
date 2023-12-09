@@ -13,5 +13,6 @@ export const formStyle = {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    width: '50vw'
 }

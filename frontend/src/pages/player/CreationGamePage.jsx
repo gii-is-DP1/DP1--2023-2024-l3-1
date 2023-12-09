@@ -1,38 +1,48 @@
 import { useState } from "react";
-import tokenService from "../../services/token.service";
 import { Link, useNavigate } from "react-router-dom";
-import { Label } from "reactstrap";
-// import getErrorModal from "../../composables/useModal";
-import DInput from "../../components/ui/DInput";
-import axios from '../../services/api';
-import { formStyle } from "../../components/ui/styles/forms";
+import { Alert } from "reactstrap";
+import { adjectives, animals, colors, countries, languages, names, starWars, uniqueNamesGenerator } from 'unique-names-generator';
 import DButton from "../../components/ui/DButton";
-
-
+import DInput from "../../components/ui/DInput";
+import { formStyle } from "../../components/ui/styles/forms";
+import { useLabeledForm } from "../../composables/useLabeledForm";
+import axios from '../../services/api';
 
 export default function CreationGamePage() {
-    const [message, setMessage] = useState(null);
-    const [visible, setVisible] = useState(false);
-    const [game, setGame] = useState({ maxPlayers: 8 });
+    const generateName = () => {
+        return uniqueNamesGenerator({
+            dictionaries: [adjectives, animals, colors, countries, names, languages, starWars],
+            separator: '-',
+            length: 3
+        });
+    }
+    const [message, setMessage] = useState();
+    const [suggestedName, setSuggestedName] = useState(generateName());
+    const [game, setGame] = useState({ 
+        max_players: 8 
+    });
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
 
     function handleChange(event) {
+        event.preventDefault();
         const target = event.target;
         const value = target.value;
         const name = target.name;
         setGame({ ...game, [name]: value });
     }
 
-    function handleIncrement() {
-        if (game.maxPlayers < 8) {
-            setGame(prevGame => ({ ...prevGame, maxPlayers: prevGame.maxPlayers + 1 }));
+    function handleIncrement(e) {
+        e.preventDefault();
+        if (game.max_players < 8) {
+            setGame(prevGame => ({ ...prevGame, max_players: prevGame.max_players + 1 }));
         }
     }
 
-    function handleDecrement() {
-        if (game.maxPlayers > 2) {
-            setGame(prevGame => ({ ...prevGame, maxPlayers: prevGame.maxPlayers - 1 }));
+    function handleDecrement(e) {
+        e.preventDefault();
+        if (game.max_players > 2) {
+            setGame(prevGame => ({ ...prevGame, max_players: prevGame.max_players - 1 }));
         }
     }
 
@@ -40,11 +50,15 @@ export default function CreationGamePage() {
         try {
             event.preventDefault();
             setLoading(true);
-            setMessage(null);
-            const response = await axios.post("/games/creation", game);
-            setGame(response);
-            //TODO: he llamado asi al lobby del game! preguntar
-            navigate("/gameLobby")
+            setMessage();
+
+            const data = {
+                ...game,
+                ...(!game?.name?.trim() && { name: suggestedName })
+            };
+    
+            const response = await axios.post("/games", data);
+            navigate(`/play/${response.data.id}`)
         } catch (e) {
             if (e.response?.status >= 400) {
                 setMessage("Error del cliente");
@@ -59,61 +73,61 @@ export default function CreationGamePage() {
         }
     }
 
-
-    // const modal = getErrorModal(setVisible, visible, message);
+    const form = useLabeledForm(
+        {
+            'Nombre de la partida': 
+                (
+                    <DInput
+                        placeholder={suggestedName}
+                        type="text"
+                        onChange={handleChange}
+                    />
+                ),
+            'Numero máximo de jugadores': 
+                (<>
+                    <DButton color="red" onClick={handleDecrement} disabled={game.max_players === 2}>-</DButton>
+                    {game.max_players} / 8
+                    <DButton color="green" onClick={handleIncrement} disabled={game.max_players === 8}>+</DButton>
+                </>)
+        }
+    );
 
     return (
         <div className="page-container">
             <h2 className="text-center" style={{ marginTop: '30px' }}>
-                {"Creación de la partida"}
+                Crear nueva partida
             </h2>
-            {/* {modal} */}
+            {message ? (
+                <Alert color="primary">{message}</Alert>
+                ) : undefined}
             <div>
                 <form onSubmit={handleSubmit} style={formStyle}>
-                    <div className="custom-form-input">
-                        <Label for="name">
-                            Nombre de la partida
-                        </Label>
-                        <DInput
-                            type="text"
-                            required
-                            name="name"
-                            id="name"
-                            value={game.name}
-                            onChange={handleChange}
-                        />
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                        <p>¿No sabes que nombre escoger? ¡Te sugerimos <b>{suggestedName}</b>!</p>
+                        <p>(Deja vacío el nombre para aplicarlo)</p>
                     </div>
-
-                    <div className="custom-form-input">
-                        <Label for="maxPlayers">
-                            Número máximo de jugadores
-                        </Label>
-                        <DInput
-                            type="number"
-                            required
-                            name="maxPlayers"
-                            id="maxPlayers"
-                            value={game.maxPlayers}
-                            onChange={handleChange}
-                            readOnly // Esto evita la edición directa del input
-                            style={{ pointerEvents: "none" }} // Deshabilita eventos de puntero
-                        />
-                        <DButton type="button" onClick={handleIncrement}>+</DButton>
-                        <DButton type="button" onClick={handleDecrement}>-</DButton>
-                    </div>
-                    <div>
-                        <DButton style={{ width: '25vw' }} disabled={loading}>
-                            {loading ? 'Guardando...' : 'Guardar'}
-                        </DButton>
+                    {form}
+                    <div style={{...formStyle, flexDirection: 'row' }}>
                         <Link
-                            to={`/gameLobby`}
+                            to={`/play/choose`}
                             style={{ textDecoration: "none" }}
                         >
-                            <DButton color="red" style={{ width: '25vw' }}>
+                            <DButton color="red" style={{ width: '25vw' }} disabled={loading}>
                                 Cancelar
                             </DButton>
                         </Link>
+                        <DButton style={{ width: '25vw' }} disabled={loading}>
+                            {loading ? 'Guardando...' : 'Continuar'}
+                        </DButton>
                     </div>
+                    <DButton style={{ width: '25vw' }} color="yellow" disabled={loading} 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setSuggestedName(generateName());
+                        }
+                    }>
+                        Nuevo nombre aleatorio
+                    </DButton>
                 </form>
             </div>
         </div>

@@ -26,6 +26,7 @@ html, body {
 
 * {
   font-family: "Lakki Reddy";
+  user-select: none;
 }
 
 code {
