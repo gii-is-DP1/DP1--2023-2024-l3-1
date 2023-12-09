@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Navbar, NavItem, Nav, NavbarToggler, Collapse } from 'reactstrap';
-import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { Collapse, Nav, NavItem, Navbar, NavbarToggler } from 'reactstrap';
 import UserAvatar from './components/player/UserAvatar';
-import tokenService from './services/token.service';
 import DButton from './components/ui/DButton';
+import tokenService from './services/token.service';
 
 export default function AppNavbar() {
     const user = useSelector(state => state.tokenStore.user);
@@ -78,11 +78,13 @@ export default function AppNavbar() {
     }
 
     return (
-        <div style={{ position: 'absolute', width: '100vw', zIndex: '1000' }}>
-            <Navbar expand="md" light color="transparent">
+        <div style={{ position: 'sticky', width: '100vw', zIndex: '1000', top: '0' }}>
+            <Navbar expand="md" light style={{ backgroundColor: 'var(--bs-body-bg)'}}>
                 {!user?.is_admin ? (
                 <DButton {...getProps('/')} style={{ display: 'flex' }}>
-                    <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40, padding: '0', marginBottom: '5px' }} />
+                    <img alt="Dobble logo" src="/logo.png" style={
+                        { height: '100%', width: '100%', maxHeight: 40, maxWidth: 40, padding: '0', marginBottom: '5px' }
+                    } />
                     <p style={{ lineHeight: '2em', marginBottom: '0' }}>Online</p>
                 </DButton>
                 ) : undefined}
