@@ -55,5 +55,7 @@ public enum Icon {
     FUEGO,
     MANO_LOGO,
     FLOR,
-    LABIOS
+    LABIOS,
+    ARBOL,
+    PROHIBIDO
 }
