@@ -1,4 +1,5 @@
 import { configureStore, createSlice } from '@reduxjs/toolkit';
+import axios from './api';
 
 const tokenSlice = createSlice({
     name: 'tokenStore',
@@ -20,7 +21,7 @@ export const tokenStore = configureStore({
 
 class TokenService {
     /**
-     * Rellenar el store
+     * Rellenar el store de React desde localStorage
      */
     constructor() {
         tokenStore.dispatch({ type: 'tokenStore/setUser', payload: this.user });
@@ -30,23 +31,29 @@ class TokenService {
         return this.user?.token;
     }
 
-    set localAccessToken(token) {
-        const user = this.user || {};
-        user.token = token;
-        this.user = user;
-    }
-
-    get localRefreshToken() {
-        return this.user?.refreshToken;
-    }
-
     get user() {
         return JSON.parse(localStorage.getItem("user"));
     }
 
     set user(user) {
+        const token = { token: {
+            value: user.token,
+            refreshToken: user.refreshToken,
+            type: user.type
+        }};
+
+        delete user.refreshToken;
+        delete user.type;
+
+        user = { ...user, ...token };
         tokenStore.dispatch({ type: 'tokenStore/setUser', payload: user });
         window.localStorage.setItem("user", JSON.stringify(user));
+        axios.get('player/me').then((response) => {
+            const mergedData = { ...user, ...response.data };
+
+            tokenStore.dispatch({ type: 'tokenStore/setUser', payload: mergedData });
+            window.localStorage.setItem("user", JSON.stringify(mergedData));
+        });
     }
 
     removeUser() {

@@ -22,9 +22,9 @@ export default function GameListAdmin() {
             // Para probar la paginación, cambiar este número
             setGames(dividirArray(response.data, 10));
         } catch (error) {
-            if (error.response.status === 401) {
+            if (error.response?.status === 401) {
                 setMessage("El usuario actual no es administrador o no ha iniciado sesión: no tiene permisos para obtener partidas")
-            } else if (error.response.status >= 500) {
+            } else if (error.response?.status >= 500) {
                 setMessage("Error interno del servidor");
             } else {
                 setMessage(String(error));

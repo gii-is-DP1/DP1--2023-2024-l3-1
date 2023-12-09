@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { Navbar, NavbarBrand, NavLink, NavItem, Nav, NavbarText, NavbarToggler, Collapse } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import UserAvatar from './components/player/UserAvatar';
 import tokenService from './services/token.service';
 
 export default function AppNavbar() {
     const user = useSelector(state => state.tokenStore.user);
     const [collapsed, setCollapsed] = useState(true);
+    const navigate = useNavigate();
 
     const toggleNavbar = () => setCollapsed(!collapsed);
 
@@ -52,8 +54,8 @@ export default function AppNavbar() {
         if (user) {
             return (
                 <>
-                <NavItem className="d-flex" tag={Link} to="/achievements">
-                    <NavLink style={{ color: "white", cursor: 'pointer' }}>Logros</NavLink>
+                <NavItem className="d-flex">
+                    <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
                 </NavItem>
                 <NavItem className="d-flex">
                     <NavLink style={{ color: "white", cursor: 'pointer' }} onClick={tokenService.removeUser}>Cerrar sesión</NavLink>
@@ -79,7 +81,8 @@ export default function AppNavbar() {
                         {adminRoutes()}
                         {notAdminRoutes()}
                     </Nav>
-                    <Nav className="ms-auto mb-2 mb-lg-0" navbar>
+                    <Nav className="ms-auto mb-2 mb-lg-0" navbar style={{ display: 'flex', alignItems: 'flex-end' }}>
+                        {user?.is_admin === false ? (<UserAvatar size="x-small" user={user} onClick={() => navigate('/profile')} />) : undefined}
                         {loggedRoutes()}
                     </Nav>
                 </Collapse>

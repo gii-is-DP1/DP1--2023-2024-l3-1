@@ -7,16 +7,18 @@ import axios from '../../services/api';
 import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
 import UserAvatar from "./UserAvatar";
+import { useIconSelector } from "../../composables/useIconSelector";
 
 export default function PlayerProfile() {
   const [originalUser, setOriginalUser] = useState({});
   const [currentUser, setCurrentUser] = useState({});
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState();
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [newPassword, setNewPassword] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
-  
+  const [newPassword, setNewPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
+  const [openGallery, setOpenGallery] = useState(false);
+
   const { id } = useParams();
 
   async function request() {
@@ -57,13 +59,13 @@ export default function PlayerProfile() {
       await request();
       setEditing(false);
     } catch (e) {
-      if (e.response.status === 401) {
+      if (e.response?.status === 401) {
         setMessage("El usuario actual no es administrador y no puede editar este usuario");
         return;
-      } else if (e.response.status === 404) {
+      } else if (e.response?.status === 404) {
         setMessage("Error en el cliente: no existe el usuario a actualizar");
         return;
-      } else if (e.response.status === 409) {
+      } else if (e.response?.status === 409) {
         setMessage("Ya existe un usuario con ese e-mail o nombre de usuario");
         return;
       } else {
@@ -91,59 +93,70 @@ export default function PlayerProfile() {
     }
   }, [editing]);
 
+  const userIconGallery = useIconSelector(currentUser, setCurrentUser, openGallery, setOpenGallery);
+
   return (
-    currentUser ? (
-      <div className="profile-page-container">
-        {message ? (
-          <Alert color="primary">{message}</Alert>
-        ) : (
-          <></>
-        )}
-        <div style={formStyle}>
-          <h1>Mi perfil</h1>
+    <>
+    {userIconGallery}
+    <div className="profile-page-container">
+      {message ? (
+        <Alert color="primary">{message}</Alert>
+      ) : (
+        <></>
+      )}
+      <form style={formStyle}>
+        <h1>Mi perfil</h1>
 
-          <h6>Logo:</h6>
+        <h6>Logo:</h6>
 
-          <UserAvatar size="large" />
+        <UserAvatar size="large" user={currentUser} onClick={editing ? () => setOpenGallery(true) : undefined} />
 
+        <div className="profile-field">
+          <h6>Nombre de usuario: </h6>
+          <DInput type="text" value={currentUser.username} disabled={!editing} style={{ width: '25vw' }}
+            onChange={
+              (e) => setCurrentUser({ ...currentUser, username: e.target.value?.trim() })} />
+        </div>
+
+        <div className="profile-field">
+          <h6>Email: </h6>
+          <DInput type="text" value={currentUser.email} disabled={!editing} style={{ width: '25vw' }}
+            onChange={
+              (e) => setCurrentUser({ ...currentUser, email: e.target.value?.trim() })} />
+        </div>
+
+        {editing ? (
           <div className="profile-field">
-            <h6>Nombre de usuario: </h6>
-            <DInput type="text" value={currentUser.username} disabled={!editing} style={{ width: '25vw', color: 'black' }} onChange={(e) => setCurrentUser({ ...currentUser, username: e.target.value?.trim() }) } />
+            <h6>Contraseña (dejar en blanco para no cambiar): </h6>
+            <DInput type="password" placeholder="Nueva contraseña" onChange={(e) => setNewPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
+            <DInput type="password" placeholder="Repetir contraseña" onChange={(e) => setConfirmPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
           </div>
+        ) : (<></>)}
 
-          <div className="profile-field">
-            <h6>Email: </h6>
-            <DInput type="text" value={currentUser.email} disabled={!editing} style={{ width: '25vw', color: 'black' }} onChange={(e) => setCurrentUser({ ...currentUser, email: e.target.value?.trim() }) } />
-          </div>
-
+        <div>
           {editing ? (
-            <div className="profile-field">
-              <h6>Contraseña (dejar en blanco para no cambiar): </h6>
-              <DInput type="password" placeholder="Nueva contraseña" onChange={(e) => setNewPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
-              <DInput type="password" placeholder="Repetir contraseña" onChange={(e) => setConfirmPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
-            </div>
-          ) : (<></>)}
-
-          <div>
-            {editing ? (
-            <DButton style={{ width: '25vw', backgroundColor: '#ff3300' }} onClick={() => setEditing(false)}>
+            <DButton style={{ width: '25vw', backgroundColor: '#ff3300' }} onClick={(e) => {
+              e.preventDefault();
+              setEditing(false)
+            }}>
               Cancelar
             </DButton>
-            ) : (<></>)}
-            <DButton style={{ width: '25vw' }} onClick={async () => {
-              if (editing) {
-                await patchUser();
-              } else {
-                setEditing(!editing);
-              }
-            }}>
-              {editing ?
-                loading ? "Guardando..." : "Guardar"
-                : "Editar"}
-            </DButton>
-          </div>
+          ) : (<></>)}
+          <DButton style={{ width: '25vw' }} type="submit" onClick={async (e) => {
+            e.preventDefault();
+            if (editing) {
+              await patchUser();
+            } else {
+              setEditing(!editing);
+            }
+          }}>
+            {editing ?
+              loading ? "Guardando..." : "Guardar"
+              : "Editar"}
+          </DButton>
         </div>
-      </div>
-    ) : undefined
+      </form>
+    </div>
+    </>
   );
 }

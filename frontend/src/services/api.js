@@ -19,9 +19,10 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     (config) => {
-        const token = TokenService.localAccessToken;
-        if (token) {
-            config.headers["Authorization"] = 'Bearer ' + token;  // for Spring Boot back-end
+        const tokenType = TokenService.localAccessToken?.type;
+        const token = TokenService.localAccessToken?.value;
+        if (token && tokenType) {
+            config.headers["Authorization"] = `${tokenType} ${token}`;
         }
         return config;
     }

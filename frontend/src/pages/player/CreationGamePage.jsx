@@ -46,10 +46,10 @@ export default function CreationGamePage() {
             //TODO: he llamado asi al lobby del game! preguntar
             navigate("/gameLobby")
         } catch (e) {
-            if (e.response.status >= 400) {
+            if (e.response?.status >= 400) {
                 setMessage("Error del cliente");
                 return;
-            } else if (e.response.status >= 500) {
+            } else if (e.response?.status >= 500) {
                 setMessage("Error del servidor");
                 return;
             }

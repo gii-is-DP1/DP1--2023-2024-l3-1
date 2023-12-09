@@ -24,12 +24,11 @@ export default function LoginPage() {
       });
 
       tokenService.user = response.data;
-      tokenService.localAccessToken = response.data.token;
     } catch (e) {
-      if (e.response.status === 401) {
+      if (e.response?.status === 401) {
         setMessage("Credenciales incorrectas");
         return;
-      } else if (e.response.status >= 500) {
+      } else if (e.response?.status >= 500) {
         setMessage("Error del servidor");
         return;
       }

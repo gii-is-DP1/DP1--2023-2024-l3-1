@@ -6,6 +6,9 @@ import DInput from "../ui/DInput";
 import { formStyle } from "../ui/styles/forms";
 import axios from '../../services/api';
 import { useModal } from "../../composables/useModal";
+import { useIconSelector } from "../../composables/useIconSelector";
+import { Icon } from "../../models/enums";
+import UserAvatar from "../player/UserAvatar";
 
 /**
  * 
@@ -14,21 +17,22 @@ import { useModal } from "../../composables/useModal";
  * @returns 
  */
 export default function SignUpForm(Props) {
-  const [message, setMessage] = useState(null)
-  const [username, setUsername] = useState(null);
-  const [password, setPassword] = useState(null);
-  const [email, setEmail] = useState(null);
+  const [message, setMessage] = useState(null);
+  const [signUpPlayerDto, setSignUpPlayerDto] = useState({
+    username: '',
+    password: '',
+    email: '',
+    profile_icon: Icon.MANO_LOGO
+  });
+  const [confirmPassword, setConfirmPassword] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [openGallery, setOpenGallery] = useState(false);
 
   async function handleSubmit() {
     try {
       setLoading(true);
       setMessage(null);
-      const response = await axios.post("/player/signup", {
-        username,
-        email,
-        password
-      });
+      const response = await axios.post("/player/signup", signUpPlayerDto);
 
       if (response.status === 226) {
         setMessage("Ya existe un usuario con ese e-mail o nombre de usuario");
@@ -37,7 +41,6 @@ export default function SignUpForm(Props) {
 
       if (Props.setToken) {
         tokenService.user = response.data;
-        tokenService.localAccessToken = response.data.token;
       }
 
       if (Props.onSignUp) {
@@ -45,10 +48,10 @@ export default function SignUpForm(Props) {
       }
       
     } catch (e) {
-      if (e.response.status === 401) {
+      if (e.response?.status === 401) {
         setMessage("Credenciales incorrectas");
         return;
-      } else if (e.response.status >= 500) {
+      } else if (e.response?.status >= 500) {
         setMessage("Error del servidor");
         return;
       }
@@ -61,27 +64,38 @@ export default function SignUpForm(Props) {
 
   async function handleClick(e) {
     e.preventDefault();
-    setUsername(username?.trim());
-    setPassword(password?.trim());
-    setEmail(email?.trim());
 
-    if (username && password && email) {
-      await handleSubmit();
-    } else {
-      setMessage('El nombre de usuario, la contraseña y el e-mail no pueden estar vacíos');
+    if (signUpPlayerDto.password !== confirmPassword) {
+      setMessage('Las contraseñas no coinciden');
+      return;
     }
+
+    if (!signUpPlayerDto.username || !signUpPlayerDto.password || !signUpPlayerDto.email) {
+      setMessage('El nombre de usuario, la contraseña y el e-mail no pueden estar vacíos');
+      return;
+    }
+
+    await handleSubmit();
   }
 
   const modal = useModal(setMessage, message, 'Error');
+  const userIconGallery = useIconSelector(signUpPlayerDto, setSignUpPlayerDto, openGallery, setOpenGallery);
 
   return (
     <>
     {modal}
+    {userIconGallery}
     <div>
       <form onSubmit={handleClick} style={formStyle}>
-        <DInput type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={{ width: '25vw' }} />
-        <DInput type="text" placeholder="Correo electrónico" onChange={(e) => setEmail(e.target.value)} style={{ width: '25vw' }} />
-        <DInput type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={{ width: '25vw' }} />
+        <UserAvatar user={signUpPlayerDto} size="medium" onClick={() => setOpenGallery(true)} />
+        <DInput type="text" placeholder="Usuario" style={{ width: '25vw' }}
+          onChange={(e) => setSignUpPlayerDto({ ...signUpPlayerDto, username: e.target.value?.trim() })} />
+        <DInput type="text" placeholder="Correo electrónico" style={{ width: '25vw' }} 
+          onChange={(e) => setSignUpPlayerDto({ ...signUpPlayerDto, email: e.target.value?.trim() })}  />
+        <DInput type="password" placeholder="Contraseña" style={{ width: '25vw' }} 
+          onChange={(e) => setSignUpPlayerDto({ ...signUpPlayerDto, password: e.target.value?.trim() })}  />
+        <DInput type="password" placeholder="Confirmar contraseña" style={{ width: '25vw' }} 
+          onChange={(e) => setConfirmPassword(e.target.value)}  />
         <DButton style={{ width: '25vw' }}>
           {loading ? 'Creando cuenta...' : 'Crear cuenta'}
         </DButton>

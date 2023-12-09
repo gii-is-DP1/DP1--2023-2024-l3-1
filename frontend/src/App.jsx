@@ -5,7 +5,7 @@ import { useSelector } from 'react-redux';
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
 import LoginPage from "./pages/auth/LoginPage";
-import AchievementListPlayer from "./components/player/AchievementListPlayer";
+import AchievementListPlayer from "./pages/player/AchievementListPlayer";
 import MainLobby from "./components/player/MainLobby";
 import SwaggerDocsPage from "./pages/admin/SwaggerDocsPage";
 import AchievementListAdminPage from "./pages/admin/achievement/AchievementListAdminPage";

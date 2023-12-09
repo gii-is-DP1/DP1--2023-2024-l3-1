@@ -7,6 +7,7 @@ import { useRefreshableData } from "../../composables/useRefreshableData";
 import { dividirArray } from "../../util/dataManipulation";
 import axios from '../../services/api';
 import DButton from "../../components/ui/DButton";
+import UserAvatar from "../../components/player/UserAvatar";
 
 export default function PlayerListAdmin() {
     const [message, setMessage] = useState();
@@ -30,11 +31,11 @@ export default function PlayerListAdmin() {
             await axios.delete(`/player/${id}`);
         } catch (e) {
             setModalHeader("Error al borrar jugador");
-            if (e.response.status === 401) {
+            if (e.response?.status === 401) {
                 setMessage("El usuario actual no es administrador, no tiene permisos para borrar este jugador.");
-            } else if (e.response.status === 404) {
+            } else if (e.response?.status === 404) {
                 setMessage("El jugador no existe.");
-            } else if (e.response.status === 500) {
+            } else if (e.response?.status === 500) {
                 setMessage("Error interno del servidor.");
             } else {
                 setMessage(String(e));
@@ -75,7 +76,7 @@ export default function PlayerListAdmin() {
             return (
                 <tr key={p.id}>
                     <td className="text-center">
-                        {p.profile_icon}
+                        <UserAvatar user={p} size="small" />
                     </td>
                     <td className="text-center">
                         {p.username}

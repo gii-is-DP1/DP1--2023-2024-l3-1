@@ -34,11 +34,11 @@ export default function AchievementEditAdmin() {
                 setAchievement({});
             }
         } catch (e) {
-            if (e.response.status === 401) {
+            if (e.response?.status === 401) {
                 setMessage("El usuario actual no ha iniciado sesión, no tiene permisos para obtener logros")
-            } else if (e.response.status === 404) {
+            } else if (e.response?.status === 404) {
                 setMessage("El logro no existe");
-            } else if (e.response.status === 500) {
+            } else if (e.response?.status === 500) {
                 setMessage("Error interno del servidor");
             } else {
                 setMessage(String(e));
@@ -62,13 +62,13 @@ export default function AchievementEditAdmin() {
 
             navigate("/achievements")
         } catch (e) {
-            if (e.response.status === 401 && id) {
+            if (e.response?.status === 401 && id) {
                 setMessage("El usuario actual no es administrador, no tiene permisos para editar logros")
-            } else if (e.response.status === 401 && !id) {
+            } else if (e.response?.status === 401 && !id) {
                 setMessage("El usuario actual no es administrador, no tiene permisos para crear logros")
-            } else if (e.response.status === 404 && id) {
+            } else if (e.response?.status === 404 && id) {
                 setMessage("El logro a editar no existe");
-            } else if (e.response.status === 500) {
+            } else if (e.response?.status === 500) {
                 setMessage("Error interno del servidor");
             } else {
                 setMessage(String(e));

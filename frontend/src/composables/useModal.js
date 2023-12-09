@@ -1,8 +1,8 @@
 import { Modal, ModalBody, ModalFooter, ModalHeader } from "reactstrap";
 import DButton from "../components/ui/DButton";
 
-function handleVisible(setVisible, visible) {
-    setVisible(!visible);
+function close(setVisible) {
+    setVisible(undefined);
 }
 
 /**
@@ -16,13 +16,13 @@ function handleVisible(setVisible, visible) {
 export function useModal(setMessage, message = undefined, header = 'Error', actions = undefined) {
     if (message) {
         const closeBtn = (
-            <DButton onClick={() => handleVisible(setMessage, message)} type="button">X</DButton>
+            <DButton onClick={() => close(setMessage)} type="button">X</DButton>
         );
         return (
             <div>
-                <Modal centered isOpen={Boolean(message)} style={{ color: 'white' }} toggle={() => handleVisible(setMessage, message)}
+                <Modal centered isOpen={Boolean(message)} style={{ color: 'white' }} toggle={() => close(setMessage)}
                     keyboard={false}>
-                    {header ? <ModalHeader toggle={() => handleVisible(setMessage, message)} close={closeBtn}>{header}</ModalHeader> : <></>}
+                    {header ? <ModalHeader close={closeBtn}>{header}</ModalHeader> : <></>}
                     <ModalBody>
                         {message}
                     </ModalBody>

@@ -37,11 +37,11 @@ export default function AchievementListAdminPage() {
             await axios.delete(`/achievements/${id}`);
         } catch (e) {
             setModalHeader("Error al borrar el logro");
-            if (e.response.status === 401) {
+            if (e.response?.status === 401) {
                 setMessage("El usuario actual no es administrador, no tiene permisos para borrar este logro");
-            } else if (e.response.status === 404) {
+            } else if (e.response?.status === 404) {
                 setMessage("El logro no existe");
-            } else if (e.response.status === 500) {
+            } else if (e.response?.status === 500) {
                 setMessage("Error interno del servidor.");
             } else {
                 setMessage(String(e));

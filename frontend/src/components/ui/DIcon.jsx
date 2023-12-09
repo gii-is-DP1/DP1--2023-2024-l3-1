@@ -134,8 +134,6 @@ export default function DIcon(Props) {
             ...(Props.disabled && { filter: 'grayscale(100%)' }),
             ...(Props.rotation && { transform: `rotate(${Props.rotation}deg)` }),
             ...Props.style,
-        }}>
-            {Props.children}
-        </div>
+        }} />
     );
 }
