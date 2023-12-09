@@ -3,7 +3,6 @@ package org.springframework.samples.petclinic.controllers;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -81,7 +80,7 @@ public class GameController {
                 List<Player> ls = List.of(currentPlayer.get());
 
                 game.setName(gameCreateDTO.getName());
-                game.setMaxPlayers(gameCreateDTO.getMaxPlayers());
+                game.setMaxPlayers(gameCreateDTO.getMax_players());
                 game.setCreator(currentPlayer.get());
                 game.setPlayers(ls);
                 gameService.saveGame(game);

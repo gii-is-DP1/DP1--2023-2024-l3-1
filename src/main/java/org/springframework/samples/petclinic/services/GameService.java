@@ -44,7 +44,7 @@ public class GameService {
         if (optionalGameToUpdate.isPresent()) {
             Game gameToUpdate = optionalGameToUpdate.get();
             String newGameName = payload.getName();
-            Integer newGameMaxPlayers = payload.getMaxPlayers();
+            Integer newGameMaxPlayers = payload.getMax_players();
 
             if (newGameName != null && !newGameName.isBlank()) {
                 gameToUpdate.setName(newGameName);

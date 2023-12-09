@@ -15,5 +15,5 @@ public class GameCreateDto {
     @Min(value = 2)
     @Max(value = 8)
     @NotNull
-    private Integer maxPlayers;
+    private Integer max_players;
 }
