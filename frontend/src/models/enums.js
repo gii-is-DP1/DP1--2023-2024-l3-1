@@ -67,4 +67,6 @@ export const Icon = Object.freeze({
   MANO_LOGO: 'MANO_LOGO',
   FLOR: 'FLOR',
   LABIOS: 'LABIOS',
+  ARBOL: 'ARBOL',
+  PROHIBIDO: 'PROHIBIDO'
 });

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import axios from '../../../services/api';
 import { dividirArray } from "../../../util/dataManipulation";
 import { achievementTranslation } from "../../../models/maps";
-import imgnotfound from '../../../static/images/defaultAchievement.png';
+import imgnotfound from '../../../static/images/default_achievement.png';
 
 export default function AchievementListAdminPage() {
     const [message, setMessage] = useState();

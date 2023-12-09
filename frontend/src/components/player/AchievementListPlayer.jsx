@@ -1,7 +1,7 @@
 import { Table } from "reactstrap";
 import { useEffect, useState } from "react";
 import axios from '../../services/api';
-import imgnotfound from '../../static/images/defaultAchievement.png';
+import imgnotfound from '../../static/images/default_achievement.png';
 import { useModal } from "../../composables/useModal";
 import { usePaginationButtons } from "../../composables/usePaginationButtons";
 import { useRefreshableData } from "../../composables/useRefreshableData";
