@@ -1,6 +1,7 @@
 import { Alert } from "reactstrap";
 import "../../../src/static/css/profile/profilePage.css";
 import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { formStyle } from "../ui/styles/forms";
 import axios from '../../services/api';
 import DButton from "../ui/DButton";
@@ -14,12 +15,14 @@ export default function PlayerProfile() {
   const [loading, setLoading] = useState(false);
   const [newPassword, setNewPassword] = useState(null);
   const [confirmPassword, setConfirmPassword] = useState(null);
+  
+  const { id } = useParams();
 
   async function request() {
     try {
       setMessage(null);
 
-      const response = await axios.get("/player/me");
+      const response = await axios.get(id ? `/player/${id}` : "/player/me");
       const user = {
         email: response.data.email,
         username: response.data.username,
@@ -29,7 +32,7 @@ export default function PlayerProfile() {
       setCurrentUser(user);
     } catch (e) {
       if (e.response.status === 401) {
-        setMessage("Usuario actual no autenticado");
+        setMessage(id ? "El usuario actual no es administrador, no puede editar ni ver otros perfiles" : "Usuario actual no autenticado");
         return;
       } else if (e.response.status >= 500) {
         setMessage("Error del servidor");
@@ -49,11 +52,14 @@ export default function PlayerProfile() {
     }
 
     try {
-      await axios.patch("/player/me", currentUser);
+      await axios.patch(id ? `/player/${id}` : "/player/me", currentUser);
       await request();
       setEditing(false);
     } catch (e) {
-      if (e.response.status === 404) {
+      if (e.response.status === 401) {
+        setMessage("El usuario actual no es administrador y no puede editar este usuario");
+        return;
+      } else if (e.response.status === 404) {
         setMessage("Error en el cliente: no existe el usuario a actualizar");
         return;
       } else if (e.response.status === 409) {

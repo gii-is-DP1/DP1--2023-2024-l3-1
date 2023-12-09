@@ -2,13 +2,13 @@ import React, { useState } from "react";
 import { Alert } from "reactstrap";
 import tokenService from "../../services/token.service";
 import "../../static/css/auth/authButton.css";
-import DButton from "../ui/DButton";
-import DInput from "../ui/DInput";
-import { formStyle } from "../ui/styles/forms";
+import DButton from "../../components/ui/DButton";
+import DInput from "../../components/ui/DInput";
+import { formStyle } from "../../components/ui/styles/forms";
 import { Link } from "react-router-dom";
 import axios from '../../services/api';
 
-export default function Login() {
+export default function LoginPage() {
   const [message, setMessage] = useState(null)
   const [username, setUsername] = useState(null);
   const [password, setPassword] = useState(null);  
@@ -75,7 +75,7 @@ export default function Login() {
             padding: '50px'
           }}>
             <h3>
-              ¿No tienes una cuenta? <Link to="/register">Regístrate</Link>
+              ¿No tienes una cuenta? <Link to="/signup">Regístrate</Link>
             </h3>
           </div>
         </div>

@@ -1,20 +1,25 @@
 import { Table } from "reactstrap";
 import { useState, useEffect } from "react";
-import getModal from "../../util/getModal";
+import { useModal } from "../../composables/useModal";
 import { Link } from "react-router-dom";
+import { usePaginationButtons } from "../../composables/usePaginationButtons";
+import { useRefreshableData } from "../../composables/useRefreshableData";
+import { dividirArray } from "../../util/dataManipulation";
 import axios from '../../services/api';
-import DButton from "../ui/DButton";
+import DButton from "../../components/ui/DButton";
 
 export default function PlayerListAdmin() {
     const [message, setMessage] = useState();
     const [modalHeader, setModalHeader] = useState();
     const [modalActions, setModalActions] = useState();
-    const [players, setPlayers] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [players, setPlayers] = useState([[]]);
 
     async function fetchData() {
         try {
             const response = await axios.get('/player');
-            setPlayers(response.data);
+            // Para probar la paginación, cambiar este número
+            setPlayers(dividirArray(response.data, 10));
         } catch (error) {
             setMessage("Error al obtener jugadores.");
         }
@@ -66,17 +71,25 @@ export default function PlayerListAdmin() {
     }, []);
 
     const playerList =
-        players.map((p) => {
+        players[currentPage].map((p) => {
             return (
                 <tr key={p.id}>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.profile_icon} </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.username} </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.email} </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {p.is_admin ? "Administrador" : "Jugador"} </td>
+                    <td className="text-center">
+                        {p.profile_icon}
+                    </td>
+                    <td className="text-center">
+                        {p.username}
+                    </td>
+                    <td className="text-center">
+                        {p.email}
+                    </td>
+                    <td className="text-center">
+                        {p.is_admin ? "Administrador" : "Jugador"}
+                    </td>
                     <td className="text-center">
                         <Link to={`/player/edit/${p.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
                             <DButton style={{ width: '15vw', backgroundColor: '#ffcc24', color: 'black' }}>
-                                Editar
+                                Ver Perfil
                             </DButton>
                         </Link>
                     </td>
@@ -90,13 +103,19 @@ export default function PlayerListAdmin() {
             );
         });
 
-    const modal = getModal(setMessage, message, modalHeader, modalActions);
+    const modal = useModal(setMessage, message, modalHeader, modalActions);
+    const paginationButtons = usePaginationButtons(setCurrentPage, currentPage, players);
+    const refreshInfo = useRefreshableData(fetchData, 5);
 
     return (
-        <div>
+        <>
+            {modal}
+            <div>
             <div className="admin-page-container">
-                <h1 className="text-center" style={{ marginTop: '30px' }}>Listado Jugadores</h1>
-                {modal}
+                <h1 className="text-center" style={{ marginTop: '30px' }}>Jugadores</h1>
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
+                    {refreshInfo}
+                </div>
                 <div>
                     <div style={{
                         display: 'flex',
@@ -120,10 +139,15 @@ export default function PlayerListAdmin() {
                                 <th className="text-center"></th>
                             </tr>
                         </thead>
-                        <tbody>{playerList}</tbody>
+                        <tbody>
+                            {playerList}
+                        </tbody>
                     </Table>
+                    <p>La información se actualiza automáticamente cada 5 segundos</p>
+                    {paginationButtons}
                 </div>
             </div>
         </div>
+        </>
     );
 }

@@ -2,11 +2,11 @@ import { useState } from "react";
 import tokenService from "../../services/token.service";
 import { Link, useNavigate } from "react-router-dom";
 import { Label } from "reactstrap";
-import getErrorModal from "../../util/getModal";
-import DInput from "../ui/DInput";
+// import getErrorModal from "../../composables/useModal";
+import DInput from "../../components/ui/DInput";
 import axios from '../../services/api';
-import { formStyle } from "../ui/styles/forms";
-import DButton from "../ui/DButton";
+import { formStyle } from "../../components/ui/styles/forms";
+import DButton from "../../components/ui/DButton";
 
 
 
@@ -60,14 +60,14 @@ export default function CreationGamePage() {
     }
 
 
-    const modal = getErrorModal(setVisible, visible, message);
+    // const modal = getErrorModal(setVisible, visible, message);
 
     return (
         <div className="auth-page-container">
             <h2 className="text-center" style={{ marginTop: '30px' }}>
                 {"Creación de la partida"}
             </h2>
-            {modal}
+            {/* {modal} */}
             <div className="auth-form-container">
                 <form onSubmit={handleSubmit} style={formStyle}>
                     <div className="custom-form-input">

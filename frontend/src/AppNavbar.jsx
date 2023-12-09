@@ -21,6 +21,9 @@ export default function AppNavbar() {
             return (
                 <>
                     <NavItem>
+                        <NavLink style={{ color: "white" }} tag={Link} to="/">Jugadores</NavLink>
+                    </NavItem>
+                    <NavItem>
                         <NavLink style={{ color: "white" }} tag={Link} to="/games">Partidas</NavLink>
                     </NavItem>
                     <NavItem>
@@ -48,9 +51,14 @@ export default function AppNavbar() {
     function loggedRoutes() {
         if (user) {
             return (
+                <>
+                <NavItem className="d-flex" tag={Link} to="/achievements">
+                    <NavLink style={{ color: "white", cursor: 'pointer' }}>Logros</NavLink>
+                </NavItem>
                 <NavItem className="d-flex">
                     <NavLink style={{ color: "white", cursor: 'pointer' }} onClick={tokenService.removeUser}>Cerrar sesión</NavLink>
                 </NavItem>
+                </>
             )
         }
     }
@@ -58,18 +66,12 @@ export default function AppNavbar() {
     return (
         <div>
             <Navbar expand="md" dark color="dark">
-                <NavbarBrand tag={Link} to="/">
+                {!user?.is_admin ? (<NavbarBrand tag={Link} to="/">
                     <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
                     <NavbarText style={{ color: "white", marginLeft: '0.5rem' }}>
                         Online
                     </NavbarText>
-                </NavbarBrand>
-
-                <NavbarBrand tag={Link} to="/achievements">
-                    <NavbarText style={{ color: "white", marginLeft: '1rem' }}>
-                        Logros
-                    </NavbarText>
-                </NavbarBrand>
+                </NavbarBrand>) : undefined}
 
                 <NavbarToggler onClick={toggleNavbar} className="ms-2" />
                 <Collapse isOpen={!collapsed} navbar>

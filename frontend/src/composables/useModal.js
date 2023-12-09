@@ -6,14 +6,14 @@ function handleVisible(setVisible, visible) {
 }
 
 /**
- * 
+ * Muestra una ventana que se puede personalizar al gusto del usuario
+ *
  * @param {*} setMessage - Cambia la visibilidad del elemento. Si hay mensaje se muestra la alerta, si no se oculta
  * @param {*} message - Cambia el cuerpo de la alerta
  * @param {*} header - Establece la cabecera de la alerta
  * @param {*} actions - Establece los botones de la alerta
- * @returns 
  */
-export default function getModal(setMessage, message = undefined, header = 'Error', actions = undefined) {
+export function useModal(setMessage, message = undefined, header = 'Error', actions = undefined) {
     if (message) {
         const closeBtn = (
             <DButton onClick={() => handleVisible(setMessage, message)} type="button">X</DButton>

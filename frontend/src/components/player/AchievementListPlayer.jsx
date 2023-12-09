@@ -1,54 +1,81 @@
 import { Table } from "reactstrap";
 import { useEffect, useState } from "react";
-import getErrorModal from "../../util/getModal";
 import axios from '../../services/api';
-import imgnotfound from '../../static/images/defaultAchievementImg.png';
+import imgnotfound from '../../static/images/defaultAchievement.png';
+import { useModal } from "../../composables/useModal";
+import { usePaginationButtons } from "../../composables/usePaginationButtons";
+import { useRefreshableData } from "../../composables/useRefreshableData";
+import { dividirArray } from "../../util/dataManipulation";
 
 export default function AchievementListPlayer() {
-
     const [message, setMessage] = useState(null);
-    const [visible, setVisible] = useState(false);
-    const [alerts, setAlerts] = useState([]);
-    const [achievements, setAchievements] = useState([]);
+    const [achievements, setAchievements] = useState([[]]);
+    const [currentPage, setCurrentPage] = useState(0);
+
+    async function fetchData() {
+        try {
+            const response = await axios.get('/achievements');
+            if (response.status === 204) {
+                setMessage("No hay logros que mostrar");
+                return;
+            }
+
+            setAchievements(dividirArray(response.data, 10));
+        } catch (e) {
+            setMessage(String(e));
+        }
+    }
 
     useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await axios.get('/achievements');
-                setAchievements(response.data);
-            } catch(error) {
-                console.error('Error al obtener los logros: ', error);
-            }
-        };
         fetchData();
-    } , []);
+    }, []);
 
     const achievementList =
-        achievements.map((a) => {
-
+        achievements[currentPage].map((a) => {
             return (
                 <tr key={a.id}>
-                    <td style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage || imgnotfound} alt={" "} width="50px" /></td>
-                    <td style={{ verticalAlign: 'middle' }}> {a.name} :</td>
-                    <td style={{ verticalAlign: 'middle' }}> {a.description} </td>
+                    <td className="text-center">
+                        <img src={a.badgeImage || imgnotfound} alt={" "} width="50px" />
+                    </td>
+                    <td className="text-center">
+                        {a.name}
+                    </td>
+                    <td className="text-center">
+                        {a.description}
+                    </td>
                 </tr>
             );
         });
 
-    const modal = getErrorModal(setVisible, visible, message);
+    const modal = useModal(setMessage, message, 'Error');
+    const paginationButtons = usePaginationButtons(setCurrentPage, currentPage, achievements);
+    const refreshInfo = useRefreshableData(fetchData, 5);
 
     return (
-        <div>
-            <div className="admin-page-container">
-                <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
-                {alerts.map((a) => a.alert)}
-                {modal}
-                <div>
-                    <Table aria-label="achievements" className="mt-4">
-                        <tbody> {achievementList} </tbody>
-                    </Table>
+        <>
+            {modal}
+            <div>
+                <div className="admin-page-container">
+                    <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
+                        {refreshInfo}
+                    </div>
+                    <div>
+                        <Table aria-label="achievements" className="mt-4">
+                            <thead>
+                                <tr>
+                                    <th className="text-center"></th>
+                                    <th className="text-center">Nombre</th>
+                                    <th className="text-center">Descripción</th>
+                                </tr>
+                            </thead>
+                            <tbody> {achievementList} </tbody>
+                        </Table>
+                        <p>La información se actualiza automáticamente cada 5 segundos</p>
+                        {paginationButtons}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 }

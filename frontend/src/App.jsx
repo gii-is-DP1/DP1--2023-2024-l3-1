@@ -3,22 +3,22 @@ import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
 import AppNavbar from "./AppNavbar";
-import Register from "./components/auth/Register";
-import Login from "./components/auth/Login";
+import SignUpForm from "./components/auth/SignUpForm";
+import LoginPage from "./pages/auth/LoginPage";
 import AchievementListPlayer from "./components/player/AchievementListPlayer";
 import MainLobby from "./components/player/MainLobby";
-import SwaggerDocs from "./components/admin/SwaggerDocs";
-import AchievementListAdmin from "./components/admin/AchievementListAdmin";
-import AchievementEditAdmin from "./components/admin/AchievementEditAdmin";
-import PlayerListAdmin from "./components/admin/PlayerListAdmin";
-import PlayerEditAdmin from "./components/admin/PlayerEditAdmin";
+import SwaggerDocsPage from "./pages/admin/SwaggerDocsPage";
+import AchievementListAdminPage from "./pages/admin/achievement/AchievementListAdminPage";
+import AchievementEditAdminPage from "./pages/admin/achievement/AchievementEditAdminPage";
+import PlayerListAdminPage from "./pages/admin/PlayerListAdminPage";
 import './App.css';
 import './static/css/home/home.css';
 import PlayerProfile from "./components/player/PlayerProfile";
 import PlayPage from "./components/player/PlayPage";
-import GameJoinPage from "./components/player/GameJoinPage";
-import CreationGamePage from "./components/player/CreationGamePage";
-import GameListAdmin from "./components/admin/GameListAdmin";
+import GameJoinPage from "./pages/player/GameJoinPage";
+import CreationGamePage from "./pages/player/CreationGamePage";
+import GameListAdminPage from "./pages/admin/GameListAdminPage";
+import SignUpPage from "./pages/auth/SignUpPage";
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -41,7 +41,7 @@ function App() {
    * Añadir rutas dependiendo del rol
    */
   const adminLocations = ['player', 'docs', 'achievements', 'games'];
-  const notLoggedLocations = ['register'];
+  const notLoggedLocations = ['signup'];
 
   useEffect(() => {
     const isInAdminPages = adminLocations.filter((route) => location.pathname.includes(route)).length > 0;
@@ -49,7 +49,8 @@ function App() {
     if (
       (
         (user?.is_admin && !isInAdminPages) || 
-        (!user && !isInNotLoggedInPages)
+        (!user && !isInNotLoggedInPages) ||
+        (user && isInNotLoggedInPages)
       ) &&
       location.pathname !== "/"
     ) {
@@ -69,14 +70,14 @@ function App() {
     if (user?.is_admin) {
       return (
         <>
-          <Route path="/" exact={true} element={<PlayerListAdmin />} />
-          <Route path="/achievements" element={<AchievementListAdmin />} />
-          <Route path="/achievements/new" element={<AchievementEditAdmin />} />
-          <Route path="/achievements/edit/:id" element={<AchievementEditAdmin />} />
-          <Route path="/player/edit/:id" element={<PlayerEditAdmin />} />
-          <Route path="/docs" element={<SwaggerDocs />} />
-          <Route path="/games" element={<GameListAdmin />} />
-
+          <Route path="/" exact={true} element={<PlayerListAdminPage />} />
+          <Route path="/achievements" element={<AchievementListAdminPage />} />
+          <Route path="/achievements/new" element={<AchievementEditAdminPage />} />
+          <Route path="/achievements/edit/:id" element={<AchievementEditAdminPage />} />
+          <Route path="/player/new" element={<SignUpForm onSignUp={() => navigate('/')} />} />
+          <Route path="/player/edit/:id" element={<PlayerProfile />} />
+          <Route path="/docs" element={<SwaggerDocsPage />} />
+          <Route path="/games" element={<GameListAdminPage />} />
         </>
       )
     }
@@ -89,8 +90,8 @@ function App() {
     if (!user) {
       return (
         <>
-          <Route path="/register" element={<Register />} />
-          <Route path="/" exact={true} element={<Login />} />
+          <Route path="/signup" element={<SignUpPage />} />
+          <Route path="/" exact={true} element={<LoginPage />} />
         </>
       );
     }

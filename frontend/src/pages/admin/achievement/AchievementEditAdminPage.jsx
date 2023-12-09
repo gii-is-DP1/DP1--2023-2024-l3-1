@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form } from "reactstrap";
-import getModal from "../../util/getModal";
-import DButton from "../ui/DButton";
-import DInput from "../ui/DInput"
-import axios from '../../services/api';
-import { formStyle } from "../ui/styles/forms";
+import { useModal } from "../../../composables/useModal";
+import DButton from "../../../components/ui/DButton";
+import DInput from "../../../components/ui/DInput";
+import axios from '../../../services/api';
+import { achievementTranslation } from "../../../models/maps";
+import { formStyle } from "../../../components/ui/styles/forms";
 
 export default function AchievementEditAdmin() {
     const [message, setMessage] = useState();
@@ -84,7 +85,7 @@ export default function AchievementEditAdmin() {
         run();
     }, []);
 
-    const modal = getModal(setMessage, message, 'Error');
+    const modal = useModal(setMessage, message, 'Error');
 
     return (
         <div className="auth-page-container">
@@ -128,11 +129,8 @@ export default function AchievementEditAdmin() {
                         value={achievement.metric || ""}
                         onChange={handleChange}
                     >
-                        <option value="">Métrica</option>
-                        <option value="GAMES_PLAYED">Partidas jugadas</option>
-                        <option value="VICTORIES">Victorias</option>
-                        <option value="TOTAL_PLAY_TIME">Tiempo total de juego</option>
-                        <option value="REACTION_TIME">Tiempo de reacción</option>
+                        <option value="" disabled hidden>Métrica</option>
+                        {Object.entries(achievementTranslation).map(([key, value]) => (<option key={key} value={key}>{value}</option>))}
                     </DInput>
                     <DInput
                         type="number"

@@ -1,21 +1,31 @@
 import { Table } from "reactstrap";
 import { useEffect, useState } from "react";
-import DButton from "../ui/DButton";
-import getModal from "../../util/getModal";
+import DButton from "../../../components/ui/DButton";
+import { useModal } from "../../../composables/useModal";
+import { usePaginationButtons } from "../../../composables/usePaginationButtons";
+import { useRefreshableData } from "../../../composables/useRefreshableData";
 import { Link } from "react-router-dom";
-import axios from '../../services/api';
-import imgnotfound from '../../static/images/defaultAchievementImg.png'; 
+import axios from '../../../services/api';
+import { dividirArray } from "../../../util/dataManipulation";
+import { achievementTranslation } from "../../../models/maps";
+import imgnotfound from '../../../static/images/defaultAchievement.png';
 
-export default function AchievementListAdmin() {
+export default function AchievementListAdminPage() {
     const [message, setMessage] = useState();
+    const [currentPage, setCurrentPage] = useState(0);
     const [modalHeader, setModalHeader] = useState();
     const [modalActions, setModalActions] = useState();
-    const [achievements, setAchievements] = useState([]);
+    const [achievements, setAchievements] = useState([[]]);
 
     async function fetchData() {
         try {
             const response = await axios.get('/achievements');
-            setAchievements(response.data);
+            if (response.status === 204) {
+                setMessage("No hay logros que mostrar");
+                return;
+            }
+            // Para probar la paginación, cambiar este número
+            setAchievements(dividirArray(response.data, 10));
         } catch (error) {
             setModalHeader('Error');
             setMessage("Error al obtener logros.");
@@ -68,14 +78,24 @@ export default function AchievementListAdmin() {
     } , []);
 
     const achievementList =
-        achievements.map((a) => {
+        achievements[currentPage].map((a) => {
             return (
                 <tr key={a.id}>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> <img src={a.badgeImage || imgnotfound} alt={""} width="50px" /></td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}>{a.name}</td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.description} </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.threshold} </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}> {a.metric} </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                        <img src={a.badgeImage || imgnotfound} alt={""} width="50px" />
+                    </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                        {a.name}
+                    </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                        {a.description}
+                    </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                        {a.threshold}
+                    </td>
+                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                        {achievementTranslation[a.metric]}
+                    </td>
                     <td className="text-center">
                         <Link to={`/achievements/edit/${a.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
                             <DButton style={{ width: '15vw', backgroundColor: '#ffcc24', color: 'black' }}>
@@ -94,13 +114,19 @@ export default function AchievementListAdmin() {
             );
         });
 
-    const modal = getModal(setMessage, message, modalHeader, modalActions);
+    const modal = useModal(setMessage, message, modalHeader, modalActions);
+    const paginationButtons = usePaginationButtons(setCurrentPage, currentPage, achievements);
+    const refreshInfo = useRefreshableData(fetchData, 5);
 
     return (
+        <>
+        {modal}
         <div>
             <div className="admin-page-container">
                 <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
-                {modal}
+                <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
+                    {refreshInfo}
+                </div>
                 <div>
                     <div style={{
                         display: 'flex',
@@ -127,8 +153,11 @@ export default function AchievementListAdmin() {
                         </thead>
                         <tbody>{achievementList}</tbody>
                     </Table>
+                    <p>La información se actualiza automáticamente cada 5 segundos</p>
+                    {paginationButtons}
                 </div>
             </div>
         </div>
+        </>
     );
 }

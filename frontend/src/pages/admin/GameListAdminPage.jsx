@@ -1,14 +1,14 @@
 import { Table } from "reactstrap";
 import { useState, useEffect } from "react";
 import { GameStatus } from "../../models/enums";
-import getModal from "../../util/getModal";
+import { useModal } from "../../composables/useModal";
+import { useRefreshableData } from "../../composables/useRefreshableData";
+import { usePaginationButtons } from "../../composables/usePaginationButtons";
 import axios from '../../services/api';
-import DButton from "../ui/DButton";
 import { dividirArray } from "../../util/dataManipulation";
 
-export default function FinishedGameListAdmin() {
+export default function GameListAdmin() {
     const [message, setMessage] = useState();
-    const [refreshCounter, setRefreshCounter] = useState(5);
     const [currentPage, setCurrentPage] = useState(0);
     const [games, setGames] = useState([[]]);
 
@@ -29,30 +29,12 @@ export default function FinishedGameListAdmin() {
             } else {
                 setMessage(String(error));
             }
-        } finally {
-            setRefreshCounter(5);
         }
     };
 
     useEffect(() => {
         fetchData();
-
-        const timer = setInterval(() => {
-            if (refreshCounter > 0) {
-                setRefreshCounter(prevRefreshCounter => prevRefreshCounter - 1);
-            }
-        }, 1000);
-
-        return () => {
-            clearInterval(timer);
-        };
     }, []);
-
-    useEffect(() => {
-        if (refreshCounter === 0) {
-            fetchData();
-        }
-    }, [refreshCounter]);
 
     function getStatus(game) {
         // eslint-disable-next-line default-case
@@ -107,7 +89,9 @@ export default function FinishedGameListAdmin() {
                 </tr>)
         });
 
-    const modal = getModal(setMessage, message, 'Error');
+    const modal = useModal(setMessage, message, 'Error');
+    const paginationButtons = usePaginationButtons(setCurrentPage, currentPage, games);
+    const refreshInfo = useRefreshableData(fetchData, 5);
 
     return (
         <>
@@ -115,17 +99,9 @@ export default function FinishedGameListAdmin() {
             <div>
                 <div className="admin-page-container">
                     <h1 className="text-center" style={{ marginTop: '30px' }}>Partidas</h1>
-                    <p style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                        {refreshCounter > 0 ?
-                            <>
-                                Próxima actualización en {refreshCounter} segundos
-                            </>
-                            :
-                            <>
-                                Actualizando...
-                            </>
-                        }
-                    </p>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
+                        {refreshInfo}
+                    </div>
                     <div>
                         <Table aria-label="games" className="mt-4">
                             <thead>
@@ -143,23 +119,7 @@ export default function FinishedGameListAdmin() {
                             </tbody>
                         </Table>
                         <p>La información se actualiza automáticamente cada 5 segundos</p>
-                        <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-                            <DButton onClick={() => {
-                                if (currentPage > 0) {
-                                    setCurrentPage(prevPage => prevPage - 1)
-                                }
-                            }} disabled={games.length === 1 || currentPage === 0}>
-                                Página anterior
-                            </DButton>
-                            {currentPage + 1}
-                            <DButton onClick={() => {
-                                if (currentPage < games.length - 1) {
-                                    setCurrentPage(prevPage => prevPage + 1)
-                                }
-                            }} disabled={games.length === 1 || currentPage === games.length - 1}>
-                                Página siguiente
-                            </DButton>
-                        </div>
+                        {paginationButtons}
                     </div>
                 </div>
             </div>
