@@ -9,7 +9,7 @@ import { useRefreshableData } from "../../composables/useRefreshableData";
 import axios from '../../services/api';
 import { dividirArray } from "../../util/dataManipulation";
 
-export default function PlayerListAdmin() {
+export default function PlayerListAdminPage() {
     const [message, setMessage] = useState();
     const [modalHeader, setModalHeader] = useState();
     const [modalActions, setModalActions] = useState();

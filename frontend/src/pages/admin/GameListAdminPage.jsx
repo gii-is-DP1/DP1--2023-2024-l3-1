@@ -7,7 +7,7 @@ import { GameStatus } from "../../models/enums";
 import axios from '../../services/api';
 import { dividirArray } from "../../util/dataManipulation";
 
-export default function GameListAdmin() {
+export default function GameListAdminPage() {
     const [message, setMessage] = useState();
     const [currentPage, setCurrentPage] = useState(0);
     const [games, setGames] = useState([[]]);

@@ -8,7 +8,7 @@ import axios from '../../../services/api';
 import { achievementTranslation } from "../../../models/maps";
 import { formStyle } from "../../../components/ui/styles/forms";
 
-export default function AchievementEditAdmin() {
+export default function AchievementEditAdminPage() {
     const [message, setMessage] = useState();
     const [loading, setLoading] = useState(false);
     const [achievement, setAchievement] = useState({});

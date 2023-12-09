@@ -3,7 +3,7 @@ import axios from '../../services/api';
 import SwaggerUI from "swagger-ui-react";
 import "swagger-ui-react/swagger-ui.css"
 
-export default function SwaggerDocs(){
+export default function SwaggerDocsPage(){
     const [spec, setSpec] = useState({});
 
     useEffect(() =>{

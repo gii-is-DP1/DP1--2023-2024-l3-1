@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { Navbar, NavbarBrand, NavItem, Nav, NavbarText, NavbarToggler, Collapse } from 'reactstrap';
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Navbar, NavItem, Nav, NavbarToggler, Collapse } from 'reactstrap';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import UserAvatar from './components/player/UserAvatar';
 import tokenService from './services/token.service';
@@ -81,13 +81,9 @@ export default function AppNavbar() {
         <div style={{ position: 'absolute', width: '100vw', zIndex: '1000' }}>
             <Navbar expand="md" light color="transparent">
                 {!user?.is_admin ? (
-                <DButton color="white">
-                    <NavbarBrand tag={Link} to="/">
-                        <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
-                        <NavbarText style={{ marginLeft: '0.5rem' }}>
-                            Online
-                        </NavbarText>
-                    </NavbarBrand>
+                <DButton {...getProps('/')} style={{ display: 'flex' }}>
+                    <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40, padding: '0', marginBottom: '5px' }} />
+                    <p style={{ lineHeight: '2em', marginBottom: '0' }}>Online</p>
                 </DButton>
                 ) : undefined}
 
