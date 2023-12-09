@@ -1,7 +1,5 @@
 package org.springframework.samples.petclinic.model.base;
 
-import java.util.UUID;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.GeneratedValue;
@@ -19,13 +17,13 @@ public class UUIDEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)
 	@NotNull
-	protected UUID id;
+	protected String id;
 
-	public UUID getId() {
+	public String getId() {
 		return id;
 	}
 
-	public UUID setId(UUID id) {
+	public String setId(String id) {
 		this.id = id;
 		return id;
 	}
