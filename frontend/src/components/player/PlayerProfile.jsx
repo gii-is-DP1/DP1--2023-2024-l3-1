@@ -113,14 +113,14 @@ export default function PlayerProfile() {
 
         <div className="profile-field">
           <h6>Nombre de usuario: </h6>
-          <DInput type="text" value={currentUser.username} disabled={!editing} style={{ width: '25vw' }}
+          <DInput type="text" defaultValue={currentUser.username} disabled={!editing} style={{ width: '25vw' }}
             onChange={
               (e) => setCurrentUser({ ...currentUser, username: e.target.value?.trim() })} />
         </div>
 
         <div className="profile-field">
           <h6>Email: </h6>
-          <DInput type="text" value={currentUser.email} disabled={!editing} style={{ width: '25vw' }}
+          <DInput type="text" defaultValue={currentUser.email} disabled={!editing} style={{ width: '25vw' }}
             onChange={
               (e) => setCurrentUser({ ...currentUser, email: e.target.value?.trim() })} />
         </div>
