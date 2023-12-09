@@ -102,7 +102,7 @@ export default function CreationGamePage() {
                         <DButton type="button" onClick={handleDecrement}>-</DButton>
                     </div>
                     <div>
-                        <DButton style={{ width: '25vw' }}>
+                        <DButton style={{ width: '25vw' }} disabled={loading}>
                             {loading ? 'Guardando...' : 'Guardar'}
                         </DButton>
                         <Link
@@ -110,7 +110,7 @@ export default function CreationGamePage() {
                             className="auth-button-red"
                             style={{ textDecoration: "none" }}
                         >
-                            <DButton style={{ width: '25vw', backgroundColor: '#ff3300' }}>
+                            <DButton color="red" style={{ width: '25vw' }}>
                                 Cancelar
                             </DButton>
                         </Link>

@@ -65,7 +65,7 @@ export default function LoginPage() {
           <form onSubmit={handleClick} style={formStyle}>
             <DInput type="text" placeholder="Usuario" onChange={(e) => setUsername(e.target.value)} style={{ width: '25vw' }} />
             <DInput type="password" placeholder="Contraseña" onChange={(e) => setPassword(e.target.value)} style={{ width: '25vw' }}  />
-            <DButton style={{ width: '25vw' }}>
+            <DButton style={{ width: '25vw' }} disabled={loading}>
               {loading ? 'Iniciando sesión...' : 'Iniciar sesión' }
             </DButton>
           </form>

@@ -69,7 +69,9 @@ export default function AchievementListPlayer() {
                                     <th className="text-center">Descripción</th>
                                 </tr>
                             </thead>
-                            <tbody> {achievementList} </tbody>
+                            <tbody>
+                                {achievementList}
+                            </tbody>
                         </Table>
                         <p>La información se actualiza automáticamente cada 5 segundos</p>
                         {paginationButtons}

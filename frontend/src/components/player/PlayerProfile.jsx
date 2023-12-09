@@ -135,21 +135,22 @@ export default function PlayerProfile() {
 
         <div>
           {editing ? (
-            <DButton style={{ width: '25vw', backgroundColor: '#ff3300' }} onClick={(e) => {
+            <DButton style={{ width: '25vw'}} color="red" onClick={(e) => {
               e.preventDefault();
               setEditing(false)
             }}>
               Cancelar
             </DButton>
           ) : (<></>)}
-          <DButton style={{ width: '25vw' }} type="submit" onClick={async (e) => {
-            e.preventDefault();
-            if (editing) {
-              await patchUser();
-            } else {
-              setEditing(!editing);
-            }
-          }}>
+          <DButton style={{ width: '25vw' }} type="submit" disabled={loading} 
+            onClick={async (e) => {
+              e.preventDefault();
+              if (editing) {
+                await patchUser();
+              } else {
+                setEditing(!editing);
+              }
+            }}>
             {editing ?
               loading ? "Guardando..." : "Guardar"
               : "Editar"}

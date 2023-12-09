@@ -16,7 +16,7 @@ function close(setVisible) {
 export function useModal(setMessage, message = undefined, header = 'Error', actions = undefined) {
     if (message) {
         const closeBtn = (
-            <DButton onClick={() => close(setMessage)} type="button">X</DButton>
+            <DButton onClick={() => close(setMessage)} type="button" color="red">X</DButton>
         );
         return (
             <div>

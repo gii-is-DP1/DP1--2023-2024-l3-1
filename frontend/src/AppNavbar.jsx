@@ -15,9 +15,10 @@ export default function AppNavbar() {
 
     function getProps(link) {
         const props = {
+            onClick: () => {navigate(link)},
             // eslint-disable-next-line react-hooks/rules-of-hooks
-            ...(useMatch(location.pathname).pathname === link ? { disabled: true } : {} ),
-            onClick: () => {navigate(link)}
+            ...(useMatch(location.pathname).pathname === link ? 
+                { onClick: undefined, style: { pointerEvents: 'none' } } : { color: 'white' } ),
         };
 
         return props;
@@ -69,7 +70,7 @@ export default function AppNavbar() {
                     <DButton {...getProps('/achievements')}>Logros</DButton>
                 </NavItem>
                 <NavItem className="d-flex">
-                    <DButton onClick={tokenService.removeUser}>Cerrar sesión</DButton>
+                    <DButton color="red" onClick={tokenService.removeUser}>Cerrar sesión</DButton>
                 </NavItem>
                 </>
             )
@@ -93,7 +94,7 @@ export default function AppNavbar() {
                         {notAdminRoutes()}
                     </Nav>
                     <Nav className="ms-auto mb-2 mb-lg-0" navbar style={{ display: 'flex', alignItems: 'center' }}>
-                        {user?.is_admin === false ? (<UserAvatar size="small" user={user} {...getProps('/profile')}/>) : undefined}
+                        {user?.is_admin === false ? (<UserAvatar size="small" user={user} {...getProps('/profile')} />) : undefined}
                         {loggedRoutes()}
                     </Nav>
                 </Collapse>

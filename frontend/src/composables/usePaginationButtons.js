@@ -10,7 +10,7 @@ import DButton from "../components/ui/DButton";
 export function usePaginationButtons(setCurrentPage, currentPage, array) {
     return (
         <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
-            <DButton onClick={() => {
+            <DButton color="red" onClick={() => {
                 if (currentPage > 0) {
                     setCurrentPage(prevPage => prevPage - 1)
                 }
@@ -18,7 +18,7 @@ export function usePaginationButtons(setCurrentPage, currentPage, array) {
                 Página anterior
             </DButton>
             {currentPage + 1} / {array.length}
-            <DButton onClick={() => {
+            <DButton color="green" onClick={() => {
                 if (currentPage < array.length - 1) {
                     setCurrentPage(prevPage => prevPage + 1)
                 }

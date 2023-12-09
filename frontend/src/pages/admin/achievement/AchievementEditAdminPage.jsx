@@ -146,11 +146,11 @@ export default function AchievementEditAdmin() {
                             to={`/achievements`}
                             style={{ textDecoration: "none" }}
                         >
-                            <DButton style={{ backgroundColor: 'red' }}>
+                            <DButton color="red">
                                 Cancelar
                             </DButton>
                         </Link>
-                        <DButton type="submit">
+                        <DButton type="submit" disabled={loading}>
                             {loading ? 'Guardando...' : 'Guardar cambios'}
                         </DButton>
                     </div>

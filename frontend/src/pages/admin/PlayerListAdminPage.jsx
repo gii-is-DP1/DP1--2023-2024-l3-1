@@ -53,10 +53,10 @@ export default function PlayerListAdmin() {
         };
         setModalActions(
         <>
-            <DButton style={{ backgroundColor: 'red' }} onClick={() => clear()}>
+            <DButton color="red" onClick={() => clear()}>
                 Cancelar
             </DButton>
-            <DButton onClick={() => {
+            <DButton color="green" onClick={() => {
                 deleteUser(id);
                 clear();
                 }}>
@@ -89,13 +89,13 @@ export default function PlayerListAdmin() {
                     </td>
                     <td className="text-center">
                         <Link to={`/player/edit/${p.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
-                            <DButton style={{ width: '15vw', backgroundColor: '#ffcc24', color: 'black' }}>
+                            <DButton color="yellow" style={{ width: '15vw' }}>
                                 Ver Perfil
                             </DButton>
                         </Link>
                     </td>
                     <td className="text-center">
-                        <DButton style={{ width: '15vw', backgroundColor: '#ff3300', color: 'black' }}
+                        <DButton color="red" style={{ width: '15vw' }}
                             onClick={() => setConfirmActions(p.id)}>
                             Borrar
                         </DButton>

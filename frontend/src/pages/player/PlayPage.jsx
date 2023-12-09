@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
+import DButton from "../../components/ui/DButton";
 import "../../static/css/play/playPage.css";
-import DButton from "../ui/DButton";
 
 const lobbyButtonStyle = {
     backgroundColor: 'white',

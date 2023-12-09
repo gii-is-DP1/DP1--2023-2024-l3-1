@@ -1,24 +1,23 @@
 import React, { useEffect } from "react";
-import { Route, Routes, useLocation, useNavigate, useMatch, Navigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
+import { Navigate, Route, Routes, useLocation, useMatch, useNavigate } from "react-router-dom";
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
-import LoginPage from "./pages/auth/LoginPage";
-import AchievementListPlayer from "./pages/player/AchievementListPlayer";
-import PlayButtonPage from "./pages/player/PlayButtonPage";
-import SwaggerDocsPage from "./pages/admin/SwaggerDocsPage";
-import AchievementListAdminPage from "./pages/admin/achievement/AchievementListAdminPage";
-import AchievementEditAdminPage from "./pages/admin/achievement/AchievementEditAdminPage";
-import PlayerListAdminPage from "./pages/admin/PlayerListAdminPage";
-import './App.css';
-import './static/css/home/home.css';
 import PlayerProfile from "./components/player/PlayerProfile";
-import PlayPage from "./components/player/PlayPage";
-import GameJoinPage from "./pages/player/GameJoinPage";
-import CreationGamePage from "./pages/player/CreationGamePage";
 import GameListAdminPage from "./pages/admin/GameListAdminPage";
+import PlayerListAdminPage from "./pages/admin/PlayerListAdminPage";
+import SwaggerDocsPage from "./pages/admin/SwaggerDocsPage";
+import AchievementEditAdminPage from "./pages/admin/achievement/AchievementEditAdminPage";
+import AchievementListAdminPage from "./pages/admin/achievement/AchievementListAdminPage";
+import LoginPage from "./pages/auth/LoginPage";
 import SignUpPage from "./pages/auth/SignUpPage";
+import AchievementListPlayer from "./pages/player/AchievementListPlayer";
+import CreationGamePage from "./pages/player/CreationGamePage";
+import GameJoinPage from "./pages/player/GameJoinPage";
+import PlayButtonPage from "./pages/player/PlayButtonPage";
+import PlayPage from "./pages/player/PlayPage";
+import './static/css/home/home.css';
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -84,7 +83,7 @@ function App() {
           <Route exact path="/" element={<PlayButtonPage />} />
           <Route exact path="/achievements" element={<AchievementListPlayer />} />
           <Route exact path="/profile" element={<PlayerProfile />} />
-          <Route exact path="/play" element={<PlayPage />} />
+          <Route exact path="/play/choose" element={<PlayPage />} />
           <Route exact path="/play/join" element={<GameJoinPage />} />
           <Route exact path="/games/creation" element={<CreationGamePage />} />
         </>
