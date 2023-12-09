@@ -1,7 +1,11 @@
 package org.springframework.samples.petclinic.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import org.springframework.samples.petclinic.model.enums.Icon;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,4 +20,8 @@ public class SignupRequest {
 
 	@NotBlank
 	private String password;
+
+	@Enumerated(EnumType.STRING)
+	@NotNull
+	private Icon profile_icon = Icon.MANO_LOGO;
 }

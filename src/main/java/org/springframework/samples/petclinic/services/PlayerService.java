@@ -53,9 +53,10 @@ public class PlayerService {
 	@Transactional
 	public void createUser(@Valid SignupRequest request) {
 		Player player = new Player();
-		player.setUsername(request.getUsername());
-		player.setEmail(request.getEmail());
+		player.setUsername(request.getUsername().toLowerCase());
+		player.setEmail(request.getEmail().toLowerCase());
 		player.setPassword(encoder.encode(request.getPassword()));
+		player.setProfile_icon(request.getProfile_icon());
 		this.repository.save(player);
 	}
 
@@ -68,15 +69,15 @@ public class PlayerService {
 			String newUsername = payload.getUsername();
 			String newEmail = payload.getEmail();
 			String newPassword = payload.getPassword();
-			Icon newProfileIcon = payload.getProfileIcon();
+			Icon newProfileIcon = payload.getProfile_icon();
 			if (newUsername != null && !newUsername.isBlank()) {
-				toUpdate.setUsername(payload.getUsername());
+				toUpdate.setUsername(newUsername.toLowerCase());
 			}
 			if (newEmail != null && !newEmail.isBlank()) {
-				toUpdate.setEmail(payload.getEmail());
+				toUpdate.setEmail(newEmail.toLowerCase());
 			}
 			if (newPassword != null && !newPassword.isBlank()) {
-				toUpdate.setPassword(encoder.encode(payload.getPassword()));
+				toUpdate.setPassword(encoder.encode(newPassword));
 			}
 			if (newProfileIcon != null) {
 				toUpdate.setProfile_icon(newProfileIcon);
