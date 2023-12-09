@@ -17,7 +17,7 @@ import CreationGamePage from "./pages/player/CreationGamePage";
 import GameJoinPage from "./pages/player/GameJoinPage";
 import PlayButtonPage from "./pages/player/PlayButtonPage";
 import PlayPage from "./pages/player/PlayPage";
-import './static/css/home/home.css';
+import './static/css/home.css';
 
 function ErrorFallback({ error, resetErrorBoundary }) {
   return (
@@ -50,7 +50,8 @@ function App() {
           <Route exact path="/achievements/new" element={<AchievementEditAdminPage />} />
           <Route exact path="/achievements/edit/:id" element={<AchievementEditAdminPage />} />
           <Route exact path="/players" element={<PlayerListAdminPage />} />
-          <Route exact path="/players/new" element={<SignUpForm onSignUp={() => navigate('/')} />} />
+          <Route exact path="/players/new" element={<SignUpForm className="page-container" 
+            onSignUp={() => navigate('/')} />} />
           <Route exact path="/players/edit/:id" element={<PlayerProfile />} />
           <Route exact path="/docs" element={<SwaggerDocsPage />} />
           <Route exact path="/games" element={<GameListAdminPage />} />

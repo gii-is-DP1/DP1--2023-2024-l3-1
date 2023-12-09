@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Alert } from "reactstrap";
 import tokenService from "../../services/token.service";
-import "../../static/css/auth/authButton.css";
 import DButton from "../../components/ui/DButton";
 import DInput from "../../components/ui/DInput";
 import { formStyle } from "../../components/ui/styles/forms";

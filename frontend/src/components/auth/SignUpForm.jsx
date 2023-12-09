@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import tokenService from "../../services/token.service";
-import "../../static/css/auth/authButton.css";
 import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
 import { formStyle } from "../ui/styles/forms";
@@ -85,7 +84,7 @@ export default function SignUpForm(Props) {
     <>
     {modal}
     {userIconGallery}
-    <div>
+    <div {...Props}>
       <form onSubmit={handleClick} style={formStyle}>
         <UserAvatar user={signUpPlayerDto} size="medium" onClick={() => setOpenGallery(true)} />
         <DInput type="text" placeholder="Usuario" style={{ width: '25vw' }}

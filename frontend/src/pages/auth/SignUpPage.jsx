@@ -1,5 +1,4 @@
 import React from "react";
-import "../../static/css/auth/authButton.css";
 import { formStyle } from "../../components/ui/styles/forms";
 import { Link } from "react-router-dom";
 import SignUpForm from "../../components/auth/SignUpForm";

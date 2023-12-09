@@ -88,7 +88,7 @@ export default function AchievementEditAdmin() {
     const modal = useModal(setMessage, message, 'Error');
 
     return (
-        <div className="auth-page-container">
+        <div className="page-container">
             <h2 className="text-center" style={{ marginTop: '30px' }}>
                 {achievement.id ? "Editar logro" : "Añadir logro"}
             </h2>

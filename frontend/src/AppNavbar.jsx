@@ -78,14 +78,18 @@ export default function AppNavbar() {
     }
 
     return (
-        <div>
+        <div style={{ position: 'absolute', width: '100vw', zIndex: '1000' }}>
             <Navbar expand="md" light color="transparent">
-                {!user?.is_admin ? (<NavbarBrand tag={Link} to="/">
-                    <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
-                    <NavbarText style={{ marginLeft: '0.5rem' }}>
-                        Online
-                    </NavbarText>
-                </NavbarBrand>) : undefined}
+                {!user?.is_admin ? (
+                <DButton color="white">
+                    <NavbarBrand tag={Link} to="/">
+                        <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
+                        <NavbarText style={{ marginLeft: '0.5rem' }}>
+                            Online
+                        </NavbarText>
+                    </NavbarBrand>
+                </DButton>
+                ) : undefined}
 
                 <NavbarToggler onClick={toggleNavbar} className="ms-2" />
                 <Collapse isOpen={!collapsed} navbar>

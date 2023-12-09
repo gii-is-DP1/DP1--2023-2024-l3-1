@@ -63,12 +63,12 @@ export default function CreationGamePage() {
     // const modal = getErrorModal(setVisible, visible, message);
 
     return (
-        <div className="auth-page-container">
+        <div className="page-container">
             <h2 className="text-center" style={{ marginTop: '30px' }}>
                 {"Creación de la partida"}
             </h2>
             {/* {modal} */}
-            <div className="auth-form-container">
+            <div>
                 <form onSubmit={handleSubmit} style={formStyle}>
                     <div className="custom-form-input">
                         <Label for="name">
@@ -107,7 +107,6 @@ export default function CreationGamePage() {
                         </DButton>
                         <Link
                             to={`/gameLobby`}
-                            className="auth-button-red"
                             style={{ textDecoration: "none" }}
                         >
                             <DButton color="red" style={{ width: '25vw' }}>

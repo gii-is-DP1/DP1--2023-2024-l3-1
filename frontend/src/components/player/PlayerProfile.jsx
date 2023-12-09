@@ -1,5 +1,5 @@
 import { Alert } from "reactstrap";
-import "../../../src/static/css/profile/profilePage.css";
+import "../../../src/static/css/profilePage.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { formStyle } from "../ui/styles/forms";

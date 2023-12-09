@@ -1,14 +1,14 @@
-import { Table } from "reactstrap";
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import { Table } from "reactstrap";
 import DButton from "../../../components/ui/DButton";
 import { useModal } from "../../../composables/useModal";
 import { usePaginationButtons } from "../../../composables/usePaginationButtons";
 import { useRefreshableData } from "../../../composables/useRefreshableData";
-import { Link } from "react-router-dom";
-import axios from '../../../services/api';
-import { dividirArray } from "../../../util/dataManipulation";
 import { achievementTranslation } from "../../../models/maps";
+import axios from '../../../services/api';
 import imgnotfound from '../../../static/images/default_achievement.png';
+import { dividirArray } from "../../../util/dataManipulation";
 
 export default function AchievementListAdminPage() {
     const [message, setMessage] = useState();
@@ -122,7 +122,7 @@ export default function AchievementListAdminPage() {
         <>
         {modal}
         <div>
-            <div className="admin-page-container">
+            <div className="page-container">
                 <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
                     {refreshInfo}

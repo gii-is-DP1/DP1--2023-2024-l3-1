@@ -1,9 +1,9 @@
+import { useEffect, useState } from "react";
 import { Table } from "reactstrap";
-import { useState, useEffect } from "react";
-import { GameStatus } from "../../models/enums";
 import { useModal } from "../../composables/useModal";
-import { useRefreshableData } from "../../composables/useRefreshableData";
 import { usePaginationButtons } from "../../composables/usePaginationButtons";
+import { useRefreshableData } from "../../composables/useRefreshableData";
+import { GameStatus } from "../../models/enums";
 import axios from '../../services/api';
 import { dividirArray } from "../../util/dataManipulation";
 
@@ -97,7 +97,7 @@ export default function GameListAdmin() {
         <>
             {modal}
             <div>
-                <div className="admin-page-container">
+                <div className="page-container">
                     <h1 className="text-center" style={{ marginTop: '30px' }}>Partidas</h1>
                     <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
                         {refreshInfo}
