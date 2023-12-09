@@ -38,6 +38,7 @@ export default function UserAvatar(Props) {
             padding: '5px',
             margin: '10px',
             ...(Props.onClick && { cursor: 'pointer' }),
+            ...(Props.disabled && { filter: 'grayscale(100%)', pointerEvents: 'none' }),
             ...Props.style
             }}
             >

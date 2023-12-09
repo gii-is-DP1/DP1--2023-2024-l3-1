@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate, useMatch, Navigate } from "react-router-dom";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
 import LoginPage from "./pages/auth/LoginPage";
 import AchievementListPlayer from "./pages/player/AchievementListPlayer";
-import MainLobby from "./components/player/MainLobby";
+import PlayButtonPage from "./pages/player/PlayButtonPage";
 import SwaggerDocsPage from "./pages/admin/SwaggerDocsPage";
 import AchievementListAdminPage from "./pages/admin/achievement/AchievementListAdminPage";
 import AchievementEditAdminPage from "./pages/admin/achievement/AchievementEditAdminPage";
@@ -24,7 +24,7 @@ function ErrorFallback({ error, resetErrorBoundary }) {
   return (
     <div role="alert">
       <p>Something went wrong:</p>
-      <pre>{error.message}</pre>
+      {error.message ? (<pre>{error.message}</pre>) : undefined}
       <button onClick={resetErrorBoundary}>Try again</button>
     </div>
   )
@@ -34,30 +34,6 @@ function App() {
   const user = useSelector(state => state.tokenStore.user);
   const location = useLocation();
   const navigate = useNavigate();
-
-  /**
-   * Middleware
-   * 
-   * Añadir rutas dependiendo del rol
-   */
-  const adminLocations = ['player', 'docs', 'achievements', 'games'];
-  const notLoggedLocations = ['signup'];
-
-  useEffect(() => {
-    const isInAdminPages = adminLocations.filter((route) => location.pathname.includes(route)).length > 0;
-    const isInNotLoggedInPages = notLoggedLocations.filter((route) => location.pathname.includes(route)).length > 0;
-    if (
-      (
-        (user?.is_admin && !isInAdminPages) || 
-        (!user && !isInNotLoggedInPages) ||
-        (user && isInNotLoggedInPages)
-      ) &&
-      location.pathname !== "/"
-    ) {
-      console.warn('Redirigiendo a / por falta de permisos');
-      navigate("/");
-    }
-  }, [location, user]);
   
   /**
    * Se utilizan diferentes rutas dependiendo del estado de inicio de sesión del usuario
@@ -70,14 +46,15 @@ function App() {
     if (user?.is_admin) {
       return (
         <>
-          <Route path="/" exact={true} element={<PlayerListAdminPage />} />
-          <Route path="/achievements" element={<AchievementListAdminPage />} />
-          <Route path="/achievements/new" element={<AchievementEditAdminPage />} />
-          <Route path="/achievements/edit/:id" element={<AchievementEditAdminPage />} />
-          <Route path="/player/new" element={<SignUpForm onSignUp={() => navigate('/')} />} />
-          <Route path="/player/edit/:id" element={<PlayerProfile />} />
-          <Route path="/docs" element={<SwaggerDocsPage />} />
-          <Route path="/games" element={<GameListAdminPage />} />
+          <Route exact path="/" element={<Navigate to="/players" />} />
+          <Route exact path="/achievements" element={<AchievementListAdminPage />} />
+          <Route exact path="/achievements/new" element={<AchievementEditAdminPage />} />
+          <Route exact path="/achievements/edit/:id" element={<AchievementEditAdminPage />} />
+          <Route exact path="/players" element={<PlayerListAdminPage />} />
+          <Route exact path="/players/new" element={<SignUpForm onSignUp={() => navigate('/')} />} />
+          <Route exact path="/players/edit/:id" element={<PlayerProfile />} />
+          <Route exact path="/docs" element={<SwaggerDocsPage />} />
+          <Route exact path="/games" element={<GameListAdminPage />} />
         </>
       )
     }
@@ -90,8 +67,8 @@ function App() {
     if (!user) {
       return (
         <>
-          <Route path="/signup" element={<SignUpPage />} />
-          <Route path="/" exact={true} element={<LoginPage />} />
+          <Route exact path="/" element={<LoginPage />} />
+          <Route exact path="/signup" element={<SignUpPage />} />
         </>
       );
     }
@@ -101,29 +78,70 @@ function App() {
    * Rutas que estarán disponibles para usuarios autenticados que no son administradores
    */
   function notAdminRoutes() {
-    if (!user?.is_admin) {
+    if (user && !user?.is_admin) {
       return (
         <>
-          <Route path="/achievements" exact={true} element={<AchievementListPlayer />} />
-          <Route path="/" exact={true} element={<MainLobby />} />
-          <Route path="/profile" exact={true} element={<PlayerProfile />} />
-          <Route path="/play" exact={true} element={<PlayPage />} />
-          <Route path="/play/join" exact={true} element={<GameJoinPage />} />
-          <Route path="/games/creation" exact={true} element={<CreationGamePage />} />
-
+          <Route exact path="/" element={<PlayButtonPage />} />
+          <Route exact path="/achievements" element={<AchievementListPlayer />} />
+          <Route exact path="/profile" element={<PlayerProfile />} />
+          <Route exact path="/play" element={<PlayPage />} />
+          <Route exact path="/play/join" element={<GameJoinPage />} />
+          <Route exact path="/games/creation" element={<CreationGamePage />} />
         </>
       )
     }
   }
+
+  function getRoutes() {
+    return (
+      <>
+        {notLoggedRoutes()}
+        {adminRoutes()}
+        {notAdminRoutes()}
+      </>
+    )
+  }
+
+  /**
+   * LÓGICA DE MIDDLEWARE
+   * 
+   * Esta lógica de negocio sirve para determinar si el usuario ha visitado una ruta a la que no debe de acceder
+   * basándose en sus roles y permisos.
+   */
+  /**
+   * Estas funciones recorren recursivamente todos los elementos JSX buscando el prop path
+   */
+  const recursivePathFinding = (children) => {
+    return children.map((child) => {
+      if (!child?.props?.path && Array.isArray(child?.props?.children)) {
+        return recursivePathFinding(child.props.children);
+      }
+
+      return child?.props?.path;
+    })
+  };
+
+  function getAvailablePaths() {
+    return React.Children.map(getRoutes(), (rootElement) => {
+      return recursivePathFinding(rootElement.props.children);
+    }).filter((i) => Boolean(i));
+  }
+
+  const isAuthorizedPath = getAvailablePaths().includes(useMatch(location.pathname).pathname);
+
+  useEffect(() => {
+    if (!isAuthorizedPath && location.pathname !== "/") {
+      console.warn('Redirigiendo a / por falta de permisos');
+      navigate("/");
+    }
+  }, [isAuthorizedPath]);
 
   return (
     <div>
       <ErrorBoundary FallbackComponent={ErrorFallback} >
         {user ? <AppNavbar /> : undefined}
         <Routes>
-          {notLoggedRoutes()}
-          {notAdminRoutes()}
-          {adminRoutes()}
+          {getRoutes()}
         </Routes>
       </ErrorBoundary>
     </div>

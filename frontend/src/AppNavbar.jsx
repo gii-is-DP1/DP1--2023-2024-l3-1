@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
-import { Navbar, NavbarBrand, NavLink, NavItem, Nav, NavbarText, NavbarToggler, Collapse } from 'reactstrap';
-import { Link, useNavigate } from 'react-router-dom';
+import { Navbar, NavbarBrand, NavItem, Nav, NavbarText, NavbarToggler, Collapse } from 'reactstrap';
+import { Link, useNavigate, useLocation, useMatch } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import UserAvatar from './components/player/UserAvatar';
 import tokenService from './services/token.service';
+import DButton from './components/ui/DButton';
 
 export default function AppNavbar() {
     const user = useSelector(state => state.tokenStore.user);
     const [collapsed, setCollapsed] = useState(true);
     const navigate = useNavigate();
-
+    const location = useLocation();
     const toggleNavbar = () => setCollapsed(!collapsed);
+
+    function getProps(link) {
+        const props = {
+            // eslint-disable-next-line react-hooks/rules-of-hooks
+            ...(useMatch(location.pathname).pathname === link ? { disabled: true } : {} ),
+            onClick: () => {navigate(link)}
+        };
+
+        return props;
+    }
 
     /**
      * SE UTILIZAN DIFERENTES RUTAS DEPENDIENDO DEL ESTADO DE INICIO DE SESIÓN DEL USUARIO
@@ -23,13 +34,13 @@ export default function AppNavbar() {
             return (
                 <>
                     <NavItem>
-                        <NavLink style={{ color: "white" }} tag={Link} to="/">Jugadores</NavLink>
+                        <DButton {...getProps('/players')}>Jugadores</DButton>
                     </NavItem>
                     <NavItem>
-                        <NavLink style={{ color: "white" }} tag={Link} to="/games">Partidas</NavLink>
+                        <DButton {...getProps('/games')}>Partidas</DButton>
                     </NavItem>
                     <NavItem>
-                        <NavLink style={{ color: "white" }} tag={Link} to="/docs">Documentación API</NavLink>
+                        <DButton {...getProps('/docs')}>Documentación API</DButton>
                     </NavItem>
                 </>
             )
@@ -40,9 +51,9 @@ export default function AppNavbar() {
      * Rutas que estarán disponibles para usuarios autenticados que no son administradores
      */
     function notAdminRoutes() {
-        if (!user?.is_admin) {
+        if (user && !user?.is_admin) {
             return (
-                    null
+                <></>
             )
         }
     }
@@ -55,10 +66,10 @@ export default function AppNavbar() {
             return (
                 <>
                 <NavItem className="d-flex">
-                    <NavLink style={{ color: "white" }} tag={Link} to="/achievements">Logros</NavLink>
+                    <DButton {...getProps('/achievements')}>Logros</DButton>
                 </NavItem>
                 <NavItem className="d-flex">
-                    <NavLink style={{ color: "white", cursor: 'pointer' }} onClick={tokenService.removeUser}>Cerrar sesión</NavLink>
+                    <DButton onClick={tokenService.removeUser}>Cerrar sesión</DButton>
                 </NavItem>
                 </>
             )
@@ -67,10 +78,10 @@ export default function AppNavbar() {
 
     return (
         <div>
-            <Navbar expand="md" dark color="dark">
+            <Navbar expand="md" light color="transparent">
                 {!user?.is_admin ? (<NavbarBrand tag={Link} to="/">
                     <img alt="Dobble logo" src="/logo.png" style={{ height: '100%', width: '100%', maxHeight: 40, maxWidth: 40 }} />
-                    <NavbarText style={{ color: "white", marginLeft: '0.5rem' }}>
+                    <NavbarText style={{ marginLeft: '0.5rem' }}>
                         Online
                     </NavbarText>
                 </NavbarBrand>) : undefined}
@@ -81,8 +92,8 @@ export default function AppNavbar() {
                         {adminRoutes()}
                         {notAdminRoutes()}
                     </Nav>
-                    <Nav className="ms-auto mb-2 mb-lg-0" navbar style={{ display: 'flex', alignItems: 'flex-end' }}>
-                        {user?.is_admin === false ? (<UserAvatar size="x-small" user={user} onClick={() => navigate('/profile')} />) : undefined}
+                    <Nav className="ms-auto mb-2 mb-lg-0" navbar style={{ display: 'flex', alignItems: 'center' }}>
+                        {user?.is_admin === false ? (<UserAvatar size="small" user={user} {...getProps('/profile')}/>) : undefined}
                         {loggedRoutes()}
                     </Nav>
                 </Collapse>
