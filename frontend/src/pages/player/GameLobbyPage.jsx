@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import getErrorModal from "../../util/getErrorModal";
-import DInput from "../ui/DInput";
+import DInput from "../../components/ui/DInput";
 import axios from '../../services/api';
-import DButton from "../ui/DButton";
+import DButton from "../../components/ui/DButton";
 
-export default function GameLobby() {
+export default function GameLobbyPage() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [game, setGame] = useState({ maxPlayers: 8, start: null });

@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { useSelector } from 'react-redux';
-import { Navigate, Route, Routes, useLocation, useMatch, useNavigate } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation, useNavigate, matchRoutes } from "react-router-dom";
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
 import PlayerProfile from "./components/player/PlayerProfile";
@@ -85,7 +85,7 @@ function App() {
           <Route exact path="/profile" element={<PlayerProfile />} />
           <Route exact path="/play/choose" element={<PlayPage />} />
           <Route exact path="/play/join" element={<GameJoinPage />} />
-          <Route exact path="/games/creation" element={<CreationGamePage />} />
+          <Route exact path="/play/new" element={<CreationGamePage />} />
         </>
       )
     }
@@ -121,19 +121,39 @@ function App() {
   };
 
   function getAvailablePaths() {
-    return React.Children.map(getRoutes(), (rootElement) => {
+    return React.Children
+    .map(getRoutes(), (rootElement) => {
       return recursivePathFinding(rootElement.props.children);
-    }).filter((i) => Boolean(i));
+    })
+    .filter((i) => Boolean(i));
   }
 
-  const isAuthorizedPath = getAvailablePaths().includes(useMatch(location.pathname).pathname);
+  function getCurrentRoute() {
+    const routeObjects = getAvailablePaths().map((p) => {
+      return {
+        path: p
+      }
+    });
+
+    const matchedRoutes = matchRoutes(routeObjects, location);
+
+    if (matchedRoutes) {
+      const [{ route }] = matchedRoutes;
+
+      return route.path;
+    }    
+  }
+
+  const isAuthorizedPath = getAvailablePaths().some((p) => {
+    return p === getCurrentRoute();
+  });
 
   useEffect(() => {
     if (!isAuthorizedPath && location.pathname !== "/") {
       console.warn('Redirigiendo a / por falta de permisos');
       navigate("/");
     }
-  }, [isAuthorizedPath]);
+  }, [isAuthorizedPath, location]);
 
   return (
     <div>

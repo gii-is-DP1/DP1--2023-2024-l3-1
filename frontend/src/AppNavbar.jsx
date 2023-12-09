@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Navbar, NavbarBrand, NavItem, Nav, NavbarText, NavbarToggler, Collapse } from 'reactstrap';
-import { Link, useNavigate, useLocation, useMatch } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import UserAvatar from './components/player/UserAvatar';
 import tokenService from './services/token.service';
@@ -17,7 +17,7 @@ export default function AppNavbar() {
         const props = {
             onClick: () => {navigate(link)},
             // eslint-disable-next-line react-hooks/rules-of-hooks
-            ...(useMatch(location.pathname).pathname === link ? 
+            ...(location.pathname === link ? 
                 { onClick: undefined, style: { pointerEvents: 'none' } } : { color: 'white' } ),
         };
 
