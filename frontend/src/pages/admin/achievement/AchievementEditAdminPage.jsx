@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form } from "reactstrap";
-import { useModal } from "../../../composables/useModal";
 import DButton from "../../../components/ui/DButton";
 import DInput from "../../../components/ui/DInput";
-import axios from '../../../services/api';
-import { achievementTranslation } from "../../../models/maps";
 import { formStyle } from "../../../components/ui/styles/forms";
+import { useModal } from "../../../composables/useModal";
+import { achievementTranslation } from "../../../models/maps";
+import axios from '../../../services/api';
 
 export default function AchievementEditAdminPage() {
     const [message, setMessage] = useState();
@@ -141,16 +141,16 @@ export default function AchievementEditAdminPage() {
                         value={achievement.threshold || ""}
                         onChange={handleChange}
                     />
-                    <div>
+                    <div style={{ display: 'flex' }}>
                         <Link
                             to={`/achievements`}
                             style={{ textDecoration: "none" }}
                         >
-                            <DButton color="red">
+                            <DButton color="red" disabled={loading} style={{ width: '25vw'}}>
                                 Cancelar
                             </DButton>
                         </Link>
-                        <DButton type="submit" disabled={loading}>
+                        <DButton type="submit" disabled={loading} style={{ width: '25vw'}}>
                             {loading ? 'Guardando...' : 'Guardar cambios'}
                         </DButton>
                     </div>

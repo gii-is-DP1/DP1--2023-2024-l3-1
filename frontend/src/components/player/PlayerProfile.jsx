@@ -1,13 +1,12 @@
-import { Alert } from "reactstrap";
-import "../../../src/static/css/profilePage.css";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { formStyle } from "../ui/styles/forms";
+import { Alert } from "reactstrap";
+import { useIconSelector } from "../../composables/useIconSelector";
 import axios from '../../services/api';
 import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
+import { formStyle } from "../ui/styles/forms";
 import UserAvatar from "./UserAvatar";
-import { useIconSelector } from "../../composables/useIconSelector";
 
 export default function PlayerProfile() {
   const [originalUser, setOriginalUser] = useState({});
@@ -98,7 +97,7 @@ export default function PlayerProfile() {
   return (
     <>
     {userIconGallery}
-    <div className="profile-page-container">
+    <div className="page-container">
       {message ? (
         <Alert color="primary">{message}</Alert>
       ) : (
@@ -111,14 +110,14 @@ export default function PlayerProfile() {
 
         <UserAvatar size="large" user={currentUser} onClick={editing ? () => setOpenGallery(true) : undefined} />
 
-        <div className="profile-field">
+        <div>
           <h6>Nombre de usuario: </h6>
           <DInput type="text" defaultValue={currentUser.username} disabled={!editing} style={{ width: '25vw' }}
             onChange={
               (e) => setCurrentUser({ ...currentUser, username: e.target.value?.trim() })} />
         </div>
 
-        <div className="profile-field">
+        <div>
           <h6>Email: </h6>
           <DInput type="text" defaultValue={currentUser.email} disabled={!editing} style={{ width: '25vw' }}
             onChange={
@@ -126,14 +125,16 @@ export default function PlayerProfile() {
         </div>
 
         {editing ? (
-          <div className="profile-field">
-            <h6>Contraseña (dejar en blanco para no cambiar): </h6>
-            <DInput type="password" placeholder="Nueva contraseña" onChange={(e) => setNewPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
-            <DInput type="password" placeholder="Repetir contraseña" onChange={(e) => setConfirmPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
-          </div>
-        ) : (<></>)}
+          <>
+            <h6 style={{ marginTop: '10px' }}>Contraseña (dejar en blanco para no cambiar): </h6>
+            <div style={{ display: 'flex', flexDirection: 'row' }}>
+              <DInput type="password" placeholder="Nueva contraseña" onChange={(e) => setNewPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
+              <DInput type="password" placeholder="Repetir contraseña" onChange={(e) => setConfirmPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
+            </div>
+          </>
+        ) : undefined}
 
-        <div>
+        <div style={{ display: 'flex', flexDirection: 'row' }}>
           {editing ? (
             <DButton style={{ width: '25vw'}} color="red" onClick={(e) => {
               e.preventDefault();
