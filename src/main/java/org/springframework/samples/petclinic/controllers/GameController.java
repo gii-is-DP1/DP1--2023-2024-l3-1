@@ -81,8 +81,8 @@ public class GameController {
 
                 game.setName(gameCreateDTO.getName());
                 game.setMaxPlayers(gameCreateDTO.getMax_players());
-                game.setCreator(currentPlayer.get());
-                game.setPlayers(ls);
+                game.setRaw_creator(currentPlayer.get());
+                game.setRaw_players(ls);
                 gameService.saveGame(game);
                 return new ResponseEntity<Game>(game, HttpStatus.CREATED);
             } else {
@@ -116,7 +116,7 @@ public class GameController {
 
         Game currentGame = optionalGame.get();
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
-        Player creator = currentGame.getCreator();
+        Player creator = currentGame.getRaw_creator();
 
         if (!currentPlayer.isPresent() || !currentPlayer.get().equals(creator)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -156,13 +156,13 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
 
-        if (gameToJoin.getPlayers().contains(currentPlayer.get())) {
+        if (gameToJoin.getRaw_players().contains(currentPlayer.get())) {
             return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
 
         if (gameToJoin.getMaxPlayers() >= gameToJoin.getPlayers().size() + 1) {
             Player joiningPlayer = currentPlayer.get();
-            gameToJoin.getPlayers().add(joiningPlayer);
+            gameToJoin.getRaw_players().add(joiningPlayer);
             return new ResponseEntity<Game>(gameService.saveGame(gameToJoin), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -194,7 +194,7 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
 
-        Player creator = currentGame.getCreator();
+        Player creator = currentGame.getRaw_creator();
 
         if (!currentPlayer.isPresent() || !currentPlayer.get().equals(creator)) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

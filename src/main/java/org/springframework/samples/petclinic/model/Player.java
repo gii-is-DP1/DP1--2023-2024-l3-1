@@ -45,5 +45,6 @@ public class Player extends BaseEntity {
     Boolean is_admin = false;
 
     @ManyToMany
+    @JsonIgnore
     List<Player> friends;
 }

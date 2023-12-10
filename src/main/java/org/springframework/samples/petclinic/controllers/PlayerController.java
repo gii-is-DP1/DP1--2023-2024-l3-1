@@ -1,5 +1,6 @@
 package org.springframework.samples.petclinic.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,6 +12,7 @@ import org.springframework.samples.petclinic.configuration.services.UserDetailsI
 import org.springframework.samples.petclinic.dto.EditPlayerDto;
 import org.springframework.samples.petclinic.dto.JwtResponseDto;
 import org.springframework.samples.petclinic.dto.LoginRequest;
+import org.springframework.samples.petclinic.dto.PublicPlayerDto;
 import org.springframework.samples.petclinic.dto.SignupRequest;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.PlayerService;
@@ -232,12 +234,12 @@ public class PlayerController {
 			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
 	@Operation(summary = "Añade un amigo a un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
-	@PutMapping("/friends/{id}/{friend_id}")
+	@PutMapping("/friends/{id}/{friend_username}")
 	public ResponseEntity<?> addFriendToUser(@PathVariable("id") Integer id,
-			@PathVariable("friend_id") Integer friend_id) {
+			@PathVariable("friend_username") String friend_username) {
 		Optional<Player> currentUser = playerService.findCurrentPlayer();
 		Optional<Player> target = playerService.findPlayer(id);
-		Optional<Player> friend = playerService.findPlayer(friend_id);
+		Optional<Player> friend = playerService.findByUsernamePlayer(friend_username);
 
 		if (!target.isPresent() || !friend.isPresent() || !currentUser.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -247,12 +249,59 @@ public class PlayerController {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
 
-		if (playerService.areFriends(target.get(), friend.get())) {
+		if (playerService.areFriends(target.get(), friend.get()) || target.get().getId() == friend.get().getId()) {
 			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 		}
 
 		playerService.addFriend(target.get(), friend.get());
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = Player.class, type="array" )) }),
+			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
+			@ApiResponse(responseCode = "404", description = "No se encuentra al usuario proporcionado", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+	@Operation(summary = "Lista los amigos de un usuario. El usuario que realice la petición debe ser administrador")
+	@SecurityRequirement(name = "bearerAuth")
+	@GetMapping("/friends/{id}")
+	public ResponseEntity<?> getFriendsOfUser(@PathVariable("id") Integer id) {
+		Optional<Player> currentUser = playerService.findCurrentPlayer();
+		Optional<Player> target = playerService.findPlayer(id);
+
+		if (!target.isPresent() || !currentUser.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+
+		if (!currentUser.get().getIs_admin()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		return new ResponseEntity<>(target.get().getFriends(), HttpStatus.OK);
+	}
+
+		@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = {
+					@Content(mediaType = "application/json", schema = @Schema(implementation = PublicPlayerDto.class, type="array" )) }),
+			@ApiResponse(responseCode = "401", description = "El usuario actual no ha iniciado sesión", content = @Content),
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+	@Operation(summary = "Lista los amigos del usuario actual")
+	@SecurityRequirement(name = "bearerAuth")
+	@GetMapping("/friends")
+	public ResponseEntity<?> getFriendsOfMe() {
+		Optional<Player> currentUser = playerService.findCurrentPlayer();
+
+		if (!currentUser.isPresent()) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+
+		List<PublicPlayerDto> public_friends_data = currentUser.get().getFriends()
+			.stream()
+			.map(p -> new PublicPlayerDto(p))
+			.toList();
+
+		return new ResponseEntity<>(public_friends_data, HttpStatus.OK);
 	}
 
 	@ApiResponses(value = {
@@ -263,12 +312,12 @@ public class PlayerController {
 			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
 	@Operation(summary = "Elimina un amigo a un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
-	@DeleteMapping("/friends/{id}/{friend_id}")
+	@DeleteMapping("/friends/{id}/{friend_username}")
 	public ResponseEntity<?> deleteFriendToUser(@PathVariable("id") Integer id,
-			@PathVariable("friend_id") Integer friend_id) {
+			@PathVariable("friend_username") String friend_username) {
 		Optional<Player> currentUser = playerService.findCurrentPlayer();
 		Optional<Player> target = playerService.findPlayer(id);
-		Optional<Player> friend = playerService.findPlayer(friend_id);
+		Optional<Player> friend = playerService.findByUsernamePlayer(friend_username);
 
 		if (!target.isPresent() || !friend.isPresent() || !currentUser.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -302,7 +351,7 @@ public class PlayerController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 
-		if (playerService.areFriends(target.get(), friend.get())) {
+		if (playerService.areFriends(target.get(), friend.get()) || target.get().getId() == friend.get().getId()) {
 			return new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
 		}
 
