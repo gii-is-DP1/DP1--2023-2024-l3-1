@@ -54,7 +54,11 @@ export default function AppNavbar() {
     function notAdminRoutes() {
         if (user && !user?.is_admin) {
             return (
-                <></>
+                <>
+                    <NavItem>
+                        <DButton {...getProps('/friends')}>Amigos</DButton>
+                    </NavItem>
+                </>
             )
         }
     }

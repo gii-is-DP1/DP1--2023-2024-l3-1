@@ -5,5 +5,9 @@ export function dividirArray(array, piezas) {
     subarrays.push(array.splice(0, piezas));
   }
 
+  if (subarrays.length === 0) {
+    subarrays.push([]);
+  }
+
   return subarrays;
 }

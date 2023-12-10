@@ -80,20 +80,20 @@ export default function AchievementListAdminPage() {
     const achievementList =
         achievements[currentPage].map((a) => {
             return (
-                <tr key={a.id}>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                <tr key={a.id} style={{ verticalAlign: 'middle' }}>
+                    <td className="text-center">
                         <img src={a.badgeImage || imgnotfound} alt={""} width="50px" />
                     </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                    <td className="text-center">
                         {a.name}
                     </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                    <td className="text-center">
                         {a.description}
                     </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                    <td className="text-center">
                         {a.threshold}
                     </td>
-                    <td className="text-center" style={{ verticalAlign: 'middle' }}>
+                    <td className="text-center">
                         {achievementTranslation[a.metric]}
                     </td>
                     <td className="text-center">

@@ -54,7 +54,7 @@ export default function GameListAdminPage() {
     const finishedGameList =
         games[currentPage].map((game) => {
             return (
-                <tr key={game.id}>
+                <tr key={game.id} style={{ verticalAlign: 'middle' }}>
                     <td className="text-center">{game.name}</td>
                     <td className="text-center">{getStatus(game)}</td>
                     <td className="text-center"> {game.creator.username} </td>

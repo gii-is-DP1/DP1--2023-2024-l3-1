@@ -17,7 +17,7 @@ export function useLabeledForm(map) {
             <tbody>
                 {Object.entries(map).map(([key, value]) => {
                     return (
-                        <tr key={key}>
+                        <tr key={key} style={{ verticalAlign: 'middle' }}>
                             <td className="text-center">
                                 {key}
                             </td>

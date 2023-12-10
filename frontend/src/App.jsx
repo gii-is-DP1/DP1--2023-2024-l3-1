@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { Navigate, Route, Routes, matchRoutes, useLocation, useNavigate } from "react-router-dom";
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
+import FriendsList from "./components/player/FriendsList";
 import PlayerProfile from "./components/player/PlayerProfile";
 import GameListAdminPage from "./pages/admin/GameListAdminPage";
 import PlayerListAdminPage from "./pages/admin/PlayerListAdminPage";
@@ -54,6 +55,7 @@ function App() {
           <Route exact path="/players/new" element={<SignUpForm className="page-container" 
             onSignUp={() => navigate('/')} />} />
           <Route exact path="/players/edit/:id" element={<PlayerProfile />} />
+          <Route exact path="/players/:id/friends" element={<FriendsList />} />
           <Route exact path="/docs" element={<SwaggerDocsPage />} />
           <Route exact path="/games" element={<GameListAdminPage />} />
         </>
@@ -84,6 +86,7 @@ function App() {
         <>
           <Route exact path="/" element={<PlayerHomepage />} />
           <Route exact path="/achievements" element={<AchievementListPlayer />} />
+          <Route exact path="/friends" element={<FriendsList />} />
           <Route exact path="/profile" element={<PlayerProfile />} />
           <Route exact path="/play/choose" element={<PlayPage />} />
           <Route exact path="/play/join" element={<GameJoinPage />} />

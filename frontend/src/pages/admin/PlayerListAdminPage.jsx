@@ -74,7 +74,7 @@ export default function PlayerListAdminPage() {
     const playerList =
         players[currentPage].map((p) => {
             return (
-                <tr key={p.id}>
+                <tr key={p.id} style={{ verticalAlign: 'middle' }}>
                     <td className="text-center">
                         <UserAvatar user={p} size="small" />
                     </td>
@@ -91,6 +91,13 @@ export default function PlayerListAdminPage() {
                         <Link to={`/players/edit/${p.id}`} style={{ textDecoration: "none", marginLeft: "30px" }}>
                             <DButton color="yellow" style={{ width: '15vw' }}>
                                 Ver Perfil
+                            </DButton>
+                        </Link>
+                    </td>
+                    <td className="text-center">
+                        <Link to={`/players/${p.id}/friends`} style={{ textDecoration: "none", marginLeft: "30px" }}>
+                            <DButton color="yellow" style={{ width: '15vw' }}>
+                                Gestionar amigos
                             </DButton>
                         </Link>
                     </td>
@@ -137,6 +144,7 @@ export default function PlayerListAdminPage() {
                                 <th className="text-center">Correo Electrónico</th>
                                 <th className="text-center">Rol</th>
                                 <th className="text-center">Acciones</th>
+                                <th className="text-center"></th>
                                 <th className="text-center"></th>
                             </tr>
                         </thead>

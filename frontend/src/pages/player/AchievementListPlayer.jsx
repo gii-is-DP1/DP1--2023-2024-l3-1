@@ -33,7 +33,7 @@ export default function AchievementListPlayer() {
     const achievementList =
         achievements[currentPage].map((a) => {
             return (
-                <tr key={a.id}>
+                <tr key={a.id} style={{ verticalAlign: 'middle' }}>
                     <td className="text-center">
                         <img src={a.badgeImage || imgnotfound} alt={" "} width="50px" />
                     </td>
