@@ -1,11 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import getErrorModal from "../../util/getErrorModal";
-import DInput from "../../components/ui/DInput";
 import axios from '../../services/api';
-import DButton from "../../components/ui/DButton";
+import DButton from "../ui/DButton";
+import DInput from "../ui/DInput";
 
-export default function GameLobbyPage() {
+export default function GameLobby() {
     const [message, setMessage] = useState(null);
     const [visible, setVisible] = useState(false);
     const [game, setGame] = useState({ maxPlayers: 8, start: null });
@@ -41,7 +40,7 @@ export default function GameLobbyPage() {
         run();
     }, []);
 
-    const modal = getErrorModal(setVisible, visible, message);
+    // const modal = getErrorModal(setVisible, visible, message);
 
     const handleStartButtonClick = () => {
         if (game.players.length === 1) {
@@ -67,7 +66,7 @@ export default function GameLobbyPage() {
             <h2 className="text-center" style={{ marginTop: '30px' }}>
                 {"Lobby de la partida: " + game.name}
             </h2>
-            {modal}
+            {/* {modal} */}
             {isCreator ? (
                 <>
                     <h5 style={{ marginTop: '30px' }}>Número máximo de jugadores: {game.maxPlayers}</h5>
