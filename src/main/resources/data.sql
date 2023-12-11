@@ -16,6 +16,8 @@ INSERT INTO games(id,name,start,finish,raw_creator_id,max_players) VALUES ('123e
 INSERT INTO games_raw_players(raw_players_id, game_id) VALUES (2,'123e4567-e89b-12d3-a456-426655440000');
 INSERT INTO games_raw_players(raw_players_id, game_id) VALUES (3,'123e4567-e89b-12d3-a456-324833943923');
 
+INSERT INTO game_players(id,player_id, game_id) VALUES (1,2,'123e4567-e89b-12d3-a456-426655440000');
+
 INSERT INTO achievement (id, name, description, badge_image, threshold, metric) VALUES (2, 'Campeón Dobble', 'Gana un total de 60 partidas', 'https://i.pinimg.com/originals/83/b1/f3/83b1f39083f8dc4a4e31c1b4b8e8706e.png', 50.0, 'VICTORIES');
 INSERT INTO achievement (id, name, description, badge_image, threshold, metric) VALUES (3, 'Leyenda Dobble', 'Gana un total de 100 partidas', 'https://i.pinimg.com/originals/83/b1/f3/83b1f39083f8dc4a4e31c1b4b8e8706e.png', 100.0, 'VICTORIES');
 INSERT INTO achievement (id, name, description, badge_image, threshold, metric) VALUES (4, 'Entrando en Calor', 'Juega tu primera partida', 'https://static.vecteezy.com/system/resources/previews/010/898/286/original/game-cube-dice-png.png', 1.0, 'GAMES_PLAYED');

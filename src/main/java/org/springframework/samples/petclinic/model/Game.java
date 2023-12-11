@@ -14,6 +14,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
@@ -53,6 +54,12 @@ public class Game extends UUIDEntity {
     @Size(min = 1, max = 8)
     @JsonIgnore
     List<Player> raw_players;
+
+    @OneToMany(mappedBy = "game")
+    @Size(min = 1, max = 8)
+    
+    List<GamePlayer> raw_game_players;
+
 
     @JsonIgnore
     @Transient
