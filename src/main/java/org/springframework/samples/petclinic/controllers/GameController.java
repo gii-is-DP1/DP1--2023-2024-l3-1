@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.services.GamePlayerService;
 import org.springframework.samples.petclinic.services.GameService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,11 +41,13 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
+    private final GamePlayerService gamePlayerService; 
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService) {
+    public GameController(GameService gameService, PlayerService playerService, GamePlayerService gamePlayerService) {
         this.gameService = gameService;
         this.playerService = playerService;
+        this.gamePlayerService = gamePlayerService; 
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -78,12 +81,12 @@ public class GameController {
             if (currentPlayer.isPresent()) {
                 Game game = new Game();
                 List<Player> ls = List.of(currentPlayer.get());
-
                 game.setName(gameCreateDTO.getName());
                 game.setMaxPlayers(gameCreateDTO.getMax_players());
                 game.setRaw_creator(currentPlayer.get());
                 game.setRaw_players(ls);
-                gameService.saveGame(game);
+                game=gameService.saveGame(game);
+                gamePlayerService.addPlayerToGame(game.getId(), currentPlayer.get().getId());
                 return new ResponseEntity<Game>(game, HttpStatus.CREATED);
             } else {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);

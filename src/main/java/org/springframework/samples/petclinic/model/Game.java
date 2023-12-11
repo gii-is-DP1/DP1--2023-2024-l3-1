@@ -9,8 +9,6 @@ import org.springframework.samples.petclinic.model.base.UUIDEntity;
 import org.springframework.samples.petclinic.model.enums.GameStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
@@ -57,7 +55,6 @@ public class Game extends UUIDEntity {
 
     @OneToMany(mappedBy = "game")
     @Size(min = 1, max = 8)
-    
     List<GamePlayer> raw_game_players;
 
 
@@ -104,5 +101,14 @@ public class Game extends UUIDEntity {
         } else {
             return GameStatus.FINISHED;
         }
+    }
+
+    @Transient
+    public boolean isFull(){
+        boolean res = false;
+        if(raw_game_players.size() == maxPlayers){
+            res = true; 
+        }
+        return res; 
     }
 }
