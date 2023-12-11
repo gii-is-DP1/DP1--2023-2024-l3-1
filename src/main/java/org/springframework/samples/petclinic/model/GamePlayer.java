@@ -16,24 +16,24 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "game_players")
-public class GamePlayer extends BaseEntity{
-  
+public class GamePlayer extends BaseEntity {
+
+
   @NotNull
   @ManyToOne
   @JoinColumn(name = "game_id")
   @JsonIgnore
-  private Game game; 
+  private Game game;
 
-  
   @NotNull
   @ManyToOne
-  @JoinColumn(name= "player_id")
+  @JoinColumn(name = "player_id")
   private Player player;
 
-   @Transient
-    @NotNull
-    public PublicPlayerDto getPlayer() {
-        return new PublicPlayerDto(this.player);
-    }
+  @Transient
+  @NotNull
+  public PublicPlayerDto getPlayer() {
+    return new PublicPlayerDto(this.player);
+  }
 
 }
