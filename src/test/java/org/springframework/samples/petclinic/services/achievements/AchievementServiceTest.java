@@ -23,16 +23,16 @@ import jakarta.transaction.Transactional;
 public class AchievementServiceTest {
 
     @Autowired
-    private AchievementService achievementService; 
+    private AchievementService achievementService;
 
     @Test
     public void serviceExists() {
-      assertNotNull(achievementService);
+        assertNotNull(achievementService);
     }
 
     @Test
     void testServiceGetAchievements() {
-        List<Achievement> achievements = achievementService.getAchievements(); 
+        List<Achievement> achievements = achievementService.getAchievements();
         assertNotNull(achievements);
         assertTrue(achievements.size() > 0);
     }
@@ -53,7 +53,7 @@ public class AchievementServiceTest {
     @Test
     @Transactional
     void testServiceSaveAchievement() {
-        Achievement newAchievement = new Achievement(); 
+        Achievement newAchievement = new Achievement();
         newAchievement.setName("New Achievement");
         newAchievement.setDescription("Description for New Achievement");
         newAchievement.setBadgeImage("Badge image link");
@@ -61,10 +61,10 @@ public class AchievementServiceTest {
         newAchievement.setMetric(AchievementMetric.GAMES_PLAYED);
         achievementService.saveAchievement(newAchievement);
 
-        Achievement achievement = achievementService.getAchievementByName("New Achievement"); 
+        Achievement achievement = achievementService.getAchievementByName("New Achievement");
 
         assertNotNull(achievement);
-        assertEquals("New Achievement",achievement.getName());
+        assertEquals("New Achievement", achievement.getName());
     }
 
     @Test
@@ -79,18 +79,18 @@ public class AchievementServiceTest {
 
     @Test
     void testServiceGetAchievementByName() {
-        Achievement achievement= achievementService.getAchievementByName("Campeón Dobble");  
+        Achievement achievement = achievementService.getAchievementByName("Campeón Dobble");
         assertNotNull(achievement);
         assertEquals("Campeón Dobble", achievement.getName());
     }
 
     @Test
     void testServiceGetAchievementById() {
-        Optional<Achievement> optionalAchievement= achievementService.getAchievementById(6);  
+        Optional<Achievement> optionalAchievement = achievementService.getAchievementById(6);
         assertTrue(optionalAchievement.isPresent());
         Achievement achievement = optionalAchievement.get();
         assertNotNull(achievement);
         assertEquals("Máster del Tiempo", achievement.getName());
     }
-    
+
 }
