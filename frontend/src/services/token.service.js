@@ -36,11 +36,13 @@ class TokenService {
     }
 
     set user(user) {
-        const token = { token: {
-            value: user.token,
-            refreshToken: user.refreshToken,
-            type: user.type
-        }};
+        const token = {
+            token: {
+                value: user.token,
+                refreshToken: user.refreshToken,
+                type: user.type
+            }
+        };
 
         delete user.refreshToken;
         delete user.type;
@@ -48,8 +50,12 @@ class TokenService {
         user = { ...user, ...token };
         tokenStore.dispatch({ type: 'tokenStore/setUser', payload: user });
         window.localStorage.setItem("user", JSON.stringify(user));
+        this.updateUser();
+    }
+
+    updateUser() {
         axios.get('player/me').then((response) => {
-            const mergedData = { ...user, ...response.data };
+            const mergedData = { ...this.user, ...response.data };
 
             tokenStore.dispatch({ type: 'tokenStore/setUser', payload: mergedData });
             window.localStorage.setItem("user", JSON.stringify(mergedData));
