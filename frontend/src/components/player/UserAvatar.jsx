@@ -1,6 +1,6 @@
 import React from 'react';
-import DIcon from '../ui/DIcon';
 import { useSelector } from 'react-redux';
+import DIcon from '../ui/DIcon';
 
 
 /**
@@ -40,8 +40,8 @@ export default function UserAvatar(Props) {
             ...(Props.onClick && { cursor: 'pointer' }),
             ...(Props.disabled && { filter: 'grayscale(100%)', pointerEvents: 'none' }),
             ...Props.style
-            }}
-            >
+        }}
+        >
             <DIcon icon={Props.user?.profile_icon ?? Props.icon ?? user.profile_icon} style={{
                 padding: '2px'
             }} />
