@@ -22,7 +22,7 @@ public class PlayerRepositoryTest {
   PlayerRepository pr;
 
   @Test
-  public void findByUsername() {
+  public void testFindByUsername() {
     Optional<Player> o = pr.findByUsername("dobble");
     assumeTrue(o.isPresent());
     Player player = o.get();
@@ -31,7 +31,7 @@ public class PlayerRepositoryTest {
   }
 
   @Test
-  public void findByEmail() {
+  public void testFindByEmail() {
     Optional<Player> o = pr.findByEmail("dobble@example.com");
     assumeTrue(o.isPresent());
     Player player = o.get();
