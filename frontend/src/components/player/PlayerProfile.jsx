@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import { Alert } from "reactstrap";
 import { useIconSelector } from "../../composables/useIconSelector";
 import axios from '../../services/api';
+import tokenService from "../../services/token.service";
 import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
 import { formStyle } from "../ui/styles/forms";
@@ -20,7 +21,7 @@ export default function PlayerProfile() {
 
   const { id } = useParams();
 
-  async function request() {
+  async function fetchData() {
     try {
       setMessage(null);
 
@@ -55,8 +56,12 @@ export default function PlayerProfile() {
 
     try {
       await axios.patch(id ? `/player/${id}` : "/player/me", currentUser);
-      await request();
+      await fetchData();
       setEditing(false);
+
+      if (!id) {
+        tokenService.updateUser();
+      }
     } catch (e) {
       if (e.response?.status === 401) {
         setMessage("El usuario actual no es administrador y no puede editar este usuario");
@@ -78,7 +83,7 @@ export default function PlayerProfile() {
 
   useEffect(() => {
     const run = async () => {
-      await request();
+      await fetchData();
     }
     run();
   }, []);
@@ -96,69 +101,69 @@ export default function PlayerProfile() {
 
   return (
     <>
-    {userIconGallery}
-    <div className="page-container">
-      {message ? (
-        <Alert color="primary">{message}</Alert>
-      ) : (
-        <></>
-      )}
-      <form style={formStyle}>
-        <h1>Mi perfil</h1>
+      {userIconGallery}
+      <div className="page-container">
+        {message ? (
+          <Alert color="primary">{message}</Alert>
+        ) : (
+          <></>
+        )}
+        <form style={formStyle}>
+          <h1>Mi perfil</h1>
 
-        <h6>Logo:</h6>
+          <h6>Logo:</h6>
 
-        <UserAvatar size="large" user={currentUser} onClick={editing ? () => setOpenGallery(true) : undefined} />
+          <UserAvatar size="large" user={currentUser} onClick={editing ? () => setOpenGallery(true) : undefined} />
 
-        <div>
-          <h6>Nombre de usuario: </h6>
-          <DInput type="text" defaultValue={currentUser.username} disabled={!editing} style={{ width: '25vw' }}
-            onChange={
-              (e) => setCurrentUser({ ...currentUser, username: e.target.value?.trim() })} />
-        </div>
+          <div>
+            <h6>Nombre de usuario: </h6>
+            <DInput type="text" defaultValue={currentUser.username} disabled={!editing} style={{ width: '25vw' }}
+              onChange={
+                (e) => setCurrentUser({ ...currentUser, username: e.target.value?.trim() })} />
+          </div>
 
-        <div>
-          <h6>Email: </h6>
-          <DInput type="text" defaultValue={currentUser.email} disabled={!editing} style={{ width: '25vw' }}
-            onChange={
-              (e) => setCurrentUser({ ...currentUser, email: e.target.value?.trim() })} />
-        </div>
+          <div>
+            <h6>Email: </h6>
+            <DInput type="text" defaultValue={currentUser.email} disabled={!editing} style={{ width: '25vw' }}
+              onChange={
+                (e) => setCurrentUser({ ...currentUser, email: e.target.value?.trim() })} />
+          </div>
 
-        {editing ? (
-          <>
-            <h6 style={{ marginTop: '10px' }}>Contraseña (dejar en blanco para no cambiar): </h6>
-            <div style={{ display: 'flex', flexDirection: 'row' }}>
-              <DInput type="password" placeholder="Nueva contraseña" onChange={(e) => setNewPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
-              <DInput type="password" placeholder="Repetir contraseña" onChange={(e) => setConfirmPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
-            </div>
-          </>
-        ) : undefined}
-
-        <div style={{ display: 'flex', flexDirection: 'row' }}>
           {editing ? (
-            <DButton style={{ width: '25vw'}} color="red" onClick={(e) => {
-              e.preventDefault();
-              setEditing(false)
-            }}>
-              Cancelar
+            <>
+              <h6 style={{ marginTop: '10px' }}>Contraseña (dejar en blanco para no cambiar): </h6>
+              <div style={{ display: 'flex', flexDirection: 'row' }}>
+                <DInput type="password" placeholder="Nueva contraseña" onChange={(e) => setNewPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
+                <DInput type="password" placeholder="Repetir contraseña" onChange={(e) => setConfirmPassword(e.target.value?.trim())} style={{ width: '25vw' }} />
+              </div>
+            </>
+          ) : undefined}
+
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            {editing ? (
+              <DButton style={{ width: '25vw' }} color="red" onClick={(e) => {
+                e.preventDefault();
+                setEditing(false)
+              }}>
+                Cancelar
+              </DButton>
+            ) : (<></>)}
+            <DButton style={{ width: '25vw' }} type="submit" disabled={loading}
+              onClick={async (e) => {
+                e.preventDefault();
+                if (editing) {
+                  await patchUser();
+                } else {
+                  setEditing(!editing);
+                }
+              }}>
+              {editing ?
+                loading ? "Guardando..." : "Guardar"
+                : "Editar"}
             </DButton>
-          ) : (<></>)}
-          <DButton style={{ width: '25vw' }} type="submit" disabled={loading} 
-            onClick={async (e) => {
-              e.preventDefault();
-              if (editing) {
-                await patchUser();
-              } else {
-                setEditing(!editing);
-              }
-            }}>
-            {editing ?
-              loading ? "Guardando..." : "Guardar"
-              : "Editar"}
-          </DButton>
-        </div>
-      </form>
-    </div>
+          </div>
+        </form>
+      </div>
     </>
   );
 }

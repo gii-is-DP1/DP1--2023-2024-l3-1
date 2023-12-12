@@ -41,11 +41,11 @@ public class Player extends BaseEntity {
     @JsonIgnore
     String password;
 
-    @Enumerated(EnumType.STRING)
-    Icon profile_icon;
-
     @NotNull
     Boolean is_admin = false;
+
+    @Enumerated(EnumType.STRING)
+    Icon profile_icon = !this.is_admin ? Icon.MANO_LOGO : null;
 
     @ManyToMany
     @JsonIgnore

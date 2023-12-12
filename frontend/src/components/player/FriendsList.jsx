@@ -32,7 +32,7 @@ export default function FriendsList() {
 
     async function fetchData() {
         try {
-            const response = await axios.get(id ? `/player/friends/${id}` :'/player/friends');
+            const response = await axios.get(id ? `/player/friends/${id}` : '/player/friends');
 
             if (id) {
                 const userRequest = await axios.get(`/player/${id}`);
@@ -73,7 +73,9 @@ export default function FriendsList() {
             await axios.put(id ? `/player/friends/${id}/${friend_username}` : `/player/friends/${friend_username}`);
         } catch (e) {
             setModalHeader("Error al borrar amigo");
-            if (e.response?.status === 401) {
+            if (e.response?.status === 304) {
+                setMessage("Ambos usuarios ya son amigos");
+            } else if (e.response?.status === 401) {
                 setMessage("El usuario actual no es administrador, no tiene permisos para borrar este amigo.");
             } else if (e.response?.status === 404) {
                 setMessage("El amigo no existe");
@@ -94,17 +96,17 @@ export default function FriendsList() {
             setModalHeader();
         };
         setModalActions(
-        <>
-            <DButton color="red" onClick={() => clear()}>
-                Cancelar
-            </DButton>
-            <DButton color="green" onClick={() => {
-                deleteFriend(username);
-                clear();
+            <>
+                <DButton color="red" onClick={() => clear()}>
+                    Cancelar
+                </DButton>
+                <DButton color="green" onClick={() => {
+                    deleteFriend(username);
+                    clear();
                 }}>
                     Confirmar
-            </DButton>
-        </>);
+                </DButton>
+            </>);
         setModalHeader("Va a eliminar a un amigo");
         setMessage("¿Continuar?");
     }
@@ -116,17 +118,17 @@ export default function FriendsList() {
             setModalHeader();
         };
         setModalActions(
-        <>
-            <DButton color="red" onClick={() => clear()}>
-                Cancelar
-            </DButton>
-            <DButton color="green" onClick={() => {
-                addFriend(newFriendUsername);
-                clear();
+            <>
+                <DButton color="red" onClick={() => clear()}>
+                    Cancelar
+                </DButton>
+                <DButton color="green" onClick={() => {
+                    addFriend(newFriendUsername);
+                    clear();
                 }}>
                     Confirmar
-            </DButton>
-        </>);
+                </DButton>
+            </>);
         setModalHeader("Añadir amigo");
         setMessage(
             <>
@@ -143,7 +145,7 @@ export default function FriendsList() {
     const friendsList =
         friends?.[currentPage]?.map((p) => {
             return (
-                <tr key={p.id} style={{ verticalAlign: 'middle' }}>
+                <tr key={p.username} style={{ verticalAlign: 'middle' }}>
                     <td className="text-center">
                         <UserAvatar user={p} size="small" />
                     </td>
@@ -175,38 +177,38 @@ export default function FriendsList() {
         <>
             {modal}
             <div>
-            <div className="page-container">
-                <h1 className="text-center" style={{ marginTop: '30px' }}>{id ? <>Amigos de {getCurrentUser()?.username}</> : 'Tus amigos'}</h1>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
-                    {refreshInfo}
-                </div>
-                <div>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}>
-                        <DButton style={{ width: '25vw' }} onClick={setAddFriendModal}>Añadir amigo</DButton>
+                <div className="page-container">
+                    <h1 className="text-center" style={{ marginTop: '30px' }}>{id ? <>Amigos de {getCurrentUser()?.username}</> : 'Tus amigos'}</h1>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
+                        {refreshInfo}
                     </div>
-                    <Table aria-label="player" className="mt-4">
-                        <thead>
-                            <tr>
-                                <th className="text-center">Icono</th>
-                                <th className="text-center">Usuario</th>
-                                {user.is_admin ? <th className="text-center">Correo Electrónico</th> : undefined}
-                                {user.is_admin ? <th className="text-center">Rol</th> : undefined}
-                                <th className="text-center">{id ? 'Acciones' : 'Acción'}</th>
-                                {user.is_admin ? <th className="text-center"></th> : undefined}
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {friends.length > 0 ? friendsList : undefined}
-                        </tbody>
-                    </Table>
-                    <p>La información se actualiza automáticamente cada 5 segundos</p>
-                    {paginationButtons}
+                    <div>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}>
+                            <DButton style={{ width: '25vw' }} onClick={setAddFriendModal}>Añadir amigo</DButton>
+                        </div>
+                        <Table aria-label="player" className="mt-4">
+                            <thead>
+                                <tr>
+                                    <th className="text-center">Icono</th>
+                                    <th className="text-center">Usuario</th>
+                                    {user.is_admin ? <th className="text-center">Correo Electrónico</th> : undefined}
+                                    {user.is_admin ? <th className="text-center">Rol</th> : undefined}
+                                    <th className="text-center">{id ? 'Acciones' : 'Acción'}</th>
+                                    {user.is_admin ? <th className="text-center"></th> : undefined}
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {friends.length > 0 ? friendsList : undefined}
+                            </tbody>
+                        </Table>
+                        <p>La información se actualiza automáticamente cada 5 segundos</p>
+                        {paginationButtons}
+                    </div>
                 </div>
             </div>
-        </div>
         </>
     );
 }
