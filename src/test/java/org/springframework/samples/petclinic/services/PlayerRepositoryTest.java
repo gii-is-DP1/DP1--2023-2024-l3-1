@@ -1,9 +1,12 @@
 package org.springframework.samples.petclinic.services;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
@@ -36,4 +39,15 @@ public class PlayerRepositoryTest {
     assertEquals("dobble@example.com", player.getEmail());
   }
 
+  @Test
+  public void testFindAllNonAdmin() {
+    assertNotNull(pr);
+    Optional<List<Player>> optionalPlayers = pr.findAllNonAdmin();
+    assertTrue(optionalPlayers.isPresent(), "La lista de jugadores no puede ser nula.");
+    List<Player> players = optionalPlayers.get();
+    assertFalse(players.isEmpty(), "La lista de jugadores no puede estar vacía.");
+    for (Player player : players) {
+      assertFalse(player.getIs_admin(), "El jugador no debe ser administrador.");
+    }
+  }
 }
