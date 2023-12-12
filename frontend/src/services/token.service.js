@@ -20,13 +20,6 @@ export const tokenStore = configureStore({
 });
 
 class TokenService {
-    /**
-     * Rellenar el store de React desde localStorage
-     */
-    constructor() {
-        tokenStore.dispatch({ type: 'tokenStore/setUser', payload: this.user });
-    }
-
     get localAccessToken() {
         return this.user?.token;
     }
@@ -53,18 +46,28 @@ class TokenService {
         this.updateUser();
     }
 
-    updateUser() {
-        axios.get('player/me').then((response) => {
-            const mergedData = { ...this.user, ...response.data };
+    updateUser = () => {
+        if (this.user && this.localAccessToken) {
+            axios.get('player/me').then((response) => {
+                const mergedData = { ...this.user, ...response.data };
 
-            tokenStore.dispatch({ type: 'tokenStore/setUser', payload: mergedData });
-            window.localStorage.setItem("user", JSON.stringify(mergedData));
-        });
+                tokenStore.dispatch({ type: 'tokenStore/setUser', payload: mergedData });
+                window.localStorage.setItem("user", JSON.stringify(mergedData));
+            });
+        }
     }
 
-    removeUser() {
+    removeUser = () => {
         tokenStore.dispatch({ type: 'tokenStore/setUser', payload: undefined });
         window.localStorage.removeItem("user");
+    }
+
+    /**
+     * Rellenar el store de React desde localStorage y recargar la información del usuario
+     */
+    constructor() {
+        tokenStore.dispatch({ type: 'tokenStore/setUser', payload: this.user });
+        this.updateUser();
     }
 
 }
