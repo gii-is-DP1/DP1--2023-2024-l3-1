@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.model;
 
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.samples.petclinic.model.enums.Icon;
 
