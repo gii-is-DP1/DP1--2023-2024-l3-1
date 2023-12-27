@@ -30,6 +30,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -41,13 +42,13 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
-    private final GamePlayerService gamePlayerService; 
+    
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService, GamePlayerService gamePlayerService) {
+    public GameController(GameService gameService, PlayerService playerService) {
         this.gameService = gameService;
         this.playerService = playerService;
-        this.gamePlayerService = gamePlayerService; 
+        
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -71,8 +72,10 @@ public class GameController {
             @ApiResponse(responseCode = "201", description = "Partida creada correctamente.", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
-    })
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Error al añadir jugador (puede deberse a que la partida está llena o ya ha comenzado).", content = @Content)
+    
+        })
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO) {
@@ -85,14 +88,22 @@ public class GameController {
                 game.setMax_players(gameCreateDTO.getMax_players());
                 game.setRaw_creator(currentPlayer.get());
                 game.setRaw_players(ls);
+               
                 game=gameService.saveGame(game);
-                gamePlayerService.addPlayerToGame(game.getId(), currentPlayer.get().getId());
-                return new ResponseEntity<Game>(game, HttpStatus.CREATED);
+                Optional<Game> updatedGame = gameService.addPlayerToGame(game.getId(), currentPlayer.get());
+                
+                if (updatedGame.isPresent()) {
+                    return new ResponseEntity<>(updatedGame.get(), HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
             } else {
+                
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -145,7 +156,7 @@ public class GameController {
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
     @PostMapping("/join/{gameId}")
-    public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
+    public ResponseEntity<Game> joinGame(@PathVariable String gameId) throws AuthException {
         Optional<Game> optionalGameToJoin = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
@@ -163,10 +174,12 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
 
-        if (gameToJoin.getMax_players() >= gameToJoin.getPlayers().size() + 1) {
+        if (!gameToJoin.isFull()) {
             Player joiningPlayer = currentPlayer.get();
             gameToJoin.getRaw_players().add(joiningPlayer);
-            return new ResponseEntity<Game>(gameService.saveGame(gameToJoin), HttpStatus.OK);
+            Optional<Game> updatedGame = gameService.addPlayerToGame(gameToJoin.getId(), currentPlayer.get());
+
+            return new ResponseEntity<Game>(gameService.saveGame(updatedGame.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
