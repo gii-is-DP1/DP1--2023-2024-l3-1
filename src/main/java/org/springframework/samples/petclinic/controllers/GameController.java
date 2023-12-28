@@ -218,6 +218,7 @@ public class GameController {
 
         if (currentGame.getPlayers().size() >= 2) {
             currentGame.setStart(LocalDateTime.now());
+        
             return new ResponseEntity<Game>(gameService.saveGame(currentGame), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
