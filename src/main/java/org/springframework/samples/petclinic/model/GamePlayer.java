@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
@@ -29,6 +30,10 @@ public class GamePlayer extends BaseEntity {
   @ManyToOne
   @JoinColumn(name = "player_id")
   private Player player;
+
+  @OneToOne
+  @JoinColumn(name = "hand_id")
+  private Hand hand; 
 
   @Transient
   @NotNull
