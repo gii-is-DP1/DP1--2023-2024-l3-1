@@ -17,12 +17,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Hand extends BaseEntity {
-
-  // TODO One to One
-  @NotNull
-  @OneToOne
-  private GamePlayer gamePlayer;
-
+  
   @NotNull
   @OneToMany
   @Size(max = 8)

@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.controllers;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,8 +9,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
+import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
+import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.services.CardService;
 import org.springframework.samples.petclinic.services.GamePlayerService;
 import org.springframework.samples.petclinic.services.GameService;
 import org.springframework.samples.petclinic.services.PlayerService;
@@ -42,12 +46,13 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
-    
+    private final CardService cardService; 
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService) {
+    public GameController(GameService gameService, PlayerService playerService, CardService cardService) {
         this.gameService = gameService;
         this.playerService = playerService;
+        this.cardService = cardService; 
         
     }
 
@@ -217,8 +222,23 @@ public class GameController {
         }
 
         if (currentGame.getPlayers().size() >= 2) {
+            //TODO Refactorizar en un único método
+            List<Card> allCards = cardService.findAll().get();
+            List<GamePlayer> gamePlayers= currentGame.getRaw_game_players();
+
+            Collections.shuffle(gamePlayers);
+            
+            currentGame.setCentralCard(allCards.get(0));
+            for( GamePlayer gamePlayer: gamePlayers){
+                //De momento repartimos 8 cartas a cada jugador
+                List<Card> playerCards = allCards.subList(1, 9);
+                gamePlayer.getHand().setCards(playerCards);
+                
+                allCards = allCards.subList(9, allCards.size());
+            }
+
             currentGame.setStart(LocalDateTime.now());
-        
+            
             return new ResponseEntity<Game>(gameService.saveGame(currentGame), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
