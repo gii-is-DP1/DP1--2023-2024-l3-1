@@ -12,10 +12,11 @@ import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.GamePlayer;
+import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.CardService;
-import org.springframework.samples.petclinic.services.GamePlayerService;
 import org.springframework.samples.petclinic.services.GameService;
+import org.springframework.samples.petclinic.services.HandService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -47,13 +48,14 @@ public class GameController {
     private final GameService gameService;
     private final PlayerService playerService;
     private final CardService cardService; 
+    private final HandService handService; 
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService, CardService cardService) {
+    public GameController(GameService gameService, PlayerService playerService, CardService cardService, HandService handService) {
         this.gameService = gameService;
         this.playerService = playerService;
         this.cardService = cardService; 
-        
+        this.handService = handService;
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -223,22 +225,28 @@ public class GameController {
 
         if (currentGame.getPlayers().size() >= 2) {
             //TODO Refactorizar en un único método
-            List<Card> allCards = cardService.findAll().get();
+            initializeGame(currentGame);
+            /*List<Card> allCards = cardService.findAll().get();
             List<GamePlayer> gamePlayers= currentGame.getRaw_game_players();
 
-            Collections.shuffle(gamePlayers);
+            Collections.shuffle(allCards);
             
             currentGame.setCentralCard(allCards.get(0));
             for( GamePlayer gamePlayer: gamePlayers){
                 //De momento repartimos 8 cartas a cada jugador
+
                 List<Card> playerCards = allCards.subList(1, 9);
-                gamePlayer.getHand().setCards(playerCards);
+                Hand playerHand = new Hand();
+                playerHand.setCards(playerCards);
+                handService.saveHand(playerHand);
+                gamePlayer.setHand(playerHand);
+                
                 
                 allCards = allCards.subList(9, allCards.size());
             }
-
-            currentGame.setStart(LocalDateTime.now());
             
+            currentGame.setStart(LocalDateTime.now());
+            */
             return new ResponseEntity<Game>(gameService.saveGame(currentGame), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
@@ -267,5 +275,37 @@ public class GameController {
         }
 
         return new ResponseEntity<List<Game>>(gameList.get(), HttpStatus.OK);
+    }
+
+
+
+    private void initializeGame(Game currentGame) {
+        List<Card> allCards = cardService.findAll().orElseThrow(); 
+    
+        
+        Collections.shuffle(allCards);
+    
+        
+        currentGame.setCentralCard(allCards.get(17));
+    
+        
+        List<GamePlayer> gamePlayers = currentGame.getRaw_game_players();
+        for (GamePlayer gamePlayer : gamePlayers) {
+            // De momento repartimos 3 cartas a cada jugador
+            Integer firstIndex=0;
+            Integer secondIndex=4;
+            List<Card> playerCards = allCards.subList(firstIndex, secondIndex);
+            //System.out.println("Cartas---------------------");
+            //System.out.println(playerCards);
+            Hand playerHand = new Hand();
+            playerHand.setCards(playerCards);
+            playerHand = handService.saveHand(playerHand);
+            gamePlayer.setHand(playerHand);
+    
+            firstIndex+=4;
+            secondIndex+=4;
+            //allCards = allCards.subList(4, allCards.size());
+        }
+        currentGame.setStart(LocalDateTime.now());
     }
 }
