@@ -280,32 +280,35 @@ public class GameController {
 
 
     private void initializeGame(Game currentGame) {
-        List<Card> allCards = cardService.findAll().orElseThrow(); 
-    
-        
-        Collections.shuffle(allCards);
-    
-        
-        currentGame.setCentralCard(allCards.get(17));
-    
-        
-        List<GamePlayer> gamePlayers = currentGame.getRaw_game_players();
-        for (GamePlayer gamePlayer : gamePlayers) {
-            // De momento repartimos 3 cartas a cada jugador
-            Integer firstIndex=0;
-            Integer secondIndex=4;
-            List<Card> playerCards = allCards.subList(firstIndex, secondIndex);
-            //System.out.println("Cartas---------------------");
-            //System.out.println(playerCards);
-            Hand playerHand = new Hand();
-            playerHand.setCards(playerCards);
-            playerHand = handService.saveHand(playerHand);
-            gamePlayer.setHand(playerHand);
-    
-            firstIndex+=4;
-            secondIndex+=4;
-            //allCards = allCards.subList(4, allCards.size());
+        try {
+            Integer firstIndex = 0;
+            Integer secondIndex = 4;
+            List<Card> allCards = cardService.findAll().orElseThrow();
+
+            Collections.shuffle(allCards);
+
+            currentGame.setCentralCard(allCards.get(17));
+
+            List<GamePlayer> gamePlayers = currentGame.getRaw_game_players();
+            for (GamePlayer gamePlayer : gamePlayers) {
+
+                // De momento repartimos 3 cartas a cada jugador
+
+                List<Card> playerCards = allCards.subList(firstIndex, secondIndex);
+                // System.out.println("Cartas---------------------");
+                // System.out.println(playerCards);
+                Hand playerHand = new Hand();
+                playerHand.setCards(playerCards);
+                playerHand = handService.saveHand(playerHand);
+                gamePlayer.setHand(playerHand);
+
+                firstIndex += 4;
+                secondIndex += 4;
+                // allCards = allCards.subList(4, allCards.size());
+            }
+            currentGame.setStart(LocalDateTime.now());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        currentGame.setStart(LocalDateTime.now());
     }
 }
