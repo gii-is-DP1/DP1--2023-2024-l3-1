@@ -45,36 +45,63 @@ INSERT INTO figures(id, icon) VALUES (1, 'AGUA'),
 (47, 'RELOJ'), (48, 'SNOWMAN'), (49, 'SOL'), (50, 'SPIDER'), (51, 'TELARANA'), (52, 'TIJERAS'),
 (53, 'TORTUGA'), (54, 'TREBOL'), (55, 'VELA'), (56, 'YIN_YANG'), (57, 'ZANAHORIA');
 
---'PROHIBIDO,MANZANA,BIBERON,DRAGON,MARTILLO,YIN_YANG,TREBOL,FLOR'
+
+--1, 'PROHIBIDO,MANZANA,BIBERON,DRAGON,MARTILLO,YIN_YANG,TREBOL,FLOR'
 INSERT INTO cards (id) VALUES (1);
 INSERT INTO cards_figures(cards_id, figures_id) VALUES (1,43), (1,36), (1,4), (1,18), (1,35), (1,54), (1,52), (1,21);
---'OBJETIVO,FANTASMA,TELARANA,SOL,IGLU,CALAVERA,FLOR,CEBRA'
+--2, 'OBJETIVO,FANTASMA,TELARANA,SOL,IGLU,CALAVERA,FLOR,CEBRA'
 INSERT INTO cards (id) VALUES (2);
 INSERT INTO cards_figures(cards_id, figures_id) VALUES (2,39), (2,21), (2,51), (2,49), (2,28), (2,9), (2,22), (2,12);
---'BUHO,MANZANA,FANTASMA,DINOSAURIO,MARIQUITA,ANCLA,TORTUGA,DELFIN'
+--3, 'BUHO,MANZANA,FANTASMA,DINOSAURIO,MARIQUITA,ANCLA,TORTUGA,DELFIN'
 INSERT INTO cards (id) VALUES (3);
 INSERT INTO cards_figures(cards_id, figures_id) VALUES (3,7), (3,37), (3,21), (3,18), (3,35), (3,2), (3,53), (3,17);
---'OBJETIVO,BUHO,CACTUS,AGUA,CANDADO,MARTILLO,LUNA,PINTURA'
---INSERT INTO cards (id) VALUES (4);
---INSERT INTO cards_figures(cards_id, figures_id) VALUES (4,), (4,), (4,), (4,), (4,), (4,), (4,), (4,);
-
---INSERT INTO cards (id) VALUES (5);
---INSERT INTO cards_figures(cards_id, figures_id) VALUES (5,), (5,), (5,), (5,), (5,), (5,), (5,), (5,);
-
---INSERT INTO cards (id) VALUES (6);
---INSERT INTO cards_figures(cards_id, figures_id) VALUES (6,), (6,), (6,), (6,), (6,), (6,), (6,), (6,);
-
---INSERT INTO cards (id) VALUES (7);
---INSERT INTO cards_figures(cards_id, figures_id) VALUES (7,), (7,), (7,), (7,), (7,), (7,), (7,), (7,);
-
---INSERT INTO cards (id) VALUES (8);
---INSERT INTO cards_figures(cards_id, figures_id) VALUES (8,), (8,), (8,), (8,), (8,), (8,), (8,), (8,);
-
---INSERT INTO cards (id) VALUES (9);
---INSERT INTO cards_figures(cards_id, figures_id) VALUES (9,), (9,), (9,), (9,), (9,), (9,), (9,), (9,);
-
-
-
+--4, 'OBJETIVO,BUHO,CACTUS,AGUA,CANDADO,MARTILLO,LUNA,PINTURA'
+INSERT INTO cards (id) VALUES (4);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (4,39), (4,7), (4,8), (4,1), (4,10), (4,36), (4,33), (4,43);
+--5, 'MANO_LOGO,COPO_NIEVE,VELA,ANCLA,TREBOL,MUNECO,CALAVERA,PINTURA'
+INSERT INTO cards (id) VALUES (5);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (5,34), (5,15), (5,55), (5,2), (5,54), (5,38), (5,9), (5,43);
+--6, 'INTERROGACION,OBJETIVO,PERRO,MANZANA,CLAVE_SOL,VELA,RELOJ,FUEGO'
+INSERT INTO cards (id) VALUES (6);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (6,29), (6,39), (6,42), (6,37), (6,13), (6,55), (6,47), (6,23);
+--7, 'PAYASO,AGUA,LLAVE,CEBRA,MANZANA,MUNECO,QUESO,BOMBILLA'
+INSERT INTO cards (id) VALUES (7);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (7,41), (7,1), (7,32), (7,12), (7,37), (7,38), (7,45), (7,5);
+--8, 'LAPIZ,GAFAS,CANDADO,FANTASMA,BIBERON,VELA,BOMBILLA,HOJA_CADUCA'
+INSERT INTO cards (id) VALUES (8);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (8,31), (8,24), (8,10), (8,21), (8,4), (8,55), (8,5), (8,27);
+--9, 'LAPIZ,SOL,CLAVE_SOL,BOMBA,SPIDER,DELFIN,MUNECO,MARTILLO'
+INSERT INTO cards (id) VALUES (9);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (9,31), (9,49), (9,13), (9,6), (9,50), (9,17), (9,38), (9,36);
+--10, 'LAPIZ,PROHIBIDO,LLAVE,TELARANA,DINOSAURIO,TIJERAS,PINTURA,PERRO'
+INSERT INTO cards (id) VALUES (10);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (10,31), (10,44), (10,32), (10,51), (10,18), (10,52), (10,43), (10,42);
+--11, 'OJO,CEBRA,CANDADO,DINOSAURIO,ZANAHORIA,SPIDER,TREBOL,FUEGO'
+INSERT INTO cards (id) VALUES (11);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (11,40), (11,12), (11,10), (11,18), (11,57), (11,50), (11,54), (11,23);
+--12, 'COCHE,BIBERON,IGLU,FUEGO,DELFIN,PINTURA,QUESO,SNOWMAN'
+INSERT INTO cards (id) VALUES (12);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (12,14), (12,4), (12,28), (12,23), (12,17), (12,43), (12,45), (12,48);
+--13, 'SNOWMAN,OBJETIVO,GAFAS,PROHIBIDO,ANCLA,RAYO,SPIDER,PAYASO'
+INSERT INTO cards (id) VALUES (13);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (13,48), (13,39), (13,24), (13,44), (13,2), (13,46), (13,50), (13,41);
+--14, 'OJO,FANTASMA,ARBOL,PROHIBIDO,RELOJ,LUNA,MUNECO,COCHE'
+INSERT INTO cards (id) VALUES (14);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (14,40), (14,21), (14,3), (14,44), (14,47), (14,33), (14,38), (14,14);
+--15, 'COCHE,AGUA,TELARANA,VELA,HIELO,MARIQUITA,DRAGON,SPIDER'
+INSERT INTO cards (id) VALUES (15);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (15,14), (15,1), (15,51), (15,55), (15,26), (15,35), (15,19), (15,50);
+--16, 'INTERROGACION,MANO_LOGO,COCHE,GAFAS,CEBRA,TORTUGA,MARTILLO,TIJERAS'
+INSERT INTO cards (id) VALUES (16);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (16,29), (16,34), (16,14), (16,24), (16,12), (16,53), (16,36), (16,52);
+--17, 'OJO,INTERROGACION,LAPIZ,AGUA,IGLU,ANCLA,YIN_YANG,GATO'
+INSERT INTO cards (id) VALUES (17);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (17,40), (17,29), (17,31), (17,1), (17,28), (17,2), (17,56), (17,25);
+--18, 'PAYASO,COCHE,BUHO,PERRO,SOL,HOJA_CADUCA,GATO,TREBOL'
+INSERT INTO cards (id) VALUES (18);
+INSERT INTO cards_figures(cards_id, figures_id) VALUES (18,41), (18,14), (18,7), (18,42), (18,49), (18,27), (18,25), (18,54);
+--INSERT INTO cards (id) VALUES (14);
+--INSERT INTO cards_figures(cards_id, figures_id) VALUES (14,), (14,), (14,), (14,), (14,), (14,), (14,), (14,);
 
 
 --INSERT INTO cards (id, icons) VALUES (2,'OBJETIVO,FANTASMA,TELARANA,SOL,IGLU,CALAVERA,FLOR,CEBRA' );
