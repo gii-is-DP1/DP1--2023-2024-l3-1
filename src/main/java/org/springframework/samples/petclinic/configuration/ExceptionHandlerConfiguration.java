@@ -1,10 +1,15 @@
 package org.springframework.samples.petclinic.configuration;
 
-import jakarta.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Map;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * This advice is necessary because MockMvc is not a real servlet environment,
@@ -14,18 +19,17 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
  * It's not ideal, but at least we can use classic MockMvc tests for testing
  * error response + document it.
  */
-// @ControllerAdvice
+@ControllerAdvice
 public class ExceptionHandlerConfiguration {
-    @SuppressWarnings("unused")
-    @Autowired
-    private BasicErrorController errorController;
-    // add any exceptions/validations/binding problems
+    private final ObjectMapper objectMapper;
+
+    public ExceptionHandlerConfiguration(ObjectMapper objectMapper) {
+        this.objectMapper = objectMapper;
+    }
 
     @ExceptionHandler(Exception.class)
-    public String defaultErrorHandler(HttpServletRequest request, Exception ex) {
-        request.setAttribute("jakarta.servlet.error.request_uri", request.getPathInfo());
-        request.setAttribute("jakarta.servlet.error.status_code", 400);
-        request.setAttribute("exeption", ex);
-        return "exception";
+    public ResponseEntity<?> handleException(Exception ex, HttpServletResponse response) throws IOException {
+        String jsonBody = objectMapper.writeValueAsString(Map.of("data", ex.getLocalizedMessage()));
+        return new ResponseEntity<String>(jsonBody, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
