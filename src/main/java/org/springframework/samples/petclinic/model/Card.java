@@ -18,7 +18,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "cards")
 public class Card extends BaseEntity {
-  //TODO eliminar seguramente
+  // TODO eliminar seguramente
   /*
    * @Size(min = 8, max = 8)
    * 
@@ -41,7 +41,7 @@ public class Card extends BaseEntity {
     return this.figures.contains(figure);
   }
 
-  public Figure getMatchingIcons(Card card) {
+  public Figure getMatchingIcon(Card card) {
     return this.figures.stream()
         .filter(figure -> card.getFigures().contains(figure))
         .findFirst()
