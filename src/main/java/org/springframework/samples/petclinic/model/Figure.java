@@ -6,6 +6,8 @@ import java.util.List;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 import org.springframework.samples.petclinic.model.enums.Icon;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -22,6 +24,7 @@ public class Figure extends BaseEntity {
   @Enumerated(EnumType.STRING)
   private Icon icon;
 
+  @JsonIgnore
   @ManyToMany(mappedBy = "figures")
   private List<Card> cards = new ArrayList<>();
 
