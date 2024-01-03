@@ -49,4 +49,11 @@ public class GamePlayer extends BaseEntity {
     return this.player.getId(); 
   }
 
+  @Transient
+  @NotNull
+  @JsonIgnore
+  public Player getRealPlayer(){
+    return this.player; 
+  }
+
 }
