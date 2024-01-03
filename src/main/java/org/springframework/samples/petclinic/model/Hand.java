@@ -44,4 +44,10 @@ public class Hand extends BaseEntity {
     }
   }
 
+  @Transient
+  @NotNull
+  public boolean isLastCard(){
+    return !cards.isEmpty() && cards != null && cards.size() == 1;
+  }
+
 }
