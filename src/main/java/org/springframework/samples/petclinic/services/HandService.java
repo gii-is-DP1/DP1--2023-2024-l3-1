@@ -18,10 +18,9 @@ public class HandService {
     }
 
     @Transactional
-    public Hand saveHand(@Valid Hand hand){
+    public void saveHand(@Valid Hand hand){
       handRepository.save(hand); 
-      return hand;
-
+     
     }
 
 }

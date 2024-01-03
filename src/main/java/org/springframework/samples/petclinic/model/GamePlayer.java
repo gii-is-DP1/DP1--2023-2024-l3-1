@@ -35,6 +35,8 @@ public class GamePlayer extends BaseEntity {
   @JoinColumn(name = "hand_id")
   private Hand hand; 
 
+  
+
   @Transient
   @NotNull
   public PublicPlayerDto getPlayer() {
