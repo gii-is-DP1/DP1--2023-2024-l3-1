@@ -35,12 +35,18 @@ public class GamePlayer extends BaseEntity {
   @JoinColumn(name = "hand_id")
   private Hand hand; 
 
-  
+
 
   @Transient
   @NotNull
   public PublicPlayerDto getPlayer() {
     return new PublicPlayerDto(this.player);
+  }
+
+  @Transient
+  @NotNull
+  public Integer getPlayerId(){
+    return this.player.getId(); 
   }
 
 }
