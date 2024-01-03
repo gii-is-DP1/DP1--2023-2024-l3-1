@@ -126,8 +126,10 @@ public class GameService {
                 Figure matchingFigure = currentCard.getMatchingIcon(centralCard);
 
                 if (selectedFigure.equals(matchingFigure)){
+
                     game.setCentralCard(currentCard);
                     if(playerHand.isLastCard()){
+                       game.setWinner(gamePlayer.getRealPlayer());
                        game.setFinish(LocalDateTime.now());
                     } else {
                         playerHand.getNextCard();
