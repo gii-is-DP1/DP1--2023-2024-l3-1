@@ -39,7 +39,6 @@ public class GamePlayerServiceTest {
   @Test
   @Transactional
   public void testSaveAchievement() {
-
     // Contamos los GamePlayers iniciales
     Iterable<GamePlayer> iterableGamePlayers = this.gamePlayerService.findAll();
     int count = 0;
@@ -78,5 +77,4 @@ public class GamePlayerServiceTest {
     // Deberia de haber un elemento más que al principio
     assertEquals(count + 1, finalCount);
   }
-
 }
