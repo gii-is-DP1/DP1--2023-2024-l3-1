@@ -37,7 +37,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
 
 @RestController
@@ -167,7 +166,7 @@ public class GameController {
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
     @PostMapping("/join/{gameId}")
-    public ResponseEntity<Game> joinGame(@PathVariable String gameId) throws AuthException {
+    public ResponseEntity<Game> joinGame(@PathVariable String gameId)  {
         Optional<Game> optionalGameToJoin = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
@@ -265,26 +264,28 @@ public class GameController {
         try {
             Integer firstIndex = 0;
             Integer secondIndex = 4;
-            List<Card> allCards = cardService.findAll().orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
+            List<Card> allCards = cardService.findAll()
+                    .orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
 
             Collections.shuffle(allCards);
 
-            currentGame.setCentralCard(allCards.get(17));
+            //Ponemos cómo carta central la última de la baraja
+            Integer lastCardIndex = allCards.size()-1; 
+            currentGame.setCentralCard(allCards.get(lastCardIndex));
 
             List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
             for (GamePlayer gamePlayer : gamePlayers) {
                 // De momento repartimos 3 cartas a cada jugador
-
                 List<Card> playerCards = new ArrayList<>(allCards.subList(firstIndex, secondIndex));
                 Hand playerHand = new Hand();
                 playerHand.setCards(playerCards);
                 handService.saveHand(playerHand);
                 gamePlayer.setHand(playerHand);
                 gamePlayerService.saveGamePlayer(gamePlayer);
-                
+
                 firstIndex += 4;
                 secondIndex += 4;
-                
+
             }
             currentGame.setStart(LocalDateTime.now());
         } catch (RuntimeException e) {
