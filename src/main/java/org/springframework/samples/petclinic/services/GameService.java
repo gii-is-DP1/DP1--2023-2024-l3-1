@@ -16,8 +16,6 @@ import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.repositories.GameRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.security.auth.message.AuthException;
 import jakarta.validation.Valid;
 
 @Service
@@ -73,10 +71,8 @@ public class GameService {
     }
 
     @Transactional
-    public Optional<Game> addPlayerToGame(String gameId, Player player) throws AuthException {
+    public Optional<Game> addPlayerToGame(String gameId, Player player)  {
         Optional<Game> optionalGame = gameRepository.findById(gameId);
-
-        if (optionalGame.isPresent()) {
             Game game = optionalGame.get();
             Integer currentPlayer = 1;
 
@@ -90,12 +86,9 @@ public class GameService {
                 gamePlayer.setPlayer(player);
                 game.getRaw_game_players().add(gamePlayer);
 
-                // saveGame(game);
                 return Optional.of(game);
             }
-        } else {
-            throw new AuthException("El código introducido no es correcto" + gameId);
-        }
+       
 
         return Optional.empty();
     }
@@ -134,8 +127,6 @@ public class GameService {
                     } else {
                         playerHand.getNextCard();
                     }
-
-                    this.saveGame(game);
 
                 } else {
                 throw new RuntimeException("La figura seleccionada no coincide con la carta central.");
