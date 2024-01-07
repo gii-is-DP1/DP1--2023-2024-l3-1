@@ -126,7 +126,7 @@ public class GameServiceTest {
 
     assertTrue(updatedGame.isPresent());
     assertEquals("NombreActualizado", updatedGame.get().getName());
-    assertEquals(7, updatedGame.get().getMaxPlayers());
+    assertEquals(7, updatedGame.get().getMax_players());
 
   }
 

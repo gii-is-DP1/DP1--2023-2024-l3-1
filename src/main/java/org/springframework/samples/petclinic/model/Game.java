@@ -47,7 +47,7 @@ public class Game extends UUIDEntity {
     @Min(value = 2)
     @Max(value = 8)
     @NotNull
-    Integer maxPlayers = 8;
+    Integer max_players = 8;
 
     @ManyToMany
     @Size(min = 1, max = 8)

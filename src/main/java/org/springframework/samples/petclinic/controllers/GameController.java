@@ -80,7 +80,7 @@ public class GameController {
                 List<Player> ls = List.of(currentPlayer.get());
 
                 game.setName(gameCreateDTO.getName());
-                game.setMaxPlayers(gameCreateDTO.getMax_players());
+                game.setMax_players(gameCreateDTO.getMax_players());
                 game.setRaw_creator(currentPlayer.get());
                 game.setRaw_players(ls);
                 gameService.saveGame(game);
@@ -160,7 +160,7 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
 
-        if (gameToJoin.getMaxPlayers() >= gameToJoin.getPlayers().size() + 1) {
+        if (gameToJoin.getMax_players() >= gameToJoin.getPlayers().size() + 1) {
             Player joiningPlayer = currentPlayer.get();
             gameToJoin.getRaw_players().add(joiningPlayer);
             return new ResponseEntity<Game>(gameService.saveGame(gameToJoin), HttpStatus.OK);
