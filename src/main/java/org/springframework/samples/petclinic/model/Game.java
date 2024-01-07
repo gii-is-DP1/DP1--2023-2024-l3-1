@@ -64,7 +64,7 @@ public class Game extends UUIDEntity {
 
     @OneToOne
     @JoinColumn(name = "central_card_id")
-    private Card centralCard = new Card();
+    private Card centralCard;
 
     @ManyToOne
     @JoinColumn(name = "winner_id")
