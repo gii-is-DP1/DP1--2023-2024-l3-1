@@ -129,7 +129,7 @@ public class GameController {
                 Game game = new Game();
                 List<Player> ls = List.of(currentPlayer.get());
                 game.setName(gameCreateDTO.getName());
-                game.setMaxPlayers(gameCreateDTO.getMax_players());
+                game.setMax_players(gameCreateDTO.getMax_players());
                 game.setRaw_creator(currentPlayer.get());
                 game.setRaw_players(ls);
                

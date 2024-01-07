@@ -59,7 +59,7 @@ public class GameService {
                 gameToUpdate.setName(newGameName);
             }
             if (newGameMaxPlayers != null) {
-                gameToUpdate.setMaxPlayers(newGameMaxPlayers);
+                gameToUpdate.setMax_players(newGameMaxPlayers);
             }
             this.gameRepository.save(gameToUpdate);
         }
