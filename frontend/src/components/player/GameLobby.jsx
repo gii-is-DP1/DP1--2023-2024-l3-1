@@ -1,109 +1,67 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import axios from '../../services/api';
+import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { useLabeledForm } from "../../composables/useLabeledForm";
+import NumberOfPlayers from "../forms/NumberOfPlayers";
 import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
+import UserAvatar from "./UserAvatar";
 
-export default function GameLobby() {
-    const [message, setMessage] = useState(null);
-    const [visible, setVisible] = useState(false);
-    const [game, setGame] = useState({ maxPlayers: 8, start: null });
-    const [isCreator, setIsCreator] = useState(false);
+export default function GameLobby(props) {
+    const user = useSelector(state => state.tokenStore.user);
+    const route = useLocation();
+    const isCreator = () => user.username === props.game.creator.username;
+    const getSharingUrl = () => `${window.location.origin}${route.pathname}`;
 
-    const { id } = useParams();
-
-    async function request() {
-        try {
-            setMessage(null);
-            const response = await axios.get(`/games/${id}`);
-            const user = await axios.get("/player/me");
-            const isCreator = user.data.id === response.data.creator.id;
-            if (response.status === 401) {
-                setMessage("Partida no existe");
-                return;
-            } else if (response.status >= 500) {
-                setMessage("Error del servidor");
-                return;
-            }
-            setGame(response.data);
-            setIsCreator(isCreator);
-        } catch (e) {
-            setMessage(String(e));
-        }
+    function handleChange(event) {
+        event.preventDefault();
+        const target = event.target;
+        const value = target.value;
+        const name = target.name;
+        props.setGame({ ...props.game, [name]: value });
     }
 
-    useEffect(() => {
-        const run = async () => {
-            await request();
+    const adminControls = useLabeledForm(
+        {
+            'Comparte tu url:':
+            (
+                <DInput type="text" value={getSharingUrl()} disabled style={{ width: '100%' }} />
+            ),
+            'Editar nombre: ': (
+                <DInput type="text" name="name" placeholder={props.game.name} onChange={handleChange} style={{ width: '100%' }} />
+            ),
+            'Número máximo de jugadores': (
+                <NumberOfPlayers game={props.game} setGame={props.setGame} />
+            )
         }
-
-        run();
-    }, []);
-
-    // const modal = getErrorModal(setVisible, visible, message);
-
-    const handleStartButtonClick = () => {
-        if (game.players.length === 1) {
-            alert('No hay suficientes jugadores para iniciar la partida');
-            // Mostrar un mensaje si solo hay un jugador
-        } else {
-            const currentDateTime = new Date();
-            //Formateo de la fecha
-            const year = currentDateTime.getFullYear();
-            const month = (currentDateTime.getMonth() + 1).toString().padStart(2, '0');
-            const day = currentDateTime.getDate().toString().padStart(2, '0');
-            const hours = currentDateTime.getHours().toString().padStart(2, '0');
-            const minutes = currentDateTime.getMinutes().toString().padStart(2, '0');
-            const seconds = currentDateTime.getSeconds().toString().padStart(2, '0');
-            const formattedDateTime = `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
-            setGame(prevGame => ({ ...prevGame, start: formattedDateTime }));
-        }
-
-    };
+    );
 
     return (
         <div style={{ margin: '50px' }}>
-            <h2 className="text-center" style={{ marginTop: '30px' }}>
-                {"Lobby de la partida: " + game.name}
-            </h2>
-            {/* {modal} */}
-            {isCreator ? (
-                <>
-                    <h5 style={{ marginTop: '30px' }}>Número máximo de jugadores: {game.maxPlayers}</h5>
-                    <h5>Comparte tu url:
-                        <DInput type="text" value={game.id} disabled={true} style={{ width: '100%' }} />
-                    </h5>
-                </>) : undefined}
-
-            <h5>Jugadores Conectados:</h5>
+            <h1 className="text-center" style={{ marginTop: '30px' }}>
+                Lobby de la partida <i>{props.game.name}</i>
+            </h1>
+            {isCreator() ? adminControls : undefined}
+            <h3>Jugadores Conectados:</h3>
+            <table style={{ width: '100%' }}>
+            <tbody>
+                {props.game.players.map((player, index) => (
+                    <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
+                        <div>
+                            <UserAvatar user={player} size="small" />
+                        </div>
+                        <p style={{ marginBottom: '0', marginTop: '6px' }}>{player.username}</p>
+                    </div>
+                    )
+                )}
+            </tbody>
+        </table>
             <ul>
-                {Array.isArray(game.players) && game.players.length > 0 ? (
-                    game.players.map((player, index) => (
-                        <li key={index}>{player.username}</li>
-                    ))
-                ) : undefined}
+                
             </ul>
-            {isCreator ? (
-                <>
-                    {game && game.players && game.players.length > 1 ? (
-                        <Link to={`/play/${id}`}
-                            style={{ textDecoration: "none" }}>
-                            <DButton
-                                style={{ width: '25vw' }}
-                                onClick={handleStartButtonClick}
-                            >
-                                Iniciar Partida
-                            </DButton>
-                        </Link>
-                    ) : (
-                        <DButton
-                            style={{ width: '25vw' }}
-                            onClick={handleStartButtonClick}
-                        >
-                            Iniciar Partida
-                        </DButton>
-                    )}
-                </>
+            {isCreator() ? (
+                <DButton style={{ width: '100%' }} disabled={props.game.players?.length <= 1}>
+                    Iniciar Partida
+                </DButton>
             ) : undefined}
         </div>
     );

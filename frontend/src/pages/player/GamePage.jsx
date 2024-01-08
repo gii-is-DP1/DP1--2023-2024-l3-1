@@ -34,6 +34,12 @@ export default function GamePage() {
         }
     }
 
+    async function patchGame() {
+        try {
+            await axios.patch(`/games/${id}`, game);
+        } catch {}
+    }
+
     useEffect(() => {
         if (game.status === GameStatus.FINISHED) {
             setHeader('Partida finalizada');
@@ -47,6 +53,12 @@ export default function GamePage() {
         }
     }, [message]);
 
+    useEffect(() => {
+        (async () => {
+            await patchGame();
+        })();
+    }, [game.max_players, game.name])
+
     useRefreshableData(fetchData, 1);
     const modal = useModal(setMessage, message, header);
 
@@ -55,7 +67,7 @@ export default function GamePage() {
             case GameStatus.LOBBY:
                 return (
                     <div className="page-container">
-                        <GameLobby game={game} />
+                        <GameLobby game={game} setGame={setGame} />
                     </div>
                 );
             case GameStatus.STARTED:
