@@ -1,6 +1,8 @@
 package org.springframework.samples.petclinic.controllers;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -8,9 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
+import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
+import org.springframework.samples.petclinic.model.GamePlayer;
+import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.services.CardService;
+import org.springframework.samples.petclinic.services.GamePlayerService;
 import org.springframework.samples.petclinic.services.GameService;
+import org.springframework.samples.petclinic.services.HandService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -40,11 +48,17 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
+    private final CardService cardService; 
+    private final HandService handService; 
+    private final GamePlayerService gamePlayerService;
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService) {
+    public GameController(GameService gameService, PlayerService playerService, CardService cardService, HandService handService, GamePlayerService gamePlayerService) {
         this.gameService = gameService;
         this.playerService = playerService;
+        this.cardService = cardService; 
+        this.handService = handService;
+        this.gamePlayerService = gamePlayerService; 
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -63,13 +77,49 @@ public class GameController {
         return new ResponseEntity<Game>(gameToGet.get(), HttpStatus.OK);
     }
 
+    @GetMapping("/myGame")
+    @Operation(summary = "Obtiene la partida del jugador actual registrado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
+            @ApiResponse(responseCode = "404", description = "El jugador actual no está en ninguna partida.", content = @Content),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content)
+    })
+    public ResponseEntity<Game> getMyGame() {
+        Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
+        try {
+        if (!currentOptPlayer.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Player currentPlayer = currentOptPlayer.get();
+        Game currentGame = currentPlayer.getCurrentGame();
+
+        if (currentGame != null) {
+            return new ResponseEntity<>(currentGame, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } 
+    
+    }
+    
+
+
+
     @Operation(summary = "Crea una nueva partida si el jugador actual está autenticado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Partida creada correctamente.", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
-    })
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content),
+            @ApiResponse(responseCode = "400", description = "Error al añadir jugador (puede deberse a que la partida está llena o ya ha comenzado).", content = @Content)
+    
+        })
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO) {
@@ -78,18 +128,26 @@ public class GameController {
             if (currentPlayer.isPresent()) {
                 Game game = new Game();
                 List<Player> ls = List.of(currentPlayer.get());
-
                 game.setName(gameCreateDTO.getName());
                 game.setMax_players(gameCreateDTO.getMax_players());
                 game.setRaw_creator(currentPlayer.get());
                 game.setRaw_players(ls);
-                gameService.saveGame(game);
-                return new ResponseEntity<Game>(game, HttpStatus.CREATED);
+               
+                game=gameService.saveGame(game);
+                Optional<Game> updatedGame = gameService.addPlayerToGame(game.getId(), currentPlayer.get());
+                
+                if (updatedGame.isPresent()) {
+                    return new ResponseEntity<>(updatedGame.get(), HttpStatus.CREATED);
+                } else {
+                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                }
             } else {
+                
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
         } catch (Exception e) {
+            e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -142,7 +200,7 @@ public class GameController {
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
     @PostMapping("/join/{gameId}")
-    public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
+    public ResponseEntity<Game> joinGame(@PathVariable String gameId)  {
         Optional<Game> optionalGameToJoin = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
@@ -160,10 +218,12 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
 
-        if (gameToJoin.getMax_players() >= gameToJoin.getPlayers().size() + 1) {
+        if (!gameToJoin.isFull()) {
             Player joiningPlayer = currentPlayer.get();
             gameToJoin.getRaw_players().add(joiningPlayer);
-            return new ResponseEntity<Game>(gameService.saveGame(gameToJoin), HttpStatus.OK);
+            Optional<Game> updatedGame = gameService.addPlayerToGame(gameToJoin.getId(), currentPlayer.get());
+
+            return new ResponseEntity<Game>(gameService.saveGame(updatedGame.get()), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
@@ -201,7 +261,7 @@ public class GameController {
         }
 
         if (currentGame.getPlayers().size() >= 2) {
-            currentGame.setStart(LocalDateTime.now());
+            initializeGame(currentGame);
             return new ResponseEntity<Game>(gameService.saveGame(currentGame), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
@@ -230,5 +290,44 @@ public class GameController {
         }
 
         return new ResponseEntity<List<Game>>(gameList.get(), HttpStatus.OK);
+    }
+
+
+
+    private void initializeGame(Game currentGame) {
+        try {
+            Integer firstIndex = 0;
+            Integer secondIndex = 4;
+            List<Card> allCards = cardService.findAll()
+                    .orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
+
+            Collections.shuffle(allCards);
+
+            //Ponemos cómo carta central la última de la baraja
+            Integer lastCardIndex = allCards.size()-1; 
+            currentGame.setCentralCard(allCards.get(lastCardIndex));
+
+            List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
+            for (GamePlayer gamePlayer : gamePlayers) {
+                // De momento repartimos 3 cartas a cada jugador
+                List<Card> playerCards = new ArrayList<>(allCards.subList(firstIndex, secondIndex));
+                Hand playerHand = new Hand();
+                playerHand.setCards(playerCards);
+                handService.saveHand(playerHand);
+                gamePlayer.setHand(playerHand);
+                gamePlayerService.saveGamePlayer(gamePlayer);
+
+                firstIndex += 4;
+                secondIndex += 4;
+
+            }
+            currentGame.setStart(LocalDateTime.now());
+        } catch (RuntimeException e) {
+            System.err.println("Error al inicializar el juego: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error general al inicializar el juego.");
+            e.printStackTrace();
+        }
     }
 }

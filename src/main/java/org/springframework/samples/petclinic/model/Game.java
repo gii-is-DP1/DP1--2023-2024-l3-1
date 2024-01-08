@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,10 +11,13 @@ import org.springframework.samples.petclinic.model.enums.GameStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import jakarta.persistence.Column;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
@@ -53,6 +57,18 @@ public class Game extends UUIDEntity {
     @Size(min = 1, max = 8)
     @JsonIgnore
     List<Player> raw_players;
+
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Size(max = 8)
+    List<GamePlayer> raw_game_players = new ArrayList<>();
+
+    @OneToOne
+    @JoinColumn(name = "central_card_id")
+    private Card centralCard;
+
+    @ManyToOne
+    @JoinColumn(name = "winner_id")
+    private Player winner; 
 
     @JsonIgnore
     @Transient
@@ -98,4 +114,16 @@ public class Game extends UUIDEntity {
             return GameStatus.FINISHED;
         }
     }
+
+    @Transient
+    @NotNull
+    public boolean isFull(){
+        boolean res = false;
+        if(raw_game_players.size() == max_players){
+            res = true; 
+        }
+        return res; 
+    }
+
+    
 }
