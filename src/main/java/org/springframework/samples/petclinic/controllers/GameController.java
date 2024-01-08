@@ -50,7 +50,7 @@ public class GameController {
     private final PlayerService playerService;
     private final CardService cardService; 
     private final HandService handService; 
-    private final GamePlayerService gamePlayerService; 
+    private final GamePlayerService gamePlayerService;
 
     @Autowired
     public GameController(GameService gameService, PlayerService playerService, CardService cardService, HandService handService, GamePlayerService gamePlayerService) {
@@ -76,6 +76,40 @@ public class GameController {
 
         return new ResponseEntity<Game>(gameToGet.get(), HttpStatus.OK);
     }
+
+    @GetMapping("/myGame")
+    @Operation(summary = "Obtiene la partida del jugador actual registrado.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
+            @ApiResponse(responseCode = "404", description = "El jugador actual no está en ninguna partida.", content = @Content),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content)
+    })
+    public ResponseEntity<Game> getMyGame() {
+        Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
+        try {
+        if (!currentOptPlayer.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+
+        Player currentPlayer = currentOptPlayer.get();
+        Game currentGame = currentPlayer.getCurrentGame();
+
+        if (currentGame != null) {
+            return new ResponseEntity<>(currentGame, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } 
+    
+    }
+    
+
+
 
     @Operation(summary = "Crea una nueva partida si el jugador actual está autenticado.")
     @ApiResponses(value = {
