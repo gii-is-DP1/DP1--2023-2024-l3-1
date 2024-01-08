@@ -83,7 +83,7 @@ public class GameService {
                 game.setRaw_game_players(new ArrayList<>());
             }
 
-            if (game.isOnLobby() && game.getRaw_game_players().size() + currentPlayer <= game.getMaxPlayers()) {
+            if (game.isOnLobby() && game.getRaw_game_players().size() + currentPlayer <= game.getMax_players()) {
                 boolean playerAlreadyInGame = player.getCurrentGame() != null &&
                     !player.getCurrentGame().isFinished();
 
