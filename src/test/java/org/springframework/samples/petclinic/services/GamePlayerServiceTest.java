@@ -38,7 +38,7 @@ public class GamePlayerServiceTest {
 
   @Test
   @Transactional
-  public void testSaveAchievement() {
+  public void testSaveGamePlayer() {
     // Contamos los GamePlayers iniciales
     Iterable<GamePlayer> iterableGamePlayers = this.gamePlayerService.findAll();
     int count = 0;
