@@ -7,11 +7,14 @@ import org.springframework.samples.petclinic.model.enums.Icon;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -47,4 +50,8 @@ public class Player extends BaseEntity {
     @ManyToMany
     @JsonIgnore
     List<Player> friends;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "current_game_id")
+    Game currentGame;
 }
