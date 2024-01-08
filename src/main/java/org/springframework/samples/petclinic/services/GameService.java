@@ -14,6 +14,7 @@ import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.repositories.GameRepository;
+import org.springframework.samples.petclinic.repositories.PlayerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import jakarta.validation.Valid;
@@ -21,10 +22,12 @@ import jakarta.validation.Valid;
 @Service
 public class GameService {
     private final GameRepository gameRepository;
+    private final PlayerRepository playerRepository;
 
     @Autowired
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, PlayerRepository playerRepository) {
         this.gameRepository = gameRepository;
+        this.playerRepository = playerRepository; 
     }
 
     @Transactional(readOnly = true)
@@ -81,12 +84,21 @@ public class GameService {
             }
 
             if (game.isOnLobby() && game.getRaw_game_players().size() + currentPlayer <= game.getMaxPlayers()) {
-                GamePlayer gamePlayer = new GamePlayer();
-                gamePlayer.setGame(game);
-                gamePlayer.setPlayer(player);
-                game.getRaw_game_players().add(gamePlayer);
+                boolean playerAlreadyInGame = player.getCurrentGame() != null &&
+                    !player.getCurrentGame().isFinished();
 
-                return Optional.of(game);
+                if (!playerAlreadyInGame) {
+                    GamePlayer gamePlayer = new GamePlayer();
+                    gamePlayer.setGame(game);
+                    gamePlayer.setPlayer(player);
+                    game.getRaw_game_players().add(gamePlayer);
+                    player.setCurrentGame(game);
+                    
+                    return Optional.of(game);
+
+                } else {
+                    throw new RuntimeException("El jugador ya está en otro juego en curso o lobby.");
+                }
             }
        
 
