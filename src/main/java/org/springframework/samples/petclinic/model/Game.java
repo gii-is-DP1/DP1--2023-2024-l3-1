@@ -119,7 +119,7 @@ public class Game extends UUIDEntity {
     @NotNull
     public boolean isFull(){
         boolean res = false;
-        if(raw_game_players.size() == maxPlayers){
+        if(raw_game_players.size() == max_players){
             res = true; 
         }
         return res; 
