@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Alert } from "reactstrap";
 import { adjectives, animals, colors, countries, languages, names, starWars, uniqueNamesGenerator } from 'unique-names-generator';
+import NumberOfPlayers from "../../components/forms/NumberOfPlayers";
 import DButton from "../../components/ui/DButton";
 import DInput from "../../components/ui/DInput";
 import { formStyle } from "../../components/ui/styles/forms";
@@ -30,20 +31,6 @@ export default function CreationGamePage() {
         const value = target.value;
         const name = target.name;
         setGame({ ...game, [name]: value });
-    }
-
-    function handleIncrement(e) {
-        e.preventDefault();
-        if (game.max_players < 8) {
-            setGame(prevGame => ({ ...prevGame, max_players: prevGame.max_players + 1 }));
-        }
-    }
-
-    function handleDecrement(e) {
-        e.preventDefault();
-        if (game.max_players > 2) {
-            setGame(prevGame => ({ ...prevGame, max_players: prevGame.max_players - 1 }));
-        }
     }
 
     async function handleSubmit(event) {
@@ -83,12 +70,9 @@ export default function CreationGamePage() {
                         onChange={handleChange}
                     />
                 ),
-            'Numero máximo de jugadores': 
-                (<>
-                    <DButton color="red" onClick={handleDecrement} disabled={game.max_players === 2}>-</DButton>
-                    {game.max_players} / 8
-                    <DButton color="green" onClick={handleIncrement} disabled={game.max_players === 8}>+</DButton>
-                </>)
+            'Número de jugadores': (
+                <NumberOfPlayers game={game} setGame={setGame} />
+            )
         }
     );
 
