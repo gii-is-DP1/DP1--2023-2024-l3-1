@@ -48,17 +48,18 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
-    private final CardService cardService; 
-    private final HandService handService; 
+    private final CardService cardService;
+    private final HandService handService;
     private final GamePlayerService gamePlayerService;
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService, CardService cardService, HandService handService, GamePlayerService gamePlayerService) {
+    public GameController(GameService gameService, PlayerService playerService, CardService cardService,
+            HandService handService, GamePlayerService gamePlayerService) {
         this.gameService = gameService;
         this.playerService = playerService;
-        this.cardService = cardService; 
+        this.cardService = cardService;
         this.handService = handService;
-        this.gamePlayerService = gamePlayerService; 
+        this.gamePlayerService = gamePlayerService;
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -88,28 +89,25 @@ public class GameController {
     public ResponseEntity<Game> getMyGame() {
         Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
         try {
-        if (!currentOptPlayer.isPresent()) {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+            if (!currentOptPlayer.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
 
-        Player currentPlayer = currentOptPlayer.get();
-        Game currentGame = currentPlayer.getCurrentGame();
+            Player currentPlayer = currentOptPlayer.get();
+            Game currentGame = currentPlayer.getCurrentGame();
 
-        if (currentGame != null) {
-            return new ResponseEntity<>(currentGame, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+            if (currentGame != null) {
+                return new ResponseEntity<>(currentGame, HttpStatus.OK);
+            } else {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        } 
-    
+        }
+
     }
-    
-
-
 
     @Operation(summary = "Crea una nueva partida si el jugador actual está autenticado.")
     @ApiResponses(value = {
@@ -117,9 +115,9 @@ public class GameController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content),
-            @ApiResponse(responseCode = "400", description = "Error al añadir jugador (puede deberse a que la partida está llena o ya ha comenzado).", content = @Content)
-    
-        })
+            @ApiResponse(responseCode = "400", description = "Error al añadir jugador a la partida", content = @Content)
+
+    })
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO) {
@@ -132,17 +130,17 @@ public class GameController {
                 game.setMax_players(gameCreateDTO.getMax_players());
                 game.setRaw_creator(currentPlayer.get());
                 game.setRaw_players(ls);
-               
-                game=gameService.saveGame(game);
+
+                game = gameService.saveGame(game);
                 Optional<Game> updatedGame = gameService.addPlayerToGame(game.getId(), currentPlayer.get());
-                
+
                 if (updatedGame.isPresent()) {
                     return new ResponseEntity<>(updatedGame.get(), HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
             } else {
-                
+
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
@@ -200,7 +198,7 @@ public class GameController {
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
     @PostMapping("/join/{gameId}")
-    public ResponseEntity<Game> joinGame(@PathVariable String gameId)  {
+    public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
         Optional<Game> optionalGameToJoin = gameService.findGame(gameId);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
@@ -292,8 +290,6 @@ public class GameController {
         return new ResponseEntity<List<Game>>(gameList.get(), HttpStatus.OK);
     }
 
-
-
     private void initializeGame(Game currentGame) {
         try {
             Integer firstIndex = 0;
@@ -303,9 +299,9 @@ public class GameController {
 
             Collections.shuffle(allCards);
 
-            //Ponemos cómo carta central la última de la baraja
-            Integer lastCardIndex = allCards.size()-1; 
-            currentGame.setCentralCard(allCards.get(lastCardIndex));
+            // Ponemos cómo carta central la última de la baraja
+            Integer lastCardIndex = allCards.size() - 1;
+            currentGame.setCentral_card(allCards.get(lastCardIndex));
 
             List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
             for (GamePlayer gamePlayer : gamePlayers) {

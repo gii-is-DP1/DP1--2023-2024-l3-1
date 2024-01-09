@@ -18,20 +18,6 @@ import lombok.Setter;
 @Setter
 @Table(name = "cards")
 public class Card extends BaseEntity {
-  // TODO eliminar seguramente
-  /*
-   * @Size(min = 8, max = 8)
-   * 
-   * @ElementCollection
-   * 
-   * @Enumerated(EnumType.STRING)
-   * 
-   * @CollectionTable(name = "card_icons", joinColumns = @JoinColumn(name =
-   * "card_id"))
-   * 
-   * @Column(name = "icon")
-   * private List<Icon> icons;
-   */
 
   @Size(min = 8, max = 8)
   @ManyToMany(fetch = FetchType.EAGER)

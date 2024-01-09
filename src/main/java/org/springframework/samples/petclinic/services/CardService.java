@@ -18,7 +18,7 @@ public class CardService {
     this.cardRepository = cardRepository; 
   }
 
-  @Transactional
+  @Transactional(readOnly = true)
   public Optional<List<Card>> findAll(){
     List<Card> cards = cardRepository.findAll();
     return Optional.ofNullable(cards);

@@ -27,7 +27,7 @@ public class GamePlayerService {
     this.gamePlayerRepository = gamePlayerRepository;
   }
 
-  @Transactional()
+  @Transactional
   public GamePlayer saveGamePlayer(@Valid GamePlayer gamePlayer) {
     this.gamePlayerRepository.save(gamePlayer);
     return gamePlayer;
