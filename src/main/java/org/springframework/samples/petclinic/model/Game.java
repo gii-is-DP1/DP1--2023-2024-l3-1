@@ -64,11 +64,11 @@ public class Game extends UUIDEntity {
 
     @OneToOne
     @JoinColumn(name = "central_card_id")
-    private Card centralCard;
+    private Card central_card;
 
     @ManyToOne
     @JoinColumn(name = "winner_id")
-    private Player winner; 
+    private Player winner;
 
     @JsonIgnore
     @Transient
@@ -87,7 +87,6 @@ public class Game extends UUIDEntity {
     public boolean isFinished() {
         return this.finish != null;
     }
-
 
     @Transient
     @NotNull
@@ -116,14 +115,12 @@ public class Game extends UUIDEntity {
     }
 
     @Transient
-    @NotNull
-    public boolean isFull(){
+    public boolean isFull() {
         boolean res = false;
-        if(raw_game_players.size() == max_players){
-            res = true; 
+        if (raw_game_players.size() == max_players) {
+            res = true;
         }
-        return res; 
+        return res;
     }
 
-    
 }

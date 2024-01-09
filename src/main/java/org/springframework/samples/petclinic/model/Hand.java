@@ -24,7 +24,6 @@ public class Hand extends BaseEntity {
   private List<Card> cards;
 
   @Transient
-  @NotNull
   public Card getCurrentCard() {
     if (cards != null && !cards.isEmpty()) {
       return cards.get(0);
@@ -34,7 +33,6 @@ public class Hand extends BaseEntity {
   }
 
   @Transient
-  @NotNull
   public Card getNextCard() {
     if (cards != null && !cards.isEmpty()) {
       cards.remove(0);
@@ -45,7 +43,6 @@ public class Hand extends BaseEntity {
   }
 
   @Transient
-  @NotNull
   public boolean isLastCard(){
     return !cards.isEmpty() && cards != null && cards.size() == 1;
   }

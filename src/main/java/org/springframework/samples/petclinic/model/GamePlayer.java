@@ -38,13 +38,11 @@ public class GamePlayer extends BaseEntity {
 
 
   @Transient
-  @NotNull
   public PublicPlayerDto getPlayer() {
     return new PublicPlayerDto(this.player);
   }
 
   @Transient
-  @NotNull
   public Integer getPlayerId(){
     return this.player.getId(); 
   }

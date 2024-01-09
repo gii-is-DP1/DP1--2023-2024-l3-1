@@ -14,20 +14,18 @@ import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.repositories.GameRepository;
-import org.springframework.samples.petclinic.repositories.PlayerRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import jakarta.validation.Valid;
 
 @Service
 public class GameService {
     private final GameRepository gameRepository;
-    private final PlayerRepository playerRepository;
 
     @Autowired
-    public GameService(GameRepository gameRepository, PlayerRepository playerRepository) {
+    public GameService(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
-        this.playerRepository = playerRepository; 
     }
 
     @Transactional(readOnly = true)
@@ -74,33 +72,32 @@ public class GameService {
     }
 
     @Transactional
-    public Optional<Game> addPlayerToGame(String gameId, Player player)  {
+    public Optional<Game> addPlayerToGame(String gameId, Player player) {
         Optional<Game> optionalGame = gameRepository.findById(gameId);
-            Game game = optionalGame.get();
-            Integer currentPlayer = 1;
+        Game game = optionalGame.get();
+        Integer currentPlayer = 1;
 
-            if (game.getRaw_game_players() == null) {
-                game.setRaw_game_players(new ArrayList<>());
-            }
+        if (game.getRaw_game_players() == null) {
+            game.setRaw_game_players(new ArrayList<>());
+        }
 
-            if (game.isOnLobby() && game.getRaw_game_players().size() + currentPlayer <= game.getMax_players()) {
-                boolean playerAlreadyInGame = player.getCurrentGame() != null &&
+        if (game.isOnLobby() && game.getRaw_game_players().size() + currentPlayer <= game.getMax_players()) {
+            boolean playerAlreadyInGame = player.getCurrentGame() != null &&
                     !player.getCurrentGame().isFinished();
 
-                if (!playerAlreadyInGame) {
-                    GamePlayer gamePlayer = new GamePlayer();
-                    gamePlayer.setGame(game);
-                    gamePlayer.setPlayer(player);
-                    game.getRaw_game_players().add(gamePlayer);
-                    player.setCurrentGame(game);
-                    
-                    return Optional.of(game);
+            if (!playerAlreadyInGame) {
+                GamePlayer gamePlayer = new GamePlayer();
+                gamePlayer.setGame(game);
+                gamePlayer.setPlayer(player);
+                game.getRaw_game_players().add(gamePlayer);
+                player.setCurrentGame(game);
 
-                } else {
-                    throw new RuntimeException("El jugador ya está en otro juego en curso o lobby.");
-                }
+                return Optional.of(game);
+
+            } else {
+                throw new RuntimeException("El jugador ya está en otro juego en curso o lobby.");
             }
-       
+        }
 
         return Optional.empty();
     }
@@ -127,22 +124,22 @@ public class GameService {
                         .orElseThrow(() -> new RuntimeException(
                                 "Figura seleccionada no encontrada en la mano del jugador."));
 
-                Card centralCard = game.getCentralCard();
+                Card centralCard = game.getCentral_card();
                 Figure matchingFigure = currentCard.getMatchingIcon(centralCard);
 
-                if (selectedFigure.equals(matchingFigure)){
+                if (selectedFigure.equals(matchingFigure)) {
 
-                    game.setCentralCard(currentCard);
-                    if(playerHand.isLastCard()){
-                       game.setWinner(gamePlayer.getRealPlayer());
-                       game.setFinish(LocalDateTime.now());
+                    game.setCentral_card(currentCard);
+                    if (playerHand.isLastCard()) {
+                        game.setWinner(gamePlayer.getRealPlayer());
+                        game.setFinish(LocalDateTime.now());
                     } else {
                         playerHand.getNextCard();
                     }
 
                 } else {
-                throw new RuntimeException("La figura seleccionada no coincide con la carta central.");
-            }
+                    throw new RuntimeException("La figura seleccionada no coincide con la carta central.");
+                }
 
             } else {
                 throw new RuntimeException("Jugador no encontrado en el juego.");
