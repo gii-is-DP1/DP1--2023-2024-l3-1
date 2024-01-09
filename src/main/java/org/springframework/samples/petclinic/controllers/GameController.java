@@ -295,26 +295,29 @@ public class GameController {
             List<Card> allCards = cardService.findAll()
                     .orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
 
-            Integer firstIndex = 0;
-            Integer cardsToDeal = 4;
-            Collections.shuffle(allCards);
+            List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
+            Integer totalPlayers = gamePlayers.size(); 
+            Integer allCardsToDeal = allCards.size()-1;
 
+            Integer firstIndex = 0;
+            Integer cardsPerPlayer = allCardsToDeal/totalPlayers;
+            Collections.shuffle(allCards);
+            
             // Ponemos cómo carta central la última de la baraja
             Integer lastCardIndex = allCards.size() - 1;
             currentGame.setCentral_card(allCards.get(lastCardIndex));
 
-            List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
             for (GamePlayer gamePlayer : gamePlayers) {
-                // De momento repartimos 4 cartas a cada jugador
-                List<Card> playerCards = new ArrayList<>(allCards.subList(firstIndex, cardsToDeal));
+                // Repartimos las cartas según la RN1 
+                List<Card> playerCards = new ArrayList<>(allCards.subList(firstIndex, cardsPerPlayer));
                 Hand playerHand = new Hand();
                 playerHand.setCards(playerCards);
                 handService.saveHand(playerHand);
                 gamePlayer.setHand(playerHand);
                 gamePlayerService.saveGamePlayer(gamePlayer);
 
-                firstIndex += 4;
-                cardsToDeal += 4;
+                firstIndex += cardsPerPlayer;
+                cardsPerPlayer += cardsPerPlayer;
 
             }
             currentGame.setStart(LocalDateTime.now());
