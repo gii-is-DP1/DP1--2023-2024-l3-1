@@ -49,17 +49,18 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
-    private final CardService cardService; 
-    private final HandService handService; 
-    private final GamePlayerService gamePlayerService; 
+    private final CardService cardService;
+    private final HandService handService;
+    private final GamePlayerService gamePlayerService;
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService, CardService cardService, HandService handService, GamePlayerService gamePlayerService) {
+    public GameController(GameService gameService, PlayerService playerService, CardService cardService,
+            HandService handService, GamePlayerService gamePlayerService) {
         this.gameService = gameService;
         this.playerService = playerService;
-        this.cardService = cardService; 
+        this.cardService = cardService;
         this.handService = handService;
-        this.gamePlayerService = gamePlayerService; 
+        this.gamePlayerService = gamePlayerService;
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -85,8 +86,8 @@ public class GameController {
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content),
             @ApiResponse(responseCode = "400", description = "Error al añadir jugador (puede deberse a que la partida está llena o ya ha comenzado).", content = @Content)
-    
-        })
+
+    })
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Game> createGame(@Valid @RequestBody GameCreateDto gameCreateDTO) {
@@ -99,17 +100,17 @@ public class GameController {
                 game.setMaxPlayers(gameCreateDTO.getMax_players());
                 game.setRaw_creator(currentPlayer.get());
                 game.setRaw_players(ls);
-               
-                game=gameService.saveGame(game);
+
+                game = gameService.saveGame(game);
                 Optional<Game> updatedGame = gameService.addPlayerToGame(game.getId(), currentPlayer.get());
-                
+
                 if (updatedGame.isPresent()) {
                     return new ResponseEntity<>(updatedGame.get(), HttpStatus.CREATED);
                 } else {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
             } else {
-                
+
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
@@ -179,6 +180,12 @@ public class GameController {
 
         if (!gameToJoin.isOnLobby()) {
             return new ResponseEntity<>(HttpStatus.LOCKED);
+        }
+
+        List<Player> rawPlayers = gameToJoin.getRaw_players();
+        if (rawPlayers == null) {
+            rawPlayers = new ArrayList<>();
+            gameToJoin.setRaw_players(rawPlayers);
         }
 
         if (gameToJoin.getRaw_players().contains(currentPlayer.get())) {
@@ -259,13 +266,12 @@ public class GameController {
         return new ResponseEntity<List<Game>>(gameList.get(), HttpStatus.OK);
     }
 
-
-
     private void initializeGame(Game currentGame) {
         try {
             Integer firstIndex = 0;
             Integer secondIndex = 4;
-            List<Card> allCards = cardService.findAll().orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
+            List<Card> allCards = cardService.findAll()
+                    .orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
 
             Collections.shuffle(allCards);
 
@@ -281,10 +287,10 @@ public class GameController {
                 handService.saveHand(playerHand);
                 gamePlayer.setHand(playerHand);
                 gamePlayerService.saveGamePlayer(gamePlayer);
-                
+
                 firstIndex += 4;
                 secondIndex += 4;
-                
+
             }
             currentGame.setStart(LocalDateTime.now());
         } catch (RuntimeException e) {
