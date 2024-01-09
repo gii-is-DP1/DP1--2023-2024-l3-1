@@ -20,7 +20,6 @@ public class Hand extends BaseEntity {
   
   @NotNull
   @OneToMany
-  @Size(max = 8)
   private List<Card> cards;
 
   @Transient
