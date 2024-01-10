@@ -6,6 +6,7 @@ import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
 import FriendsList from "./components/player/FriendsList";
 import GameBoard from "./components/player/GameBoard";
+import GameNavbar from "./components/player/GameNavbar";
 import PlayerProfile from "./components/player/PlayerProfile";
 import GameListAdminPage from "./pages/admin/GameListAdminPage";
 import PlayerListAdminPage from "./pages/admin/PlayerListAdminPage";
@@ -164,10 +165,18 @@ function App() {
     }
   }, [isAuthorizedPath, location]);
 
+  function getNavbar() {
+    if (navbar?.name === 'GAME') {
+      return <GameNavbar />;
+    } else if (user) {
+      return <AppNavbar />;
+    }
+  }
+
   return (
     <div>
       <ErrorBoundary FallbackComponent={ErrorFallback}>
-        {navbar ?? user ? <AppNavbar /> : undefined}
+        {getNavbar()}
         <Routes>
           {getRoutes()}
         </Routes>
