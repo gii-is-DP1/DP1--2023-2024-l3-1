@@ -290,6 +290,26 @@ public class GameController {
         return new ResponseEntity<List<Game>>(gameList.get(), HttpStatus.OK);
     }
 
+    @Operation(summary = "Juega una figura en la partida actual.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operación realizada correctamente."),
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+    })
+    @PostMapping("/{gameId}/play")
+    public ResponseEntity<Void> play(@PathVariable String gameId,@RequestBody Integer figureId){
+        try {
+            Optional<Player> currentOptPlayer = playerService.findCurrentPlayer(); 
+            gameService.playFigure(gameId, currentOptPlayer.get().getId(), figureId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
+    //TODO Pasar a GameService este método
     private void initializeGame(Game currentGame) {
         try {
             List<Card> allCards = cardService.findAll()
@@ -302,7 +322,7 @@ public class GameController {
             Integer firstIndex = 0;
             Integer cardsPerPlayer = allCardsToDeal/totalPlayers;
             Collections.shuffle(allCards);
-            
+
             // Ponemos cómo carta central la última de la baraja
             Integer lastCardIndex = allCards.size() - 1;
             currentGame.setCentral_card(allCards.get(lastCardIndex));

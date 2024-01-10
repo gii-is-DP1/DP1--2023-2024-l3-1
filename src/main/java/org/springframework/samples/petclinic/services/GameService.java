@@ -104,7 +104,7 @@ public class GameService {
 
     @Transactional
     public void playFigure(String gameId, Integer playerId, Integer figureId) {
-        Optional<Game> optionalGame = findGame(gameId);
+        Optional<Game> optionalGame = this.findGame(gameId);
         if (optionalGame.isPresent()) {
             Game game = optionalGame.get();
 
