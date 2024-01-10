@@ -51,6 +51,7 @@ public class Player extends BaseEntity {
     @JsonIgnore
     List<Player> friends;
 
+    @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "current_game_id")
     Game currentGame;
