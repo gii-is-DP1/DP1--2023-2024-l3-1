@@ -212,6 +212,12 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
 
+        List<Player> rawPlayers = gameToJoin.getRaw_players();
+        if (rawPlayers == null) {
+            rawPlayers = new ArrayList<>();
+            gameToJoin.setRaw_players(rawPlayers);
+        }
+
         if (gameToJoin.getRaw_players().contains(currentPlayer.get())) {
             return new ResponseEntity<>(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED);
         }
@@ -296,9 +302,9 @@ public class GameController {
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
     })
     @PostMapping("/{gameId}/play")
-    public ResponseEntity<Void> play(@PathVariable String gameId,@RequestBody Integer figureId){
+    public ResponseEntity<Void> play(@PathVariable String gameId, @RequestBody Integer figureId) {
         try {
-            Optional<Player> currentOptPlayer = playerService.findCurrentPlayer(); 
+            Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
             gameService.playFigure(gameId, currentOptPlayer.get().getId(), figureId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
@@ -307,20 +313,18 @@ public class GameController {
         }
     }
 
-
-
-    //TODO Pasar a GameService este método
+    // TODO Pasar a GameService este método
     private void initializeGame(Game currentGame) {
         try {
             List<Card> allCards = cardService.findAll()
                     .orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
 
             List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
-            Integer totalPlayers = gamePlayers.size(); 
-            Integer allCardsToDeal = allCards.size()-1;
+            Integer totalPlayers = gamePlayers.size();
+            Integer allCardsToDeal = allCards.size() - 1;
 
             Integer firstIndex = 0;
-            Integer cardsPerPlayer = allCardsToDeal/totalPlayers;
+            Integer cardsPerPlayer = allCardsToDeal / totalPlayers;
             Collections.shuffle(allCards);
 
             // Ponemos cómo carta central la última de la baraja
@@ -328,7 +332,7 @@ public class GameController {
             currentGame.setCentral_card(allCards.get(lastCardIndex));
 
             for (GamePlayer gamePlayer : gamePlayers) {
-                // Repartimos las cartas según la RN1 
+                // Repartimos las cartas según la RN1
                 List<Card> playerCards = new ArrayList<>(allCards.subList(firstIndex, cardsPerPlayer));
                 Hand playerHand = new Hand();
                 playerHand.setCards(playerCards);

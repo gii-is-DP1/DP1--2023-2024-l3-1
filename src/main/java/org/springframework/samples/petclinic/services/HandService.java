@@ -10,17 +10,22 @@ import jakarta.validation.Valid;
 
 @Service
 public class HandService {
-    private final HandRepository handRepository; 
+  private final HandRepository handRepository;
 
-    @Autowired
-    public HandService(HandRepository handRepository){
-      this.handRepository = handRepository; 
-    }
+  @Autowired
+  public HandService(HandRepository handRepository) {
+    this.handRepository = handRepository;
+  }
 
-    @Transactional
-    public void saveHand(@Valid Hand hand){
-      handRepository.save(hand); 
-     
-    }
+  @Transactional
+  public void saveHand(@Valid Hand hand) {
+    handRepository.save(hand);
+
+  }
+
+  @Transactional(readOnly = true)
+  public Iterable<Hand> findAll() {
+    return handRepository.findAll();
+  }
 
 }
