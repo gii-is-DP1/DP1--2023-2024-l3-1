@@ -72,6 +72,22 @@ public class GameService {
     }
 
     @Transactional
+    public void removePlayerFromGame(String gameId, Player player) {
+        Optional<Game> optionalGame = findGame(gameId);
+        if (optionalGame.isPresent()) {
+            Game game = optionalGame.get();
+
+            game.getRaw_players().remove(player);
+
+            game.getRaw_game_players().removeIf(gamePlayer -> gamePlayer.getRealPlayer().equals(player));
+
+            this.saveGame(game);
+
+            player.setCurrentGame(null);
+        }
+    }
+
+    @Transactional
     public Optional<Game> addPlayerToGame(String gameId, Player player) {
         Optional<Game> optionalGame = gameRepository.findById(gameId);
         Game game = optionalGame.get();
