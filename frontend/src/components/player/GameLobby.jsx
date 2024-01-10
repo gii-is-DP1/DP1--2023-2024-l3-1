@@ -7,7 +7,7 @@ import DInput from "../ui/DInput";
 import UserAvatar from "./UserAvatar";
 
 export default function GameLobby(props) {
-    const user = useSelector(state => state.tokenStore.user);
+    const user = useSelector(state => state.appStore.user);
     const route = useLocation();
     const isCreator = () => user.username === props.game.creator.username;
     const getSharingUrl = () => `${window.location.origin}${route.pathname}`;

@@ -13,7 +13,7 @@ import DIcon from '../ui/DIcon';
  * @returns 
  */
 export default function UserAvatar(Props) {
-    const user = useSelector(state => state.tokenStore.user);
+    const user = useSelector(state => state.appStore.user);
     const getSize = () => {
         switch (Props.size) {
             case "x-small":

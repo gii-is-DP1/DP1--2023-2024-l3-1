@@ -7,7 +7,7 @@ import DButton from './components/ui/DButton';
 import tokenService from './services/token.service';
 
 export default function AppNavbar() {
-    const user = useSelector(state => state.tokenStore.user);
+    const user = useSelector(state => state.appStore.user);
     const [collapsed, setCollapsed] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
