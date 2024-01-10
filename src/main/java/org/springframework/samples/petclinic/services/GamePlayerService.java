@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.services;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.repositories.GamePlayerRepository;
@@ -26,5 +25,9 @@ public class GamePlayerService {
     return gamePlayer;
   }
 
+  @Transactional(readOnly = true)
+  public Iterable<GamePlayer> findAll() {
+    return gamePlayerRepository.findAll();
+  }
 
 }

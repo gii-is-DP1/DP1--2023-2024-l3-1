@@ -2,8 +2,10 @@ package org.springframework.samples.petclinic.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +17,7 @@ import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.repositories.GameRepository;
+import org.springframework.samples.petclinic.repositories.PlayerRepository;
 import org.springframework.security.test.context.support.WithMockUser;
 
 import jakarta.transaction.Transactional;
@@ -24,6 +27,9 @@ import jakarta.transaction.Transactional;
 public class GameServiceTest {
   @Autowired
   private GameRepository gameRepository;
+
+  @Autowired
+  private PlayerRepository playerRepository;
 
   @Autowired
   private GameService gameService;
@@ -109,14 +115,13 @@ public class GameServiceTest {
     assertEquals("Test Game", foundGame.get().getName());
   }
 
-
   @Transactional
   @Test
   void testUpdateGame() {
     Optional<Game> gameToUpdate = gameService.findGame("123e4567-e89b-12d3-a456-426655440000");
     assertTrue(gameToUpdate.isPresent());
-    
-    GameCreateDto gameCreateDto= new GameCreateDto();
+
+    GameCreateDto gameCreateDto = new GameCreateDto();
     gameCreateDto.setName("NombreActualizado");
     gameCreateDto.setMax_players(7);
 
@@ -137,7 +142,66 @@ public class GameServiceTest {
     gameCreateDto.setName("NombreActualizado");
     gameCreateDto.setMax_players(7);
 
-    assertEquals(Optional.empty(),gameService.updateGame(gameCreateDto, "nonexistent-id"));
+    assertEquals(Optional.empty(), gameService.updateGame(gameCreateDto, "nonexistent-id"));
   }
 
+  @Test
+  @Transactional
+  void testAddPlayerToGame() {
+    Game testGame = new Game();
+    testGame.setName("Test Game");
+    testGame.setMax_players(3);
+    testGame.setStart(null);
+    gameRepository.save(testGame);
+
+    Player testPlayer = new Player();
+    testPlayer.setUsername("TestPlayer");
+
+    Optional<Game> resultGameOptional = gameService.addPlayerToGame(testGame.getId(), testPlayer);
+
+    assertTrue(resultGameOptional.isPresent());
+    Game resultGame = resultGameOptional.get();
+    assertEquals(testGame.getId(), resultGame.getId());
+    assertTrue(resultGame.getRaw_game_players().size() > 0);
+
+    boolean playerFoundInGame = resultGame.getRaw_game_players().stream()
+        .anyMatch(gp -> gp.getPlayer().getUsername().equals(testPlayer.getUsername()));
+    assertTrue(playerFoundInGame);
+  }
+
+  @Test
+  @Transactional
+  void testAddPlayerToGamePlayerAlreadyInGame() {
+    Game testGame = new Game();
+    testGame.setName("Test Game");
+    testGame.setMax_players(3);
+    testGame.setStart(null);
+    gameRepository.save(testGame);
+
+    Player testPlayer = new Player();
+    testPlayer.setUsername("TestPlayer");
+
+    gameService.addPlayerToGame(testGame.getId(), testPlayer);
+
+    assertThrows(RuntimeException.class, () -> {
+      gameService.addPlayerToGame(testGame.getId(), testPlayer);
+    });
+  }
+
+  @Test
+  @Transactional
+  void testAddPlayerToGameGameNotOnLobby() {
+    Game testGame = new Game();
+    testGame.setName("Test Game");
+    testGame.setMax_players(3);
+    testGame.setStart(LocalDateTime.now());
+    gameRepository.save(testGame);
+
+    Player testPlayer = new Player();
+    testPlayer.setUsername("TestPlayer");
+
+    Optional<Game> resultGameOptional = gameService.addPlayerToGame(testGame.getId(), testPlayer);
+
+    assertFalse(resultGameOptional.isPresent());
+  }
 }
