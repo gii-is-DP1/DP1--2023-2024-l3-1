@@ -9,7 +9,7 @@ const leftSizeMatchings = {
   0: {
     left: 12,
     top: -3.5,
-    scale: 2.2
+    scale: 1.8
   },
   1: {
     left: 8,
@@ -19,7 +19,7 @@ const leftSizeMatchings = {
   2: {
     left: -5,
     top: 2,
-    scale: 2.1
+    scale: 1.8
   }
 }
 
@@ -27,22 +27,22 @@ const rightSizeMatchings = {
   0: {
     left: -10,
     top: -4,
-    scale: 2.4
+    scale: 1.8
   },
   1: {
     left: -9,
     top: -1,
-    scale: 2
+    scale: 1.8
   },
   2: {
     left: -10,
     top: 1,
-    scale: 2
+    scale: 1.8
   },
   3: {
     left: -18,
     top: -1,
-    scale: 2
+    scale: 1.8
   }
 }
 
