@@ -16,6 +16,7 @@
     --red-shadow-color: rgba(229, 46, 46, 0.4);
     --yellow-shadow-color: #e9ba2b6c;
     --bs-body-bg: rgba(148, 113, 146, 0.68) !important;
+    --button-active: #4B0082
 }
 
 html, body {

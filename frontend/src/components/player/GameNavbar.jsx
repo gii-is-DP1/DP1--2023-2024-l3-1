@@ -1,7 +1,9 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { Navbar } from 'reactstrap';
 
 export default function GameNavbar() {
+    const navbar = useSelector(state => state.appStore.navbar);
 
     return (
         <div style={{ position: 'sticky', width: '100vw', zIndex: '1000', top: '0' }}>
@@ -14,6 +16,9 @@ export default function GameNavbar() {
                     padding: '0',
                     marginBottom: '5px' 
                 }} />
+                {navbar.content ? <div style={{ display: 'flex', flex: '1', justifyContent: 'center' }}>
+                    <h2 style={{ margin: '0 auto' }}>{navbar.content}</h2>
+                </div> : undefined}
             </Navbar>
         </div>
     );

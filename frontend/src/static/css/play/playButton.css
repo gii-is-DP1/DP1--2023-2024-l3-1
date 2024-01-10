@@ -13,6 +13,5 @@
 }
 
 .play-button:active {
-    background-color: #4B0082;
-    
+    background-color: var(--button-active);
 }

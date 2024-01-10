@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import GameBoard from "../../components/player/GameBoard";
 import GameLobby from "../../components/player/GameLobby";
-import GameNavbar from "../../components/player/GameNavbar";
 import { useModal } from "../../composables/useModal";
 import { useRefreshableData } from "../../composables/useRefreshableData";
 import { GameStatus } from '../../models/enums';
@@ -50,12 +49,21 @@ export default function GamePage() {
 
         game.status === GameStatus.STARTED ? appStore.dispatch({
             type: 'appStore/setNavbar',
-            payload: <GameNavbar />
+            payload: { name: 'GAME', content: game.name }
         }) : appStore.dispatch({
             type: 'appStore/setNavbar',
             payload: undefined
         });
-    }, [game.status]);
+    }, [game.status, game.name]);
+
+    useEffect(() => {
+        return () => {
+            appStore.dispatch({
+                type: 'appStore/setNavbar',
+                payload: undefined
+            })
+        }
+    }, []);
 
     useEffect(() => {
         if (!message && game?.status === GameStatus.FINISHED) {

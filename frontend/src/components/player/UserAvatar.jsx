@@ -45,6 +45,7 @@ export default function UserAvatar(Props) {
             <DIcon icon={Props.user?.profile_icon ?? Props.icon ?? user.profile_icon} style={{
                 padding: '2px'
             }} />
+            {Props.children}
         </div>
     );
 }
