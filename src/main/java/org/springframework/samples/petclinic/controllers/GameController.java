@@ -20,6 +20,7 @@ import org.springframework.samples.petclinic.services.GamePlayerService;
 import org.springframework.samples.petclinic.services.GameService;
 import org.springframework.samples.petclinic.services.HandService;
 import org.springframework.samples.petclinic.services.PlayerService;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -185,6 +186,83 @@ public class GameController {
             return new ResponseEntity<>(HttpStatus.LOCKED);
         }
 
+    }
+
+
+    @Operation(summary = "Elimina al jugador actual de la partida.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operación realizada correctamente."),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado."),
+            @ApiResponse(responseCode = "404", description = "El jugador actual no tiene ninguna partida en curso."),
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+    })
+    @DeleteMapping("/me")
+    public ResponseEntity<?> leaveGame() {
+        try {
+            Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
+
+            if (!currentOptPlayer.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+            Player currentPlayer = currentOptPlayer.get();
+            Game currentGame = currentPlayer.getCurrentGame();
+            if (currentGame == null) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+
+            gameService.removePlayerFromGame(currentGame.getId(), currentPlayer);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+
+    @Operation(summary = "Expulsa a un jugador de la partida (solo permitido para el creador de la partida).")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "Operación realizada correctamente. El jugador fue expulsado de la partida."),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no es el creador de la partida o no está autenticado."),
+            @ApiResponse(responseCode = "404", description = "El jugador a expulsar no se encontró en la partida o la partida no existe."),
+            @ApiResponse(responseCode = "400", description = "No se puede expulsar a sí mismo de la partida."),
+            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para expulsar jugadores (en curso o finalizada)."),
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+    })
+    @DeleteMapping("/{playerId}")
+    public ResponseEntity<?> ExpelPlayer(@PathVariable Integer playerId) {
+        try {
+            Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
+
+            if (!currentOptPlayer.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
+            Player currentPlayer = currentOptPlayer.get();
+            Game game = currentPlayer.getCurrentGame();
+
+            if(game==null){
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            if (!currentPlayer.equals(game.getRaw_creator())) {
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+            }
+
+            Optional<Player> playerToExpelOpt = playerService.findPlayer(playerId);
+            if (!playerToExpelOpt.isPresent()) {
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            }
+            Player playerToExpel = playerToExpelOpt.get();
+            if (playerToExpel.equals(currentPlayer)) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            }
+            gameService.removePlayerFromGame(game.getId(), playerToExpel);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     @Operation(summary = "Permite a un jugador unirse a una partida existente.")
