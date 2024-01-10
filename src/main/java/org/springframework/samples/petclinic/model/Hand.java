@@ -31,7 +31,7 @@ public class Hand extends BaseEntity {
 
   @Transient
   public Card getNextCard() {
-    if (cards != null && !cards.isEmpty()) {
+    if (cards != null && !cards.isEmpty() && cards.size()>1) {
       cards.remove(0);
       return cards.get(0);
     } else {
