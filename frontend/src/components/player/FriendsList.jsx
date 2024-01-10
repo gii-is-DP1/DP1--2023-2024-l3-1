@@ -18,7 +18,7 @@ export default function FriendsList() {
     const [currentPage, setCurrentPage] = useState(0);
     const [friends, setFriends] = useState([[]]);
     const [currentUser, setCurrentUser] = useState({});
-    const user = useSelector(state => state.tokenStore.user);
+    const user = useSelector(state => state.appStore.user);
     /**
      * Por alguna razón tarda demasiado en actualizar esta variable al hacerlo de forma asíncrona
      * por lo que se utiliza una variable normal

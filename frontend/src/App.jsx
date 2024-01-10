@@ -5,6 +5,7 @@ import { Navigate, Route, Routes, matchRoutes, useLocation, useNavigate } from "
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
 import FriendsList from "./components/player/FriendsList";
+import GameBoard from "./components/player/GameBoard";
 import PlayerProfile from "./components/player/PlayerProfile";
 import GameListAdminPage from "./pages/admin/GameListAdminPage";
 import PlayerListAdminPage from "./pages/admin/PlayerListAdminPage";
@@ -32,7 +33,8 @@ function ErrorFallback({ error, resetErrorBoundary }) {
 }
 
 function App() {
-  const user = useSelector(state => state.tokenStore.user);
+  const navbar = useSelector(state => state.appStore.navbar);
+  const user = useSelector(state => state.appStore.user);
   const location = useLocation();
   const navigate = useNavigate();
   
@@ -92,6 +94,7 @@ function App() {
           <Route exact path="/play/join" element={<GameJoinPage />} />
           <Route exact path="/play/new" element={<CreationGamePage />} />
           <Route exact path="/play/:id" element={<GamePage />} />
+          <Route exact path="/test/board" element={<GameBoard />} />
         </>
       )
     }
@@ -163,8 +166,8 @@ function App() {
 
   return (
     <div>
-      <ErrorBoundary FallbackComponent={ErrorFallback} >
-        {user ? <AppNavbar /> : undefined}
+      <ErrorBoundary FallbackComponent={ErrorFallback}>
+        {navbar ?? user ? <AppNavbar /> : undefined}
         <Routes>
           {getRoutes()}
         </Routes>
