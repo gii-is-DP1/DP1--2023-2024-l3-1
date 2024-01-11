@@ -43,12 +43,16 @@ public class GameController {
 
     private final GameService gameService;
     private final PlayerService playerService;
-    private final CardService cardService;
+    private CardService cardService;
 
     @Autowired
     public GameController(GameService gameService, PlayerService playerService, CardService cardService) {
         this.gameService = gameService;
         this.playerService = playerService;
+        this.cardService = cardService;
+    }
+
+    public void setCardService(CardService cardService) {
         this.cardService = cardService;
     }
 
