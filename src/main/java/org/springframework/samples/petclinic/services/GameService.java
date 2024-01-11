@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,7 +14,9 @@ import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.repositories.GamePlayerRepository;
 import org.springframework.samples.petclinic.repositories.GameRepository;
+import org.springframework.samples.petclinic.repositories.HandRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,10 +25,14 @@ import jakarta.validation.Valid;
 @Service
 public class GameService {
     private final GameRepository gameRepository;
+    private final HandRepository handRepository;
+    private final GamePlayerRepository gamePlayerRepository; 
 
     @Autowired
-    public GameService(GameRepository gameRepository) {
+    public GameService(GameRepository gameRepository, HandRepository handRepository, GamePlayerRepository gamePlayerRepository) {
         this.gameRepository = gameRepository;
+        this.handRepository = handRepository; 
+        this.gamePlayerRepository = gamePlayerRepository; 
     }
 
     @Transactional(readOnly = true)
@@ -117,6 +124,44 @@ public class GameService {
 
         return Optional.empty();
     }
+
+     public void initializeGame(Game currentGame,List<Card> allCards) {
+        try {
+            List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
+            Integer totalPlayers = gamePlayers.size();
+            Integer allCardsToDeal = allCards.size() - 1;
+
+            Integer firstIndex = 0;
+            Integer cardsPerPlayer = allCardsToDeal / totalPlayers;
+            Collections.shuffle(allCards);
+
+            // Ponemos cómo carta central la última de la baraja
+            Integer lastCardIndex = allCards.size() - 1;
+            currentGame.setCentral_card(allCards.get(lastCardIndex));
+
+            for (GamePlayer gamePlayer : gamePlayers) {
+                // Repartimos las cartas según la RN1
+                List<Card> playerCards = new ArrayList<>(allCards.subList(firstIndex, cardsPerPlayer));
+                Hand playerHand = new Hand();
+                playerHand.setCards(playerCards);
+                handRepository.save(playerHand);
+                gamePlayer.setHand(playerHand);
+                gamePlayerRepository.save(gamePlayer);
+
+                firstIndex += cardsPerPlayer;
+                cardsPerPlayer += cardsPerPlayer;
+
+            }
+            currentGame.setStart(LocalDateTime.now());
+        } catch (RuntimeException e) {
+            System.err.println("Error al inicializar el juego: " + e.getMessage());
+            e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Error general al inicializar el juego.");
+            e.printStackTrace();
+        }
+    }
+
 
     @Transactional
     public void playFigure(String gameId, Integer playerId, Integer figureId) {
