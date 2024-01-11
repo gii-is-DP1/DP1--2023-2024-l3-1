@@ -172,8 +172,7 @@ public class GameControllerTest {
     GameService gameService = mock(GameService.class);
     PlayerService playerService = mock(PlayerService.class);
 
-    GameController controller = new GameController(gameService, playerService, cardService, handService,
-        gamePlayerService);
+    GameController controller = new GameController(gameService, playerService, cardService);
 
     Player mockPlayer = new Player();
     mockPlayer.setId(1);
