@@ -1,4 +1,3 @@
-import { Icon } from "../../models/enums";
 import DIcon from "../ui/DIcon";
 
 const parentStyles = {
@@ -97,10 +96,8 @@ const scales = {
 }
 
 export default function Card(props) {
-  const iconArray = Object.keys(Icon);
   const scalesArray = Object.keys(scales);
   const scalesLength = scalesArray.length;
-  const iconLength = iconArray.length;
 
   function randomBetween(min, max) {
     if (min > max) {
@@ -119,8 +116,7 @@ export default function Card(props) {
       <div style={{ ...props.style, ...parentStyles}}>
         <div style={childBox}>
           <div style={innerGrid}>
-            {Array.from({ length: 8 }).map((i, index) => {
-              const randElement = iconArray[~~(Math.random() * iconLength)];
+            {props.figures.map((f, index) => {
               const randScale = scalesArray[~~(Math.random() * scalesLength)];
               const rotation = Math.random() * 360;
               const top = randomBetween(indexPos[index].topMin, indexPos[index].topMax);
@@ -135,11 +131,11 @@ export default function Card(props) {
                   ...cellStyles 
                   }}>
                   <DIcon
-                  rotation={rotation}
-                  icon={randElement}
-                  style={{
-                    overflow: 'hidden',
-                    transform: scales[randScale],
+                    rotation={rotation}
+                    icon={f}
+                    style={{
+                      overflow: 'hidden',
+                      transform: scales[randScale],
                 }} />
               </div>
             )
