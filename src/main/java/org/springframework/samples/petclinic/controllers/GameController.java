@@ -72,7 +72,7 @@ public class GameController {
         return new ResponseEntity<Game>(gameToGet.get(), HttpStatus.OK);
     }
 
-    @GetMapping("/myGame")
+    @GetMapping("/me")
     @Operation(summary = "Obtiene la partida del jugador actual registrado.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
