@@ -1,6 +1,7 @@
 package org.springframework.samples.petclinic.model;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 import org.springframework.samples.petclinic.model.enums.Icon;
@@ -15,6 +16,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -53,6 +55,13 @@ public class Player extends BaseEntity {
 
     @JsonIgnore
     @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "current_game_id")
-    Game currentGame;
+    @JoinColumn(name = "game_player_id")
+    List<GamePlayer> game_players;
+
+    public Optional<Game> current_game() {
+        return this.game_players.stream()
+            .map(gp -> gp.getGame())
+            .filter(g -> !g.isFinished())
+            .findFirst();
+    }
 }
