@@ -7,17 +7,17 @@ import UserAvatar from "./UserAvatar";
 
 const leftSizeMatchings = {
   0: {
-    left: 12,
-    top: -3.5,
+    left: -8,
+    top: -2,
     scale: 1.8
   },
   1: {
-    left: 8,
-    top: -2.5,
+    left: -8,
+    top: 0,
     scale: 1.8
   },
   2: {
-    left: -5,
+    left: -8,
     top: 2,
     scale: 1.8
   }
@@ -25,23 +25,23 @@ const leftSizeMatchings = {
 
 const rightSizeMatchings = {
   0: {
-    left: -10,
-    top: -4,
+    left: 8,
+    top: -2,
     scale: 1.8
   },
   1: {
-    left: -9,
+    left: 8,
     top: -1,
     scale: 1.8
   },
   2: {
-    left: -10,
-    top: 1,
+    left: 8,
+    top: 0,
     scale: 1.8
   },
   3: {
-    left: -18,
-    top: -1,
+    left: 8,
+    top: 1,
     scale: 1.8
   }
 }
@@ -118,16 +118,18 @@ export default function GameBoard(props) {
           <Card
             style={{
               width: '30vw',
-              height: '30vw'
+              height: '30vw',
+              position: 'relative',
+              left: '6vw'
             }}
           />
         </div>
         <div style={{ 
           gridArea: 'player-card',
           position: 'relative',
-          left: '20%',
-          top: '50%',
-          transform: 'scale(1.4)'
+          left: '20vw',
+          top: '5vw',
+          transform: 'scale(1.7)'
         }}>
           <UserAvatar size="small" style={{ 
             margin: '0',
