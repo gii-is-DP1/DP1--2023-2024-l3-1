@@ -14,6 +14,7 @@ import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.repositories.GamePlayerRepository;
 import org.springframework.samples.petclinic.repositories.GameRepository;
 import org.springframework.samples.petclinic.repositories.HandRepository;
@@ -89,8 +90,6 @@ public class GameService {
             game.getRaw_game_players().removeIf(gamePlayer -> gamePlayer.getRealPlayer().equals(player));
 
             this.saveGame(game);
-
-            player.setCurrentGame(null);
         }
     }
 
@@ -161,7 +160,6 @@ public class GameService {
             e.printStackTrace();
         }
     }
-
 
     @Transactional
     public void playFigure(String gameId, Integer playerId, Integer figureId) {
