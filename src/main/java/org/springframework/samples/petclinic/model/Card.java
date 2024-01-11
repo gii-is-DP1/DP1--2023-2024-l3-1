@@ -33,5 +33,4 @@ public class Card extends BaseEntity {
         .findFirst()
         .get();
   }
-
 }
