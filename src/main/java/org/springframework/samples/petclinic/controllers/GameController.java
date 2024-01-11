@@ -220,8 +220,8 @@ public class GameController {
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para expulsar jugadores (en curso o finalizada)."),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
     })
-    @DeleteMapping("/{playerId}")
-    public ResponseEntity<?> ExpelPlayer(@PathVariable Integer playerId) {
+    @DeleteMapping("/{player_username}")
+    public ResponseEntity<?> ExpelPlayer(@PathVariable String player_username) {
         try {
             Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
 
@@ -239,7 +239,7 @@ public class GameController {
                 return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
 
-            Optional<Player> playerToExpelOpt = playerService.findPlayer(playerId);
+            Optional<Player> playerToExpelOpt = playerService.findByUsernamePlayer(player_username);
             if (!playerToExpelOpt.isPresent()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
