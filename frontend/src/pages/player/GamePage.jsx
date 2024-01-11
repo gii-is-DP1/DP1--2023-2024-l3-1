@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import GameBoard from "../../components/player/GameBoard";
 import GameLobby from "../../components/player/GameLobby";
@@ -13,6 +14,7 @@ import { appStore } from "../../services/appStore";
  * y renderizando el componente apropiado dependiendo de si la partida está en lobby o ha empezado.
  */
 export default function GamePage() {
+    const user = useSelector(state => state.appStore.user);
     const [game, setGame] = useState({});
     const [message, setMessage] = useState();
     const [header, setHeader] = useState();
@@ -41,6 +43,12 @@ export default function GamePage() {
         } catch {}
     }
 
+    async function leaveGame() {
+        try {
+            await axios.delete(`/games/me`);
+        } catch {}
+    }
+
     useEffect(() => {
         if (game.status === GameStatus.FINISHED) {
             setHeader('Partida finalizada');
@@ -57,15 +65,6 @@ export default function GamePage() {
     }, [game.status, game.name]);
 
     useEffect(() => {
-        return () => {
-            appStore.dispatch({
-                type: 'appStore/setNavbar',
-                payload: undefined
-            })
-        }
-    }, []);
-
-    useEffect(() => {
         if (!message && game?.status === GameStatus.FINISHED) {
             navigate('/');
         }
@@ -76,6 +75,18 @@ export default function GamePage() {
             await patchGame();
         })();
     }, [game.max_players, game.name]);
+
+    useEffect(() => {
+        return () => {
+            if (game.status !== GameStatus.FINISHED && user) {
+                leaveGame();
+            }
+            appStore.dispatch({
+                type: 'appStore/setNavbar',
+                payload: undefined
+            });
+        }
+    }, []);
 
     useRefreshableData(fetchData, 1);
     const modal = useModal(setMessage, message, header);

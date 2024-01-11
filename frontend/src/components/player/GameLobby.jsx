@@ -1,6 +1,7 @@
 import { useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { useLabeledForm } from "../../composables/useLabeledForm";
+import axios from "../../services/api";
 import NumberOfPlayers from "../forms/NumberOfPlayers";
 import DButton from "../ui/DButton";
 import DInput from "../ui/DInput";
@@ -18,6 +19,12 @@ export default function GameLobby(props) {
         const value = target.value;
         const name = target.name;
         props.setGame({ ...props.game, [name]: value });
+    }
+
+    async function removeFromGame(player) {
+        try {
+            await axios.delete(`/games/${player}`)
+        } catch {}
     }
 
     const adminControls = useLabeledForm(
@@ -50,6 +57,13 @@ export default function GameLobby(props) {
                             <UserAvatar user={player} size="small" />
                         </div>
                         <p style={{ marginBottom: '0', marginTop: '6px' }}>{player.username}</p>
+                        {isCreator() ?
+                            <DButton
+                                color="red"
+                                onClick={removeFromGame(player)}>
+                                    Eliminar
+                            </DButton>
+                        : undefined}
                     </div>
                     )
                 )}
