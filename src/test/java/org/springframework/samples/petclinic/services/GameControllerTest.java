@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.controllers.GameController;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
+import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -43,11 +44,6 @@ public class GameControllerTest {
   @Mock
   private CardService cardService;
 
-  @Mock
-  private HandService handService;
-
-  @Mock
-  private GamePlayerService gamePlayerService;
 
   @InjectMocks
   private GameController gameController;
@@ -212,6 +208,13 @@ public class GameControllerTest {
     when(playerService.findCurrentPlayer()).thenReturn(Optional.of(currentPlayer));
     when(gameService.findGame("gameId")).thenReturn(Optional.of(gameInLobby));
 
+    CardService cardServiceMock = mock(CardService.class);
+    
+    
+    List<Card> mockCards = new ArrayList<>();
+    when(cardServiceMock.findAll()).thenReturn(Optional.of(mockCards));
+
+    gameController.setCardService(cardServiceMock);
     ResponseEntity<Game> response = gameController.startGame("gameId");
 
     assertEquals(HttpStatus.OK, response.getStatusCode());
