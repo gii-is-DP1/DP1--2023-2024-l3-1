@@ -1,8 +1,6 @@
 package org.springframework.samples.petclinic.controllers;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -12,13 +10,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
-import org.springframework.samples.petclinic.model.GamePlayer;
-import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.services.CardService;
-import org.springframework.samples.petclinic.services.GamePlayerService;
 import org.springframework.samples.petclinic.services.GameService;
-import org.springframework.samples.petclinic.services.HandService;
 import org.springframework.samples.petclinic.services.PlayerService;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -50,17 +44,12 @@ public class GameController {
     private final GameService gameService;
     private final PlayerService playerService;
     private final CardService cardService;
-    private final HandService handService;
-    private final GamePlayerService gamePlayerService;
 
     @Autowired
-    public GameController(GameService gameService, PlayerService playerService, CardService cardService,
-            HandService handService, GamePlayerService gamePlayerService) {
+    public GameController(GameService gameService, PlayerService playerService, CardService cardService) {
         this.gameService = gameService;
         this.playerService = playerService;
         this.cardService = cardService;
-        this.handService = handService;
-        this.gamePlayerService = gamePlayerService;
     }
 
     @Operation(summary = "Obtiene los detalles de una partida por su identificador.")
@@ -188,7 +177,6 @@ public class GameController {
 
     }
 
-
     @Operation(summary = "Elimina al jugador actual de la partida.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Operación realizada correctamente."),
@@ -219,7 +207,6 @@ public class GameController {
 
     }
 
-
     @Operation(summary = "Expulsa a un jugador de la partida (solo permitido para el creador de la partida).")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "Operación realizada correctamente. El jugador fue expulsado de la partida."),
@@ -241,7 +228,7 @@ public class GameController {
             Player currentPlayer = currentOptPlayer.get();
             Game game = currentPlayer.getCurrentGame();
 
-            if(game==null){
+            if (game == null) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
             if (!currentPlayer.equals(game.getRaw_creator())) {
@@ -343,7 +330,10 @@ public class GameController {
         }
 
         if (currentGame.getPlayers().size() >= 2) {
-            initializeGame(currentGame);
+            List<Card> allCards = cardService.findAll()
+                    .orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
+
+            gameService.initializeGame(currentGame, allCards);
             return new ResponseEntity<Game>(gameService.saveGame(currentGame), HttpStatus.OK);
         } else {
             return new ResponseEntity<>(HttpStatus.PRECONDITION_REQUIRED);
@@ -391,44 +381,4 @@ public class GameController {
         }
     }
 
-    // TODO Pasar a GameService este método
-    private void initializeGame(Game currentGame) {
-        try {
-            List<Card> allCards = cardService.findAll()
-                    .orElseThrow(() -> new RuntimeException("No se encontraron cartas."));
-
-            List<GamePlayer> gamePlayers = new ArrayList<>(currentGame.getRaw_game_players());
-            Integer totalPlayers = gamePlayers.size();
-            Integer allCardsToDeal = allCards.size() - 1;
-
-            Integer firstIndex = 0;
-            Integer cardsPerPlayer = allCardsToDeal / totalPlayers;
-            Collections.shuffle(allCards);
-
-            // Ponemos cómo carta central la última de la baraja
-            Integer lastCardIndex = allCards.size() - 1;
-            currentGame.setCentral_card(allCards.get(lastCardIndex));
-
-            for (GamePlayer gamePlayer : gamePlayers) {
-                // Repartimos las cartas según la RN1
-                List<Card> playerCards = new ArrayList<>(allCards.subList(firstIndex, cardsPerPlayer));
-                Hand playerHand = new Hand();
-                playerHand.setCards(playerCards);
-                handService.saveHand(playerHand);
-                gamePlayer.setHand(playerHand);
-                gamePlayerService.saveGamePlayer(gamePlayer);
-
-                firstIndex += cardsPerPlayer;
-                cardsPerPlayer += cardsPerPlayer;
-
-            }
-            currentGame.setStart(LocalDateTime.now());
-        } catch (RuntimeException e) {
-            System.err.println("Error al inicializar el juego: " + e.getMessage());
-            e.printStackTrace();
-        } catch (Exception e) {
-            System.err.println("Error general al inicializar el juego.");
-            e.printStackTrace();
-        }
-    }
 }
