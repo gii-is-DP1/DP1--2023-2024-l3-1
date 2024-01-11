@@ -5,7 +5,6 @@ import { Navigate, Route, Routes, matchRoutes, useLocation, useNavigate } from "
 import AppNavbar from "./AppNavbar";
 import SignUpForm from "./components/auth/SignUpForm";
 import FriendsList from "./components/player/FriendsList";
-import GameBoard from "./components/player/GameBoard";
 import GameNavbar from "./components/player/GameNavbar";
 import PlayerProfile from "./components/player/PlayerProfile";
 import GameListAdminPage from "./pages/admin/GameListAdminPage";
@@ -95,7 +94,6 @@ function App() {
           <Route exact path="/play/join" element={<GameJoinPage />} />
           <Route exact path="/play/new" element={<CreationGamePage />} />
           <Route exact path="/play/:id" element={<GamePage />} />
-          <Route exact path="/test/board" element={<GameBoard />} />
         </>
       )
     }

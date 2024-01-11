@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import axios from "axios";
+import { useSelector } from "react-redux";
 import { Badge } from "reactstrap";
-import { appStore } from "../../services/appStore";
 import DIcon from "../ui/DIcon";
 import Card from "./DobbleCard";
 import UserAvatar from "./UserAvatar";
@@ -52,13 +52,21 @@ const rightSizeMatchings = {
  * unidireccional padre -> hijo.
  */
 export default function GameBoard(props) {
-  useEffect(() => {
-    appStore.dispatch({ type: 'appStore/setNavbar', payload: { name: 'GAME', content: 'Test' }});
+  const user = useSelector(state => state.appStore.user);
+  const playersCards = () => props.game.game_players.filter((p) => p.username !== user.username);
+  const currentPlayer = () => props.game.game_players.filter((p) => p.username === user.username)[0];
+  /**
+   * TODO: Preparar la página para el modo espectador
+   */
+  const middle = Math.ceil(!currentPlayer() ? (playersCards().length / 2) : ((playersCards().length - 1) / 2));
+  const right_side = playersCards().slice(0, middle);
+  const left_side = playersCards().slice(middle);
 
-    return () => {
-      appStore.dispatch({ type: 'appStore/setNavbar', payload: undefined });
-    }
-  }, []);
+  async function playFigure(id) {
+    try {
+      await axios.post(`/games/me/play`, { figure: id });
+    } catch {}
+  }
 
   return (
   <>
@@ -88,18 +96,23 @@ export default function GameBoard(props) {
           gridArea: 'left-players',
           justifySelf: 'end'
         }}>
-          {Array.from({ length: 3 }).map((_e, i) => {
+          {left_side.map((game_player, i) => {
             return (
               <>
                 <div>
-                  <UserAvatar size="small" style={{
-                    margin: '0',
-                    backgroundColor: 'var(--button-active)'
+                  <UserAvatar
+                    user={game_player}
+                    size="small"
+                    style={{
+                      margin: '0',
+                      backgroundColor: 'var(--button-active)'
                   }} />
-                  <Badge pill color="primary">Username</Badge>
+                  <Badge pill color="primary">{game_player.username}</Badge>
                   
                 </div>
-                <Card style={{
+                <Card
+                  card={game_player.current_card}
+                  style={{
                     width: `5vw`,
                     height: `5vw`,
                     position: 'relative',
@@ -116,6 +129,7 @@ export default function GameBoard(props) {
           justifySelf: 'center',
         }}>
           <Card
+            card={props.game.current_card}
             style={{
               width: '30vw',
               height: '30vw',
@@ -131,13 +145,18 @@ export default function GameBoard(props) {
           top: '5vw',
           transform: 'scale(1.7)'
         }}>
-          <UserAvatar size="small" style={{ 
-            margin: '0',
-            backgroundColor: 'var(--button-active)'
+          {/* Con undefined se pone automáticamente el avatar del usuario actual */}
+          <UserAvatar
+            user={currentPlayer() ? undefined : playersCards().at(-1).player}
+            size="small"
+            style={{ 
+              margin: '0',
+              backgroundColor: 'var(--button-active)'
           }}>
-            <Badge pill color="primary">Tú</Badge>
+            <Badge pill color="primary">{currentPlayer() ? <>Tú</> : playersCards().at(-1).player.username}</Badge>
           </UserAvatar>
           <Card
+            card={props.game.current_card}
             style={{
               width: '11vw',
               height: '11vw',
@@ -147,18 +166,23 @@ export default function GameBoard(props) {
           gridArea: 'right-players',
           justifySelf: 'start'
         }}>
-            {Array.from({ length: 4 }).map((_e, i) => {
+          {right_side.map((game_player, i) => {
             return (
               <>
                 <div>
-                  <UserAvatar size="small" style={{
-                    margin: '0',
-                    backgroundColor: 'var(--button-active)'
+                  <UserAvatar
+                    user={game_player}
+                    size="small"
+                    style={{
+                      margin: '0',
+                      backgroundColor: 'var(--button-active)'
                   }} />
-                  <Badge pill color="primary">Username</Badge>
+                  <Badge pill color="primary">{game_player.username}</Badge>
                   
                 </div>
-                <Card style={{
+                <Card
+                  card={game_player.current_card}
+                  style={{
                     width: `5vw`,
                     height: `5vw`,
                     position: 'relative',
@@ -171,19 +195,26 @@ export default function GameBoard(props) {
           })}
         </div>
       </div>
-      <div style={{
-        display: 'flex',
-        justifyContent: 'center',
-        gridArea: 'footer'
-      }}>
-        {Array.from({ length: 8 }).map((i) => {
-          return <DIcon icon="DELFIN" style={{
-            backgroundColor: 'white',
-            width: '8vw',
-            height: '8vw'
-          }} />;
-        })}
-      </div>
+      {currentPlayer() ? 
+      <>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gridArea: 'footer'
+        }}>
+          {props.game.current_card.map((i) => {
+            return <DIcon
+            icon={i.icon}
+            style={{
+              backgroundColor: 'white',
+              width: '8vw',
+              height: '8vw'
+            }}
+            onClick={playFigure(i.id)}/>;
+          })}
+        </div>
+      </> 
+      : undefined}
     </div>
   </>);
 }
