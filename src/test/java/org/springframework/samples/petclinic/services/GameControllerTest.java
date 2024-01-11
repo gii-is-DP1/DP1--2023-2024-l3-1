@@ -25,6 +25,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.controllers.GameController;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
+import org.springframework.samples.petclinic.dto.PlayRequestDto;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
@@ -264,12 +265,14 @@ public class GameControllerTest {
 
   @Test
   public void testPlay() {
+    PlayRequestDto playRequestDto= new PlayRequestDto(); 
+    playRequestDto.setFigure_id(1);
     Player mockPlayer = new Player();
     mockPlayer.setId(1);
     when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
     doNothing().when(gameService).playFigure(anyString(), anyInt(), anyInt());
 
-    ResponseEntity<Void> response = gameController.play("gameId", 1);
+    ResponseEntity<Void> response = gameController.play("gameId", playRequestDto);
 
     assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
     verify(gameService, times(1)).playFigure("gameId", 1, 1); // Assuming figureId is 1 for simplicity
@@ -277,12 +280,14 @@ public class GameControllerTest {
 
   @Test
   public void testPlayWithException() {
+    PlayRequestDto playRequestDto= new PlayRequestDto(); 
+    playRequestDto.setFigure_id(1);
     Player mockPlayer = new Player();
     mockPlayer.setId(1);
     when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
     doThrow(new RuntimeException("Simulated exception")).when(gameService).playFigure(anyString(), anyInt(), anyInt());
 
-    ResponseEntity<Void> response = gameController.play("gameId", 1);
+    ResponseEntity<Void> response = gameController.play("gameId", playRequestDto);
 
     assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
   }

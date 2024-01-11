@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
+import org.springframework.samples.petclinic.dto.PlayRequestDto;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.Player;
@@ -221,7 +222,7 @@ public class GameController {
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
     })
     @DeleteMapping("/{player_username}")
-    public ResponseEntity<?> ExpelPlayer(@PathVariable String player_username) {
+    public ResponseEntity<?> expelPlayer(@PathVariable String player_username) {
         try {
             Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
 
@@ -374,10 +375,10 @@ public class GameController {
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
     })
     @PostMapping("/{game_id}/play")
-    public ResponseEntity<Void> play(@PathVariable String game_id, @RequestBody Integer figureId) {
+    public ResponseEntity<Void> play(@PathVariable String game_id, @RequestBody PlayRequestDto  playRequestDto) {
         try {
             Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
-            gameService.playFigure(game_id, currentOptPlayer.get().getId(), figureId);
+            gameService.playFigure(game_id, currentOptPlayer.get().getId(), playRequestDto.getFigure_id());
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
             e.printStackTrace();
