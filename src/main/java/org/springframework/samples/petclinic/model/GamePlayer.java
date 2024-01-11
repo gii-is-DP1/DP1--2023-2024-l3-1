@@ -18,8 +18,6 @@ import lombok.Setter;
 @Setter
 @Table(name = "game_players")
 public class GamePlayer extends BaseEntity {
-
-
   @NotNull
   @ManyToOne
   @JoinColumn(name = "game_id")
@@ -34,8 +32,6 @@ public class GamePlayer extends BaseEntity {
   @OneToOne
   @JoinColumn(name = "hand_id")
   private Hand hand; 
-
-
 
   @Transient
   public PublicPlayerDto getPlayer() {
