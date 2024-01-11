@@ -77,7 +77,9 @@ export default function GamePage() {
     }, [game.max_players, game.name]);
 
     useEffect(() => {
+        window.addEventListener('beforeunload', leaveGame);
         return () => {
+            window.removeEventListener('beforeunload', leaveGame);
             if (game.status !== GameStatus.FINISHED && user) {
                 leaveGame();
             }
