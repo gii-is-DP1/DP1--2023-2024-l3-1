@@ -266,9 +266,9 @@ public class GameController {
             @ApiResponse(responseCode = "409", description = "La partida está completa y no se puede unir más jugadores.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
-    @PostMapping("/join/{gameId}")
-    public ResponseEntity<Game> joinGame(@PathVariable String gameId) {
-        Optional<Game> optionalGameToJoin = gameService.findGame(gameId);
+    @PostMapping("/join/{game_id}")
+    public ResponseEntity<Game> joinGame(@PathVariable String game_id) {
+        Optional<Game> optionalGameToJoin = gameService.findGame(game_id);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
         if (!optionalGameToJoin.isPresent() && !currentPlayer.isPresent()) {
@@ -312,9 +312,9 @@ public class GameController {
             @ApiResponse(responseCode = "428", description = "No hay suficientes jugadores para iniciar la partida.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
     })
-    @PostMapping("/start/{gameId}")
-    public ResponseEntity<Game> startGame(@PathVariable String gameId) {
-        Optional<Game> optionalCurrentGame = gameService.findGame(gameId);
+    @PostMapping("/start/{game_id}")
+    public ResponseEntity<Game> startGame(@PathVariable String game_id) {
+        Optional<Game> optionalCurrentGame = gameService.findGame(game_id);
         Optional<Player> currentPlayer = playerService.findCurrentPlayer();
 
         if (!optionalCurrentGame.isPresent()) {
@@ -373,11 +373,11 @@ public class GameController {
             @ApiResponse(responseCode = "204", description = "Operación realizada correctamente."),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
     })
-    @PostMapping("/{gameId}/play")
-    public ResponseEntity<Void> play(@PathVariable String gameId, @RequestBody Integer figureId) {
+    @PostMapping("/{game_id}/play")
+    public ResponseEntity<Void> play(@PathVariable String game_id, @RequestBody Integer figureId) {
         try {
             Optional<Player> currentOptPlayer = playerService.findCurrentPlayer();
-            gameService.playFigure(gameId, currentOptPlayer.get().getId(), figureId);
+            gameService.playFigure(game_id, currentOptPlayer.get().getId(), figureId);
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
             e.printStackTrace();
