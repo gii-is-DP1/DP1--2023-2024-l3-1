@@ -2,6 +2,7 @@ package org.springframework.samples.petclinic.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,6 +143,7 @@ public class GameService {
     public Game startGame(Game game) {
         List<GamePlayer> gps = game.getGame_players();
         List<Card> cards = this.cardService.createCards();
+        Collections.shuffle(cards);
         Integer last_card_index = cards.size() - 1;
         Card initial_card = cards.get(last_card_index);
         cards.remove(initial_card);
@@ -178,14 +180,17 @@ public class GameService {
     }
 
     @Transactional
-    public void playFigure(GamePlayer gp, Icon icon) throws NotFoundException {
+    public void playFigure(Game game, GamePlayer gp, Icon icon) throws NotFoundException {
         try {
             Optional<Card> op_player_card = gp.getCurrentCard();
+            Optional<Card> op_central_card = game.getCentralCard();
 
-            if (op_player_card.isPresent()) {
+            if (op_player_card.isPresent() && op_central_card.isPresent()) {
                 Card player_card = op_player_card.get();
-                if (player_card.hasIcon(icon)) {
-                    return;
+                Card central_card = op_central_card.get();
+                if (player_card.hasIcon(icon) && central_card.hasIcon(icon)) {
+                    player_card.setRelease_time(LocalDateTime.now());
+                    this.cardService.saveCard(player_card);
                 } else {
                     throw new NotFoundException();
                 }
