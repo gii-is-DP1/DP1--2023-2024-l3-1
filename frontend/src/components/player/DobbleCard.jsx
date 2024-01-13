@@ -88,17 +88,14 @@ const indexPos = {
 }
 
 const scales = {
-  'x-small': 'scale(0.6)',
-  'small': 'scale(0.7)',
-  'medium': 'scale(0.75)',
-  'large': 'scale(0.8)',
-  'max': 'scale(0.9)'
+  'XSMALL': 'scale(0.6)',
+  'SMALL': 'scale(0.7)',
+  'MEDIUM': 'scale(0.75)',
+  'LARGE': 'scale(0.8)',
+  'MAX': 'scale(0.9)'
 }
 
 export default function Card(props) {
-  const scalesArray = Object.keys(scales);
-  const scalesLength = scalesArray.length;
-
   function randomBetween(min, max) {
     if (min > max) {
       [min, max] = [max, min];
@@ -116,9 +113,7 @@ export default function Card(props) {
       <div style={{ ...props.style, ...parentStyles}}>
         <div style={childBox}>
           <div style={innerGrid}>
-            {props.figures.map((f, index) => {
-              const randScale = scalesArray[~~(Math.random() * scalesLength)];
-              const rotation = Math.random() * 360;
+            {(props.card?.figures ?? []).map((f, index) => {
               const top = randomBetween(indexPos[index].topMin, indexPos[index].topMax);
               const left = randomBetween(indexPos[index].leftMin, indexPos[index].leftMax);
 
@@ -131,11 +126,11 @@ export default function Card(props) {
                   ...cellStyles 
                   }}>
                   <DIcon
-                    rotation={rotation}
-                    icon={f}
+                    rotation={f.rotation}
+                    icon={f.icon}
                     style={{
                       overflow: 'hidden',
-                      transform: scales[randScale],
+                      transform: scales[f.size],
                 }} />
               </div>
             )

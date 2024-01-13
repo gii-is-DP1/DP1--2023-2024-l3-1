@@ -1,4 +1,5 @@
 import axios from "axios";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Badge } from "reactstrap";
 import DIcon from "../ui/DIcon";
@@ -52,9 +53,11 @@ const rightSizeMatchings = {
  * unidireccional padre -> hijo.
  */
 export default function GameBoard(props) {
+  const [striked, setStriked] = useState(false);
   const user = useSelector(state => state.appStore.user);
   const playersCards = () => props.game.game_players.filter((p) => p.username !== user.username);
   const currentPlayer = () => props.game.game_players.filter((p) => p.username === user.username)[0];
+
   /**
    * TODO: Preparar la página para el modo espectador
    */
@@ -62,11 +65,25 @@ export default function GameBoard(props) {
   const right_side = playersCards().slice(0, middle);
   const left_side = playersCards().slice(middle);
 
-  async function playFigure(id) {
+  async function playFigure(icon) {
     try {
-      await axios.post(`/games/me/play`, { figure: id });
-    } catch {}
+      await axios.post(`/games/me/play`, { icon });
+    } catch (e) {
+      if (e.response?.status === 417) {
+        setStriked(true);
+      }
+    }
   }
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setStriked(false);
+    }, 1500);
+
+    return () => {
+      clearInterval(timeout);
+    }
+  }, [striked]);
 
   return (
   <>
@@ -111,7 +128,7 @@ export default function GameBoard(props) {
                   
                 </div>
                 <Card
-                  card={game_player.current_card}
+                  card={game_player.current_card ?? {}}
                   style={{
                     width: `5vw`,
                     height: `5vw`,
@@ -129,7 +146,7 @@ export default function GameBoard(props) {
           justifySelf: 'center',
         }}>
           <Card
-            card={props.game.current_card}
+            card={props.game.central_card ?? {}}
             style={{
               width: '30vw',
               height: '30vw',
@@ -156,7 +173,7 @@ export default function GameBoard(props) {
             <Badge pill color="primary">{currentPlayer() ? <>Tú</> : playersCards().at(-1).player.username}</Badge>
           </UserAvatar>
           <Card
-            card={props.game.current_card}
+            card={currentPlayer() ? currentPlayer().current_card ?? {} : playersCards().at(-1).current_card ?? {}}
             style={{
               width: '11vw',
               height: '11vw',
@@ -181,7 +198,7 @@ export default function GameBoard(props) {
                   
                 </div>
                 <Card
-                  card={game_player.current_card}
+                  card={game_player.current_card ?? {}}
                   style={{
                     width: `5vw`,
                     height: `5vw`,
@@ -202,15 +219,15 @@ export default function GameBoard(props) {
           justifyContent: 'center',
           gridArea: 'footer'
         }}>
-          {props.game.current_card.map((i) => {
+          {(props.game.central_card?.figures ?? []).map((f) => {
             return <DIcon
-            icon={i.icon}
-            style={{
-              backgroundColor: 'white',
-              width: '8vw',
-              height: '8vw'
-            }}
-            onClick={playFigure(i.id)}/>;
+              icon={f.icon}
+              style={{
+                backgroundColor: striked ? 'red' : 'white',
+                width: '8vw',
+                height: '8vw'
+              }}
+              onClick={playFigure(f.icon)}/>;
           })}
         </div>
       </> 
