@@ -24,6 +24,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.Max;
@@ -65,6 +66,7 @@ public class Game extends UUIDEntity {
     // El creador va aparte
     @Size(min = 0, max = 7)
     @JsonIgnore
+    @OrderColumn(name = "player_insertion_order")
     List<GamePlayer> game_players = new ArrayList<>();
 
     @JsonIgnore

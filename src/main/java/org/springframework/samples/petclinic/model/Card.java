@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import lombok.Getter;
@@ -30,6 +31,7 @@ import lombok.Setter;
 @Table(name = "cards")
 public class Card extends HiddenBaseEntity {
   @OneToMany(mappedBy = "card")
+  @OrderColumn(name = "figures_insertion_order")
   private List<Figure> figures = new ArrayList<Figure>();
 
   @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
