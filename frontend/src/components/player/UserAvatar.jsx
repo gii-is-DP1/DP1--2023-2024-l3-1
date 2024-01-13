@@ -33,7 +33,7 @@ export default function UserAvatar(Props) {
         <div {...Props} style={{
             width: `${getSize()}px`,
             height: `${getSize()}px`,
-            backgroundColor: 'white',
+            backgroundColor: Props.color ?? 'white',
             borderRadius: '100%',
             padding: '5px',
             margin: '10px',
