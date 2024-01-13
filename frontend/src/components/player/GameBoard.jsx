@@ -1,7 +1,7 @@
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Badge } from "reactstrap";
+import axios from '../../services/api';
 import DIcon from "../ui/DIcon";
 import Card from "./DobbleCard";
 import UserAvatar from "./UserAvatar";
@@ -220,17 +220,22 @@ export default function GameBoard(props) {
           gridArea: 'footer'
         }}>
           {(props.game.central_card?.figures ?? []).map((f) => {
-            return <DIcon
-              icon={f.icon}
-              style={{
-                backgroundColor: striked ? 'red' : 'white',
-                width: '8vw',
-                height: '8vw'
-              }}
-              onClick={playFigure(f.icon)}/>;
+            return (
+            <>
+              <DIcon
+                icon={f.icon}
+                onClick={() => playFigure(f.icon)}
+                style={{
+                  backgroundColor: striked ? 'red' : 'white',
+                  width: '8vw',
+                  height: '8vw',
+                  pointerEvents: 'all',
+                  cursor: 'pointer'
+                }} />
+            </>)
           })}
         </div>
-      </> 
+      </>
       : undefined}
     </div>
   </>);
