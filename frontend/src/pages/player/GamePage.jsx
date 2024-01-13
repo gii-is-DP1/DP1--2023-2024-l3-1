@@ -115,11 +115,7 @@ export default function GamePage() {
                 );
             case GameStatus.STARTED:
                 return (
-                    <div className="home-page-container">
-                        <div className="page-container">
-                            <GameBoard game={game} />
-                        </div>
-                    </div>
+                    <GameBoard game={game} />
                 );
             // Mostrar página en blanco mientras se obtiene la información inicial
             default:
