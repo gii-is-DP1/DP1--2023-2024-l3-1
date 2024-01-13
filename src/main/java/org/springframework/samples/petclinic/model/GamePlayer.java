@@ -5,18 +5,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.springframework.samples.petclinic.dto.GamePlayerDto;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OrderColumn;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
@@ -40,8 +38,10 @@ public class GamePlayer extends BaseEntity {
   @JsonIgnore
   private Player player;
 
+  // Importante el orden de las cartas para que se mantenga la aleatoriedad
   @NotNull
   @OneToMany(mappedBy = "game_player", orphanRemoval = true)
+  @OrderColumn(name = "card_insertion_order")
   private List<Card> cards = new ArrayList<Card>();
 
   @NotNull
