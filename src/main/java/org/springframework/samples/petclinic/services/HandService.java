@@ -1,6 +1,9 @@
 package org.springframework.samples.petclinic.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.repositories.HandRepository;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,7 @@ public class HandService {
 
   @Transactional
   public void saveHand(@Valid Hand hand) {
-    handRepository.save(hand);
-
+    this.handRepository.save(hand);
   }
 
   @Transactional(readOnly = true)
@@ -28,4 +30,17 @@ public class HandService {
     return handRepository.findAll();
   }
 
+  @Transactional
+  public Hand createHand(List<Card> cards) {
+    Hand h = new Hand();
+    h.setCards(cards);
+    return this.handRepository.save(h);
+  }
+
+  @Transactional
+  public void sumStrike(Hand hand) {
+    hand.setStrikes(hand.getStrikes() + 1);
+
+    this.handRepository.save(hand);
+  }
 }

@@ -30,7 +30,7 @@ public class HitoPartidaService {
 
   @Transactional
   public void finalizarPartidaSiNecesario(Game game) {
-    List<GamePlayer> gamePlayers = game.getRaw_game_players();
+    List<GamePlayer> gamePlayers = game.getAllGamePlayers();
     GamePlayer ganador = null;
     boolean partidaFinalizada = false;
 

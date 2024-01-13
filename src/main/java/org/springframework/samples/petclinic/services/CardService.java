@@ -1,8 +1,13 @@
 package org.springframework.samples.petclinic.services;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Figure;
@@ -37,6 +42,11 @@ public class CardService {
   }
 
   @Transactional
+  public void deleteAll(Iterable<? extends Card> entities) {
+    this.cardRepository.deleteAll(entities);
+  }
+
+  @Transactional
     public List<Card> createCards() {
         // Variables de inicio
         List<Card> cards = new ArrayList<Card>();
@@ -45,41 +55,49 @@ public class CardService {
         Integer total_cards = 57; // N = 8 - 1 -> N^2 + N + 1
 
         Integer n = icons_per_card - 1;
-        Integer[][] c = new Integer[total_cards][icons_per_card];
+        int[] symbols = IntStream.rangeClosed(0, total_cards - 1).toArray();
+        List<List<Integer>> symbol_cards = new ArrayList<List<Integer>>();
 
         // Generar primer set de cartas, empezando siempre por el primer
         // símbolo seguido de n símbolos en su orden secuencial
         for (Integer i = 0; i < (n + 1); i++) {
-          c[i][0] = 0;
+          List<Integer> symbol_card = new ArrayList<Integer>();
+          symbol_card.add(symbols[0]);
 
           for (Integer j = 0; j < n; j++) {
-            c[i][j] = (j + 1) + (i * n);
+            symbol_card.add(symbols[(j + 1) + (i * n)]);
           }
+
+          symbol_cards.add(symbol_card);
         }
 
         // Generar set final de cartas, empezando por los símbolos siguientes
         // y seguido por el desplazamiento de los símbolos siguientes
         for (Integer i = 0; i < n; i++) {
           for (Integer j = 0; j < n; j++) {
-            c[i][j] = i + 1;
+            List<Integer> symbol_card = new ArrayList<Integer>();
+            symbol_card.add(symbols[i + 1]);
 
             for (Integer k = 0; k < n; k++) {
-              c[i][j] = ((n + 1) + (n * k) + ((i * k) + j) % n);
+              symbol_card.add(symbols[((n + 1) + (n * k) + ((i * k) + j) % n)]);
             }
+
+            symbol_cards.add(symbol_card);
           }
         }
 
         // Convertimos todo a entidades
         // Es más rápido hacerlo en otro bucle que si lo hubiéramos hecho en los otros bucles
         // accediendo a las entidades en la base de datos.
-        for (Integer i = 0; i < total_cards; i++) {
+        for (List<Integer> c : symbol_cards) {
           Card card = new Card();
+          this.saveCard(card);
 
-          for (Integer j = 0; j < icons_per_card; j++) {
-            Figure fig = this.figureService.createFigure(card, c[i][j]);
+          for (Integer f : c) {
+            Figure fig = this.figureService.createFigure(card, f);
             card.getFigures().add(fig);
           }
-          
+
           this.saveCard(card);
           cards.add(card);
         }
