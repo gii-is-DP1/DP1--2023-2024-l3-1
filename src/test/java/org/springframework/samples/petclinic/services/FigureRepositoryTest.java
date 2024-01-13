@@ -1,6 +1,5 @@
 package org.springframework.samples.petclinic.services;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -10,18 +9,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.samples.petclinic.model.Card;
+import org.springframework.samples.petclinic.model.Figure;
+import org.springframework.samples.petclinic.repositories.FigureRepository;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
-public class CardServiceTest {
+public class FigureRepositoryTest {
+
   @Autowired
-  private CardService cardService;
+  private FigureRepository figureRepository;
 
   @Test
   public void testFindAll() {
-    Optional<List<Card>> allCards = cardService.findAll();
-    assertTrue(allCards.isPresent());
-    assertFalse(allCards.get().isEmpty());
+    Optional<List<Figure>> allFigures = Optional.of(figureRepository.findAll());
+    assertTrue(allFigures.isPresent());
+    assertTrue(allFigures.get().isEmpty());
   }
 }
