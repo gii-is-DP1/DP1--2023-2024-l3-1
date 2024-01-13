@@ -71,8 +71,8 @@ public class AchievementController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Achievement.class)) }),
-            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado", content = @Content),
-            @ApiResponse(responseCode = "404", description = "No se encuentra el logro solicitado", content = @Content)
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado"),
+            @ApiResponse(responseCode = "404", description = "No se encuentra el logro solicitado")
     })
     public ResponseEntity<Achievement> findAchievement(@PathVariable("id") int id) {
         Optional<Achievement> achievementToGet = achievementService.getAchievementById(id);
