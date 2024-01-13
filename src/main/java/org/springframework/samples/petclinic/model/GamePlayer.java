@@ -1,9 +1,16 @@
 package org.springframework.samples.petclinic.model;
 
-import org.springframework.samples.petclinic.dto.PublicPlayerDto;
+import java.util.Optional;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.samples.petclinic.dto.GamePlayerDto;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -19,35 +26,39 @@ import lombok.Setter;
 @Table(name = "game_players")
 public class GamePlayer extends BaseEntity {
   @NotNull
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
+  @Fetch(FetchMode.SELECT)
   @JoinColumn(name = "game_id")
   @JsonIgnore
   private Game game;
 
   @NotNull
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
+  @Fetch(FetchMode.SELECT)
   @JoinColumn(name = "player_id")
+  @JsonIgnore
   private Player player;
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
+  @Fetch(FetchMode.SELECT)
+  @JsonIgnore
   @JoinColumn(name = "hand_id")
   private Hand hand; 
 
   @Transient
-  public PublicPlayerDto getPlayer() {
-    return new PublicPlayerDto(this.player);
+  public GamePlayerDto getAsDto() {
+    return new GamePlayerDto(this);
   }
 
   @Transient
-  public Integer getPlayerId(){
-    return this.player.getId(); 
+  @JsonProperty("card")
+  public Optional<Card> getCurrentCard() {
+    return this.getHand() != null ? this.getHand().getCurrentCard() : Optional.empty();
   }
 
   @Transient
-  @NotNull
   @JsonIgnore
-  public Player getRealPlayer(){
-    return this.player; 
+  public Integer getPlayerId(){
+    return this.getPlayer().getId(); 
   }
-
 }

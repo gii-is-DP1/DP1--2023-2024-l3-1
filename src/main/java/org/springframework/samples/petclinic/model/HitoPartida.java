@@ -2,9 +2,13 @@ package org.springframework.samples.petclinic.model;
 
 import java.util.List;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
@@ -32,11 +36,13 @@ public class HitoPartida extends BaseEntity {
   @NotNull
   private long tiempoTotalPartida;
 
-  @OneToOne
+  @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
+  @Fetch(FetchMode.SELECT)
   @JoinColumn(name = "game_player_id")
   private GamePlayer gamePlayer;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.EAGER)
+  @Fetch(FetchMode.SELECT)
   @JoinColumn(name = "game_id")
   private Game game;
 }

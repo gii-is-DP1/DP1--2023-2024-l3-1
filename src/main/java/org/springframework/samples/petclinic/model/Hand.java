@@ -1,10 +1,19 @@
 package org.springframework.samples.petclinic.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
@@ -15,33 +24,22 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Hand extends BaseEntity {
-  
   @NotNull
-  @OneToMany
-  private List<Card> cards;
+  @OneToMany(mappedBy = "hand", fetch = FetchType.EAGER, orphanRemoval = true)
+  @Fetch(FetchMode.SELECT)
+  private List<Card> cards = new ArrayList<Card>();
+
+  @NotNull
+  private Integer strikes = 0;
 
   @Transient
-  public Card getCurrentCard() {
-    if (cards != null && !cards.isEmpty()) {
-      return cards.get(0);
-    } else {
-      return null;
-    }
+  @JsonIgnore
+  public Optional<Card> getCurrentCard() {
+    return this.getCards()
+      .stream()
+      .filter(c -> c.getRelease_time() == null)
+      .map(Optional::ofNullable)
+      .findFirst()
+      .flatMap(Function.identity());
   }
-
-  @Transient
-  public Card getNextCard() {
-    if (cards != null && !cards.isEmpty() && cards.size()>1) {
-      cards.remove(0);
-      return cards.get(0);
-    } else {
-      return null;
-    }
-  }
-
-  @Transient
-  public boolean isLastCard(){
-    return !cards.isEmpty() && cards != null && cards.size() == 1;
-  }
-
 }

@@ -3,18 +3,24 @@ package org.springframework.samples.petclinic.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
+import java.util.Comparator;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.dto.GamePlayerDto;
 import org.springframework.samples.petclinic.dto.PublicPlayerDto;
 import org.springframework.samples.petclinic.model.base.UUIDEntity;
 import org.springframework.samples.petclinic.model.enums.GameStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -33,7 +39,6 @@ import lombok.Setter;
 @Setter
 @Table(name = "games")
 public class Game extends UUIDEntity {
-    @Size(min = 3, max = 50)
     @NotBlank
     private String name;
 
@@ -43,67 +48,115 @@ public class Game extends UUIDEntity {
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     LocalDateTime finish;
 
-    @NotNull
-    @ManyToOne
+    /**
+     * No puede ser null puesto que Spring requiere que GamePlayer exista en la base de datos
+     * antes de establecerlo y GamePlayer depende de Game
+     */
+    @ManyToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     @JsonIgnore
-    Player raw_creator;
+    GamePlayer creator;
 
     @Min(value = 2)
     @Max(value = 8)
     @NotNull
     Integer max_players = 8;
 
-    @ManyToMany
-    @Size(min = 1, max = 8)
+    @OneToMany(mappedBy = "game", orphanRemoval = true, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
+    // El creador va aparte
+    @Size(min = 0, max = 7)
     @JsonIgnore
-    List<Player> raw_players;
+    List<GamePlayer> game_players = new ArrayList<>();
 
-    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Size(max = 8)
-    List<GamePlayer> raw_game_players = new ArrayList<>();
-
-    @OneToOne
-    @JoinColumn(name = "central_card_id")
-    private Card central_card;
-
-    @ManyToOne
-    @JoinColumn(name = "winner_id")
-    private Player winner;
+    @JsonIgnore
+    @Fetch(FetchMode.SELECT)
+    @OneToOne(mappedBy = "game", fetch = FetchType.EAGER, orphanRemoval = true)
+    private Card initial_card;
 
     @JsonIgnore
     @Transient
     public boolean isOnLobby() {
-        return this.start == null && !isFinished();
+        return this.getStart() == null && !isFinished();
     }
 
     @JsonIgnore
     @Transient
     public boolean isOngoing() {
-        return this.start != null && !isFinished();
+        return this.getStart() != null && !isFinished();
     }
 
     @JsonIgnore
     @Transient
     public boolean isFinished() {
-        return this.finish != null;
+        return this.getFinish() != null;
     }
 
     @Transient
-    @NotNull
-    public PublicPlayerDto getCreator() {
-        return new PublicPlayerDto(this.raw_creator);
+    @JsonProperty("creator")
+    public PublicPlayerDto getCreatorDto() {
+        return new PublicPlayerDto(this.getCreator().getPlayer());
     }
 
     @Transient
-    @NotNull
-    public List<PublicPlayerDto> getPlayers() {
-        return this.raw_players.stream()
-            .map(p -> new PublicPlayerDto(p))
-            .toList();
+    @JsonIgnore
+    /**
+     * GamePlayer incluyendo el creador
+     * @return
+     */
+    public List<GamePlayer> getAllGamePlayers() {
+        // Por alguna razón, parece que Spring devuelve al creador aquí también
+        // pese a estar en propiedades diferentes. igualmente, mantenemos este método
+        // para distinguirlos unívocamente en la lógica de negocio de los servicios.
+        return this.getGame_players();
     }
 
     @Transient
-    @NotNull
+    @JsonIgnore
+    public Optional<GamePlayer> getGamePlayerByPlayer(Player player) {
+        return this.getAllGamePlayers()
+            .stream()
+            .filter(gp -> gp.getPlayerId() == player.getId())
+            .map(Optional::ofNullable)
+            .findFirst()
+            .flatMap(Function.identity());
+    }
+
+    @Transient
+    @JsonIgnore
+    public List<Player> getAllPlayers() {
+        return this.getAllGamePlayers().stream().map(gp -> gp.getPlayer()).toList();
+    }
+
+    @Transient
+    @JsonProperty("game_players")
+    public List<GamePlayerDto> getGamePlayerDto() {
+        return this.getAllGamePlayers().stream().map(gp -> gp.getAsDto()).toList();
+    }
+
+    @Transient
+    @JsonProperty("central_card")
+    public Optional<Card> getCentralCard() {
+        if (this.isOngoing()) {
+            Optional<Card> potential_central_card = this.getAllGamePlayers()
+                .stream()
+                .filter(gp -> gp.getHand() != null)
+                .map(gp -> gp.getHand())
+                .filter(h -> h.getCards() != null)
+                .flatMap(h -> h.getCards().stream())
+                .filter(c -> c.getRelease_time() != null)
+                .sorted(Comparator.comparing(Card::getRelease_time).reversed())
+                .map(Optional::ofNullable)
+                .findFirst()
+                .flatMap(Function.identity());
+
+            return potential_central_card.isPresent() ? potential_central_card : Optional.ofNullable(this.getInitial_card());
+        }
+
+        return Optional.empty();
+    }
+
+    @Transient
     public GameStatus getStatus() {
         if (this.isOnLobby()) {
             return GameStatus.LOBBY;
@@ -116,11 +169,14 @@ public class Game extends UUIDEntity {
 
     @Transient
     public boolean isFull() {
-        boolean res = false;
-        if (raw_game_players.size() == max_players) {
-            res = true;
-        }
-        return res;
+        return this.getAllGamePlayers().size() == this.getMax_players();
     }
 
+    @Transient
+    @JsonProperty("startable")
+    public Boolean startable() {
+        Integer players = this.getAllGamePlayers().size();
+
+        return this.getStatus() == GameStatus.LOBBY && players <= this.getMax_players() && players >= 2;
+    }
 }
