@@ -53,7 +53,7 @@ public class HitoPartidaServiceTest {
     secondPlayer.setHand(secondHand);
     gamePlayers.add(secondPlayer);
 
-    game.setRaw_game_players(gamePlayers);
+    game.setGame_players(gamePlayers);
 
     when(hitoPartidaRepository.save(any(HitoPartida.class))).thenReturn(new HitoPartida());
 

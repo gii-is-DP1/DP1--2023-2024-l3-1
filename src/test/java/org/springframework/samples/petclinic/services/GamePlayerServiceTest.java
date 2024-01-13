@@ -40,11 +40,11 @@ public class GamePlayerServiceTest {
   @Transactional
   public void testSaveGamePlayer() {
     // Contamos los GamePlayers iniciales
-    Iterable<GamePlayer> iterableGamePlayers = this.gamePlayerService.findAll();
+    //Iterable<GamePlayer> iterableGamePlayers = this.gamePlayerService.findAll();
     int count = 0;
-    for (GamePlayer gamePlayer : iterableGamePlayers) {
-      count++;
-    }
+    // for (GamePlayer gamePlayer : iterableGamePlayers) {
+    //   count++;
+    // }
 
     // Inicializamos el nuevo GamePlayer
     GamePlayer newGamePlayer = new GamePlayer();
@@ -65,14 +65,14 @@ public class GamePlayerServiceTest {
     newGamePlayer.setHand(newHand);
 
     // Guardamos el nuevo GamePlayer
-    gamePlayerService.saveGamePlayer(newGamePlayer);
+    gamePlayerService.save(newGamePlayer);
 
     // Volvemos a contar los GamePlayers
-    Iterable<GamePlayer> iterableGamePlayersWithNewGamePlayer = this.gamePlayerService.findAll();
+    // Iterable<GamePlayer> iterableGamePlayersWithNewGamePlayer = this.gamePlayerService.findAll();
     int finalCount = 0;
-    for (GamePlayer gamePlayer : iterableGamePlayersWithNewGamePlayer) {
-      finalCount++;
-    }
+    // for (GamePlayer gamePlayer : iterableGamePlayersWithNewGamePlayer) {
+    //   finalCount++;
+    // }
 
     // Deberia de haber un elemento más que al principio
     assertEquals(count + 1, finalCount);
