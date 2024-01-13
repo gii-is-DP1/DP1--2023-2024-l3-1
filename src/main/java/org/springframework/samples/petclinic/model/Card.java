@@ -29,22 +29,19 @@ import lombok.Setter;
 @Setter
 @Table(name = "cards")
 public class Card extends HiddenBaseEntity {
-  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
-  @Fetch(FetchMode.SELECT)
+  @OneToMany(mappedBy = "card")
   private List<Figure> figures = new ArrayList<Figure>();
 
   @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
   @JsonIgnore
   private LocalDateTime release_time;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @Fetch(FetchMode.SELECT)
+  @ManyToOne
   @JsonIgnore
-  @JoinColumn(name = "hand_id")
-  private Hand hand;
+  @JoinColumn(name = "game_player_id")
+  private GamePlayer game_player;
 
-  @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true, optional = true)
-  @Fetch(FetchMode.SELECT)
+  @OneToOne(optional = true)
   @JsonIgnore
   @JoinColumn(name = "game_id")
   private Game game;

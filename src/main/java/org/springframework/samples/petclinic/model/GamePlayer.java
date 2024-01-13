@@ -1,6 +1,9 @@
 package org.springframework.samples.petclinic.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -13,7 +16,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotNull;
@@ -26,24 +29,23 @@ import lombok.Setter;
 @Table(name = "game_players")
 public class GamePlayer extends BaseEntity {
   @NotNull
-  @ManyToOne(fetch = FetchType.EAGER)
-  @Fetch(FetchMode.SELECT)
+  @ManyToOne
   @JoinColumn(name = "game_id")
   @JsonIgnore
   private Game game;
 
   @NotNull
-  @ManyToOne(fetch = FetchType.EAGER)
-  @Fetch(FetchMode.SELECT)
+  @ManyToOne
   @JoinColumn(name = "player_id")
   @JsonIgnore
   private Player player;
 
-  @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
-  @Fetch(FetchMode.SELECT)
-  @JsonIgnore
-  @JoinColumn(name = "hand_id")
-  private Hand hand; 
+  @NotNull
+  @OneToMany(mappedBy = "game_player", orphanRemoval = true)
+  private List<Card> cards = new ArrayList<Card>();
+
+  @NotNull
+  private Integer strikes = 0;
 
   @Transient
   public GamePlayerDto getAsDto() {
@@ -53,7 +55,12 @@ public class GamePlayer extends BaseEntity {
   @Transient
   @JsonProperty("card")
   public Optional<Card> getCurrentCard() {
-    return this.getHand() != null ? this.getHand().getCurrentCard() : Optional.empty();
+    return this.getCards()
+      .stream()
+      .filter(c -> c.getRelease_time() == null)
+      .map(Optional::ofNullable)
+      .findFirst()
+      .flatMap(Function.identity());
   }
 
   @Transient

@@ -20,7 +20,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.GamePlayer;
-import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.HitoPartida;
 import org.springframework.samples.petclinic.repositories.HitoPartidaRepository;
 
@@ -39,19 +38,19 @@ public class HitoPartidaServiceTest {
     Game game = new Game();
     List<GamePlayer> gamePlayers = new ArrayList<>();
 
-    GamePlayer winnerPlayer = new GamePlayer();
-    Hand winnerHand = new Hand();
-    winnerHand.setCards(new ArrayList<>());
-    winnerPlayer.setHand(winnerHand);
-    gamePlayers.add(winnerPlayer);
+    // GamePlayer winnerPlayer = new GamePlayer();
+    // Hand winnerHand = new Hand();
+    // winnerHand.setCards(new ArrayList<>());
+    // winnerPlayer.setHand(winnerHand);
+    // gamePlayers.add(winnerPlayer);
 
-    GamePlayer secondPlayer = new GamePlayer();
-    Hand secondHand = new Hand();
-    List<Card> secondPlayerCards = new ArrayList<>();
-    secondPlayerCards.add(new Card());
-    secondHand.setCards(secondPlayerCards);
-    secondPlayer.setHand(secondHand);
-    gamePlayers.add(secondPlayer);
+    // GamePlayer secondPlayer = new GamePlayer();
+    // Hand secondHand = new Hand();
+    // List<Card> secondPlayerCards = new ArrayList<>();
+    // secondPlayerCards.add(new Card());
+    // secondHand.setCards(secondPlayerCards);
+    // secondPlayer.setHand(secondHand);
+    // gamePlayers.add(secondPlayer);
 
     game.setGame_players(gamePlayers);
 

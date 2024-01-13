@@ -2,17 +2,14 @@ package org.springframework.samples.petclinic.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.GamePlayer;
-import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.repositories.GameRepository;
@@ -26,16 +23,13 @@ public class GameService {
     private final GameRepository gameRepository;
     private final GamePlayerService gamePlayerService;
     private final CardService cardService;
-    private final HandService handService;
 
     @Autowired
     public GameService(GameRepository gameRepository,
-        HandService handService,
         GamePlayerService gamePlayerService,
         CardService cardService
     ) {
         this.gameRepository = gameRepository;
-        this.handService = handService;
         this.gamePlayerService = gamePlayerService;
         this.cardService = cardService;
     }
@@ -152,6 +146,8 @@ public class GameService {
         Card initial_card = cards.get(last_card_index);
         cards.remove(initial_card);
         game.setInitial_card(initial_card);
+        initial_card.setGame(game);
+        this.cardService.saveCard(initial_card);
 
         Integer firstIndex = 0;
         Integer totalPlayers = gps.size();
@@ -159,9 +155,14 @@ public class GameService {
         Integer cardsPerPlayer = allCardsToDeal / totalPlayers;
 
         for (GamePlayer gamePlayer : gps) {
-            Hand hand = this.handService.createHand(cards.subList(firstIndex, cardsPerPlayer));
-            gamePlayer.setHand(hand);
+            List<Card> playerCards = cards.subList(firstIndex, cardsPerPlayer);
+            gamePlayer.getCards().addAll(playerCards);
             this.gamePlayerService.save(gamePlayer);
+
+            for (Card c: playerCards) {
+                c.setGame_player(gamePlayer);
+                this.cardService.saveCard(c);
+            }
 
             firstIndex += cardsPerPlayer;
             cardsPerPlayer += cardsPerPlayer;
@@ -179,7 +180,7 @@ public class GameService {
     @Transactional
     public void playFigure(GamePlayer gp, Icon icon) throws NotFoundException {
         try {
-            Optional<Card> op_player_card = gp.getHand().getCurrentCard();
+            Optional<Card> op_player_card = gp.getCurrentCard();
 
             if (op_player_card.isPresent()) {
                 Card player_card = op_player_card.get();
@@ -190,8 +191,8 @@ public class GameService {
                 }
             }
         } catch (NotFoundException _e) {
-            Hand h = gp.getHand();
-            this.handService.sumStrike(h);
+            gp.setStrikes(gp.getStrikes() + 1);
+            this.gamePlayerService.save(gp);
 
             throw _e;
         }

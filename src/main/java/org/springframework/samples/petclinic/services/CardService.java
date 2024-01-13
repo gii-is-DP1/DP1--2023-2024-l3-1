@@ -2,11 +2,14 @@ package org.springframework.samples.petclinic.services;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.samples.petclinic.model.Card;
@@ -55,17 +58,19 @@ public class CardService {
         Integer total_cards = 57; // N = 8 - 1 -> N^2 + N + 1
 
         Integer n = icons_per_card - 1;
-        int[] symbols = IntStream.rangeClosed(0, total_cards - 1).toArray();
+        Integer[] int_stream = IntStream.rangeClosed(0, total_cards - 1).boxed().toArray(Integer[]::new);
+        List<Integer> symbols = Arrays.asList(int_stream);
+        Collections.shuffle(symbols);
         List<List<Integer>> symbol_cards = new ArrayList<List<Integer>>();
 
         // Generar primer set de cartas, empezando siempre por el primer
         // símbolo seguido de n símbolos en su orden secuencial
         for (Integer i = 0; i < (n + 1); i++) {
           List<Integer> symbol_card = new ArrayList<Integer>();
-          symbol_card.add(symbols[0]);
+          symbol_card.add(symbols.get(0));
 
           for (Integer j = 0; j < n; j++) {
-            symbol_card.add(symbols[(j + 1) + (i * n)]);
+            symbol_card.add(symbols.get((j + 1) + (i * n)));
           }
 
           symbol_cards.add(symbol_card);
@@ -76,10 +81,10 @@ public class CardService {
         for (Integer i = 0; i < n; i++) {
           for (Integer j = 0; j < n; j++) {
             List<Integer> symbol_card = new ArrayList<Integer>();
-            symbol_card.add(symbols[i + 1]);
+            symbol_card.add(symbols.get(i + 1));
 
             for (Integer k = 0; k < n; k++) {
-              symbol_card.add(symbols[((n + 1) + (n * k) + ((i * k) + j) % n)]);
+              symbol_card.add(symbols.get(((n + 1) + (n * k) + ((i * k) + j) % n)));
             }
 
             symbol_cards.add(symbol_card);
