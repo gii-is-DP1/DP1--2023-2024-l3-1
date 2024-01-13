@@ -51,20 +51,24 @@ export default function GameLobby(props) {
             <h3>Jugadores Conectados:</h3>
             <table style={{ width: '100%' }}>
             <tbody>
-                {props.game.players.map((player, index) => (
-                    <div key={index} style={{ display: 'flex', alignItems: 'center' }}>
-                        <div>
-                            <UserAvatar user={player} size="small" />
-                        </div>
-                        <p style={{ marginBottom: '0', marginTop: '6px' }}>{player.username}</p>
-                        {isCreator() ?
-                            <DButton
-                                color="red"
-                                onClick={removeFromGame(player)}>
-                                    Eliminar
-                            </DButton>
-                        : undefined}
-                    </div>
+                {props.game.game_players.map((player, index) => (
+                    <tr key={index}>
+                        <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                            <div style={{ display: 'flex', alignItems: 'center' }}>
+                                <div>
+                                    <UserAvatar user={player} size="small" color={isCreator() ? 'yellow' : undefined}/>
+                                </div>
+                                <p style={{ marginBottom: '0', marginTop: '6px' }}>{player.username}</p>
+                            </div>
+                            {isCreator() ?
+                                <DButton
+                                    color="red"
+                                    onClick={() => removeFromGame(player.username)}>
+                                        Eliminar
+                                </DButton>
+                            : undefined}
+                        </td>
+                    </tr>
                     )
                 )}
             </tbody>
@@ -73,7 +77,7 @@ export default function GameLobby(props) {
                 
             </ul>
             {isCreator() ? (
-                <DButton style={{ width: '100%' }} disabled={props.game.players?.length <= 1}>
+                <DButton style={{ width: '100%' }} disabled={!props.game.startable}>
                     Iniciar Partida
                 </DButton>
             ) : undefined}

@@ -18,15 +18,13 @@ export default function GamePage() {
     const [game, setGame] = useState({});
     const [message, setMessage] = useState();
     const [header, setHeader] = useState();
+    const [error, setError] = useState(false);
     const { id } = useParams();
     const navigate = useNavigate();
 
     async function fetchData() {
         try {
-            /**
-             * TODO: Actualizar al endpoint correcto si este cambia o es necesario
-             */
-            const response = await axios.get(`/games/${id}`);
+            const response = await axios.get('/games/me');
             setGame(response.data);
         } catch (e) {
             /**
@@ -34,19 +32,26 @@ export default function GamePage() {
              */
             setHeader('Error al actualizar el estado del juego');
             setMessage(String(e));
+            setError(true);
         }
     }
 
     async function patchGame() {
-        try {
-            await axios.patch(`/games/${id}`, game);
-        } catch {}
+        if (game.max_player !== undefined || game.name !== undefined) {
+            try {
+                await axios.patch(`/games/${id}`, game);
+            } catch {
+                setError(true);
+            }
+        }
     }
 
     async function leaveGame() {
         try {
             await axios.delete(`/games/me`);
-        } catch {}
+        } catch {
+            setError(true);
+        }
     }
 
     useEffect(() => {
@@ -65,10 +70,10 @@ export default function GamePage() {
     }, [game.status, game.name]);
 
     useEffect(() => {
-        if (!message && game?.status === GameStatus.FINISHED) {
+        if (!message && error || (!message && game.status === GameStatus.FINISHED)) {
             navigate('/');
         }
-    }, [message]);
+    }, [message, error, game.status]);
 
     useEffect(() => {
         (async () => {
@@ -78,10 +83,10 @@ export default function GamePage() {
 
     useEffect(() => {
         window.addEventListener('beforeunload', leaveGame);
-        return () => {
+        return async () => {
             window.removeEventListener('beforeunload', leaveGame);
-            if (game.status !== GameStatus.FINISHED && user) {
-                leaveGame();
+            if (game.status !== GameStatus.FINISHED && user && game.id) {
+                await leaveGame();
             }
             appStore.dispatch({
                 type: 'appStore/setNavbar',
@@ -109,10 +114,16 @@ export default function GamePage() {
                         </div>
                     </div>
                 );
+            // Mostrar página en blanco mientras se obtiene la información inicial
             default:
-                return modal;
+                return <div></div>;
         }
     }
 
-    return render();
+    return (
+        <>
+        {modal}
+        {render()}
+        </>
+    );
 }
