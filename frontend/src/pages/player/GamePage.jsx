@@ -16,6 +16,7 @@ import { appStore } from "../../services/appStore";
 export default function GamePage() {
     const user = useSelector(state => state.appStore.user);
     const [game, setGame] = useState({});
+    const isCreator = () => user.username === game.creator.username;
     const [message, setMessage] = useState();
     const [header, setHeader] = useState();
     const [error, setError] = useState(false);
@@ -31,13 +32,19 @@ export default function GamePage() {
              * TODO: Completar todos los tipos de errores que puede devolver el método
              */
             setHeader('Error al actualizar el estado del juego');
-            setMessage(String(e));
+
+            if (e.response?.status === 404) {
+                setMessage("Ya no estás en esta partida");
+            } else if (e.response?.status === 401) {
+                setMessage("No estás autenticado o no tienes permisos para esta partida");
+            }
+
             setError(true);
         }
     }
 
     async function patchGame() {
-        if (game.max_player !== undefined || game.name !== undefined) {
+        if ((game.max_player !== undefined || game.name !== undefined) && isCreator()) {
             try {
                 await axios.patch(`/games/${id}`, game);
             } catch {
@@ -103,7 +110,7 @@ export default function GamePage() {
             case GameStatus.LOBBY:
                 return (
                     <div className="page-container">
-                        <GameLobby game={game} setGame={setGame} />
+                        <GameLobby game={game} setGame={setGame} is_creator={isCreator()} setHeader={setHeader} setMessage={setMessage} />
                     </div>
                 );
             case GameStatus.STARTED:

@@ -1,5 +1,4 @@
-import { useSelector } from "react-redux";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useLabeledForm } from "../../composables/useLabeledForm";
 import axios from "../../services/api";
 import NumberOfPlayers from "../forms/NumberOfPlayers";
@@ -8,9 +7,8 @@ import DInput from "../ui/DInput";
 import UserAvatar from "./UserAvatar";
 
 export default function GameLobby(props) {
-    const user = useSelector(state => state.appStore.user);
     const route = useLocation();
-    const isCreator = () => user.username === props.game.creator.username;
+    const navigate = useNavigate();
     const getSharingUrl = () => `${window.location.origin}${route.pathname}`;
 
     function handleChange(event) {
@@ -23,8 +21,34 @@ export default function GameLobby(props) {
 
     async function removeFromGame(player) {
         try {
-            await axios.delete(`/games/${player}`)
+            await axios.delete(`/games/${player}`);
+
+            if (player.username === props.game.creator.username) {
+                navigate('/')
+            }
         } catch {}
+    }
+
+    async function startGame() {
+        try {
+            await axios.post('/games/start');
+        } catch (e) {
+            props.setHeader("Error al iniciar la partida");
+
+            if (e.response?.status === 304) {
+                props.setMessage("Ya estás unido a esta partida");
+            } else if (e.response?.status === 404) {
+                props.setMessage("No se encuentra la partida.");
+            } else if (e.response?.status === 401) {
+                props.setMessage("El jugador actual no es el creador de la partida o no está autenticado.");
+            } else if (e.response?.status === 423) {
+                props.setMessage("La partida no está en el estado correcto para iniciar (está en curso o finalizada).");
+            } else if (e.response?.status === 428) {
+                props.setMessage("No hay suficientes jugadores para iniciar la partida.");
+            } else if (e.response?.status === 500) {
+                props.setMessage("Error del servidor");
+            }
+        }
     }
 
     const adminControls = useLabeledForm(
@@ -47,7 +71,7 @@ export default function GameLobby(props) {
             <h1 className="text-center" style={{ marginTop: '30px' }}>
                 Lobby de la partida <i>{props.game.name}</i>
             </h1>
-            {isCreator() ? adminControls : undefined}
+            {props.is_creator ? adminControls : undefined}
             <h3>Jugadores Conectados:</h3>
             <table style={{ width: '100%' }}>
             <tbody>
@@ -56,11 +80,11 @@ export default function GameLobby(props) {
                         <td style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                             <div style={{ display: 'flex', alignItems: 'center' }}>
                                 <div>
-                                    <UserAvatar user={player} size="small" color={isCreator() ? 'yellow' : undefined}/>
+                                    <UserAvatar user={player} size="small" color={player.username === props.game.creator.username ? 'yellow' : undefined}/>
                                 </div>
                                 <p style={{ marginBottom: '0', marginTop: '6px' }}>{player.username}</p>
                             </div>
-                            {isCreator() ?
+                            {props.is_creator ?
                                 <DButton
                                     color="red"
                                     onClick={() => removeFromGame(player.username)}>
@@ -76,8 +100,8 @@ export default function GameLobby(props) {
             <ul>
                 
             </ul>
-            {isCreator() ? (
-                <DButton style={{ width: '100%' }} disabled={!props.game.startable}>
+            {props.is_creator ? (
+                <DButton style={{ width: '100%' }} disabled={!props.game.startable} onClick={startGame}>
                     Iniciar Partida
                 </DButton>
             ) : undefined}
