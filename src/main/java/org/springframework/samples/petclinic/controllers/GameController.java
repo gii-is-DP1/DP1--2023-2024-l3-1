@@ -371,7 +371,7 @@ public class GameController {
         GamePlayer current_game_player = op_current_game_player.get();
 
         try {
-            this.gameService.playFigure(current_game_player, playRequestDto.getIcon());
+            this.gameService.playFigure(current_player_game, current_game_player, playRequestDto.getIcon());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (NotFoundException nf) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
