@@ -9,6 +9,7 @@ import org.springframework.samples.petclinic.model.enums.Icon;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -52,7 +53,7 @@ public class Player extends BaseEntity {
     List<Player> friends;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "player")
+    @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     List<GamePlayer> game_players;
 
     public Optional<Game> current_game() {

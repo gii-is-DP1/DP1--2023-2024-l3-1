@@ -35,8 +35,8 @@ public class HitoPartidaRepositoryTest {
     // Crear un HitoPartida de prueba asociado al Game
     HitoPartida hitoPartida = new HitoPartida();
     hitoPartida.setRank(1);
-    hitoPartida.setTiemposRespuesta(List.of(1.0, 2.0, 3.0));
-    hitoPartida.setTiempoTotalPartida(10);
+    // hitoPartida.setTiemposRespuesta(List.of(1.0, 2.0, 3.0));
+    // hitoPartida.setTiempoTotalPartida(10);
     hitoPartida.setGame(g.get());
     // Guardar el HitoPartida en la base de datos
     hpr.save(hitoPartida);

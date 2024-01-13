@@ -15,6 +15,8 @@ import org.springframework.samples.petclinic.model.enums.GameStatus;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
@@ -57,11 +59,10 @@ public class Game extends UUIDEntity {
     @NotNull
     Integer max_players = 8;
 
-    @OneToMany(mappedBy = "game")
+    @OneToMany(mappedBy = "game", cascade = CascadeType.ALL, orphanRemoval = true)
     // El creador va aparte
     @Size(min = 0, max = 7)
     @JsonIgnore
-    @OrderColumn(name = "player_insertion_order")
     List<GamePlayer> game_players = new ArrayList<>();
 
     @JsonIgnore
