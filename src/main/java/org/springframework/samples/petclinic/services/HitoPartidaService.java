@@ -1,7 +1,6 @@
 package org.springframework.samples.petclinic.services;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -82,12 +81,12 @@ public class HitoPartidaService {
 
     for (HitoPartida hitoPartida : hitosPartida) {
       if (hitoPartida.getGamePlayer().equals(gamePlayer)) {
-        List<Double> tiemposRespuesta = hitoPartida.getTiemposRespuesta();
-        if (tiemposRespuesta == null) {
-          tiemposRespuesta = new ArrayList<>();
-        }
-        tiemposRespuesta.add(tiempoDeRespuesta);
-        hitoPartida.setTiemposRespuesta(tiemposRespuesta);
+        // List<Double> tiemposRespuesta = hitoPartida.getTiemposRespuesta();
+        // if (tiemposRespuesta == null) {
+        //   tiemposRespuesta = new ArrayList<>();
+        // }
+        // tiemposRespuesta.add(tiempoDeRespuesta);
+        // hitoPartida.setTiemposRespuesta(tiemposRespuesta);
         hitoPartidaRepository.save(hitoPartida);
         break;
       }

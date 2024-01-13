@@ -14,6 +14,7 @@ import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Player;
 import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.repositories.GameRepository;
+import org.springframework.samples.petclinic.repositories.HitoPartidaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +29,8 @@ public class GameService {
     @Autowired
     public GameService(GameRepository gameRepository,
         GamePlayerService gamePlayerService,
-        CardService cardService
+        CardService cardService,
+        HitoPartidaRepository hitoRepository
     ) {
         this.gameRepository = gameRepository;
         this.gamePlayerService = gamePlayerService;
@@ -191,6 +193,8 @@ public class GameService {
                 if (player_card.hasIcon(icon) && central_card.hasIcon(icon)) {
                     player_card.setRelease_time(LocalDateTime.now());
                     this.cardService.saveCard(player_card);
+
+                    // TODO: Añadir hito partidas y otro tipo de logros aquí
                 } else {
                     throw new NotFoundException();
                 }
