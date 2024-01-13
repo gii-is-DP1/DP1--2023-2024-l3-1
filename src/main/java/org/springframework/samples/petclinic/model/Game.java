@@ -52,8 +52,7 @@ public class Game extends UUIDEntity {
      * No puede ser null puesto que Spring requiere que GamePlayer exista en la base de datos
      * antes de establecerlo y GamePlayer depende de Game
      */
-    @ManyToOne(fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @ManyToOne
     @JsonIgnore
     GamePlayer creator;
 
@@ -62,16 +61,14 @@ public class Game extends UUIDEntity {
     @NotNull
     Integer max_players = 8;
 
-    @OneToMany(mappedBy = "game", orphanRemoval = true, fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "game")
     // El creador va aparte
     @Size(min = 0, max = 7)
     @JsonIgnore
     List<GamePlayer> game_players = new ArrayList<>();
 
     @JsonIgnore
-    @Fetch(FetchMode.SELECT)
-    @OneToOne(mappedBy = "game", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToOne(mappedBy = "game")
     private Card initial_card;
 
     @JsonIgnore
@@ -140,8 +137,6 @@ public class Game extends UUIDEntity {
         if (this.isOngoing()) {
             Optional<Card> potential_central_card = this.getAllGamePlayers()
                 .stream()
-                .filter(gp -> gp.getHand() != null)
-                .map(gp -> gp.getHand())
                 .filter(h -> h.getCards() != null)
                 .flatMap(h -> h.getCards().stream())
                 .filter(c -> c.getRelease_time() != null)

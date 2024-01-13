@@ -36,13 +36,11 @@ public class HitoPartida extends BaseEntity {
   @NotNull
   private long tiempoTotalPartida;
 
-  @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true)
-  @Fetch(FetchMode.SELECT)
+  @OneToOne
   @JoinColumn(name = "game_player_id")
   private GamePlayer gamePlayer;
 
-  @ManyToOne(fetch = FetchType.EAGER)
-  @Fetch(FetchMode.SELECT)
+  @ManyToOne
   @JoinColumn(name = "game_id")
   private Game game;
 }

@@ -35,7 +35,7 @@ public class HitoPartidaService {
     boolean partidaFinalizada = false;
 
     for (GamePlayer gamePlayer : gamePlayers) {
-      if (gamePlayer.getHand().getCards().isEmpty()) {
+      if (gamePlayer.getCards().isEmpty()) {
         ganador = gamePlayer;
         partidaFinalizada = true;
         break;
@@ -43,13 +43,13 @@ public class HitoPartidaService {
     }
 
     if (partidaFinalizada) {
-      gamePlayers.sort(Comparator.comparingInt(gp -> gp.getHand().getCards().size()));
+      gamePlayers.sort(Comparator.comparingInt(gp -> gp.getCards().size()));
 
       int posicion = 1;
-      int cartasAnteriores = gamePlayers.get(0).getHand().getCards().size();
+      int cartasAnteriores = gamePlayers.get(0).getCards().size();
 
       for (GamePlayer gamePlayer : gamePlayers) {
-        int cartasActuales = gamePlayer.getHand().getCards().size();
+        int cartasActuales = gamePlayer.getCards().size();
         if (cartasActuales < cartasAnteriores) {
           cartasAnteriores = cartasActuales;
           posicion++;

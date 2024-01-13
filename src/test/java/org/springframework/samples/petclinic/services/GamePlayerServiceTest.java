@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
 import org.springframework.samples.petclinic.model.GamePlayer;
-import org.springframework.samples.petclinic.model.Hand;
 import org.springframework.samples.petclinic.model.Player;
 
 import jakarta.transaction.Transactional;
@@ -29,9 +28,6 @@ public class GamePlayerServiceTest {
 
   @Autowired
   private PlayerService playerService;
-
-  @Autowired
-  private HandService handService;
 
   @Autowired
   private CardService cardService;
@@ -53,16 +49,16 @@ public class GamePlayerServiceTest {
     Optional<Player> player = playerService.findPlayer(1);
 
     // Asi creamos Hand
-    Hand newHand = new Hand();
-    List<Card> cards = this.cardService.findAll().get();
-    List<Card> listCards = cards.subList(0, 3);
-    newHand.setCards(listCards);
-    handService.saveHand(newHand);
+    // Hand newHand = new Hand();
+    // List<Card> cards = this.cardService.findAll().get();
+    // List<Card> listCards = cards.subList(0, 3);
+    // newHand.setCards(listCards);
+    // handService.saveHand(newHand);
 
     // Establecemos las propiedades obtenidas antes en el nuevo GamePlayer
     newGamePlayer.setGame(game.get());
     newGamePlayer.setPlayer(player.get());
-    newGamePlayer.setHand(newHand);
+    // newGamePlayer.setHand(newHand);
 
     // Guardamos el nuevo GamePlayer
     gamePlayerService.save(newGamePlayer);

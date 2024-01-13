@@ -50,14 +50,12 @@ public class Player extends BaseEntity {
     @Enumerated(EnumType.STRING)
     Icon profile_icon = !this.is_admin ? Icon.MANO_LOGO : null;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @Fetch(FetchMode.SELECT)
+    @ManyToMany
     @JsonIgnore
     List<Player> friends;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "player", fetch = FetchType.EAGER, orphanRemoval = true)
-    @Fetch(FetchMode.SELECT)
+    @OneToMany(mappedBy = "player")
     List<GamePlayer> game_players;
 
     public Optional<Game> current_game() {

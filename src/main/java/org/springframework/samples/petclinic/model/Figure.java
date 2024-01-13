@@ -28,7 +28,7 @@ public class Figure extends HiddenBaseEntity {
   @Enumerated(EnumType.STRING)
   private Icon icon;
 
-  @ManyToOne(fetch = FetchType.EAGER)
+  @ManyToOne
   @NotNull
   @JsonIgnore
   @JoinColumn(name = "card_id")
