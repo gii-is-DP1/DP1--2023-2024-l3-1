@@ -53,7 +53,7 @@ const rightSizeMatchings = {
  * unidireccional padre -> hijo.
  */
 export default function GameBoard(props) {
-  const [striked, setStriked] = useState(false);
+  const [striked, setStriked] = useState();
   const user = useSelector(state => state.appStore.user);
   const playersCards = () => props.game.game_players.filter((p) => p.username !== user.username);
   const currentPlayer = () => props.game.game_players.filter((p) => p.username === user.username)[0];
@@ -70,15 +70,15 @@ export default function GameBoard(props) {
       await axios.post(`/games/me/play`, { icon });
     } catch (e) {
       if (e.response?.status === 417) {
-        setStriked(true);
+        setStriked(icon);
       }
     }
   }
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
-      setStriked(false);
-    }, 1500);
+      setStriked();
+    }, 1000);
 
     return () => {
       clearInterval(timeout);
@@ -219,14 +219,14 @@ export default function GameBoard(props) {
           justifyContent: 'center',
           gridArea: 'footer'
         }}>
-          {(props.game.central_card?.figures ?? []).map((f) => {
+          {(currentPlayer().current_card?.figures ?? []).map((f) => {
             return (
             <>
               <DIcon
                 icon={f.icon}
                 onClick={() => playFigure(f.icon)}
                 style={{
-                  backgroundColor: striked ? 'red' : 'white',
+                  backgroundColor: striked === f.icon ? 'red' : 'white',
                   width: '8vw',
                   height: '8vw',
                   pointerEvents: 'all',
