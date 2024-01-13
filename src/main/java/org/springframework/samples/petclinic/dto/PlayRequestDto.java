@@ -1,5 +1,7 @@
 package org.springframework.samples.petclinic.dto;
 
+import org.springframework.samples.petclinic.model.enums.Icon;
+
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
@@ -8,6 +10,6 @@ import lombok.Setter;
 @Setter
 public class PlayRequestDto {
   @NotNull
-  private Integer figure_id;
+  private Icon icon;
   
 }
