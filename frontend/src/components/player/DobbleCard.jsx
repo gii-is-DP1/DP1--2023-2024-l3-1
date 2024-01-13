@@ -1,3 +1,4 @@
+import { useState } from "react";
 import DIcon from "../ui/DIcon";
 
 const parentStyles = {
@@ -96,6 +97,7 @@ const scales = {
 }
 
 export default function Card(props) {
+  const [positions, setPositions] = useState(new Map());
   function randomBetween(min, max) {
     if (min > max) {
       [min, max] = [max, min];
@@ -114,15 +116,21 @@ export default function Card(props) {
         <div style={childBox}>
           <div style={innerGrid}>
             {(props.card?.figures ?? []).map((f, index) => {
-              const top = randomBetween(indexPos[index].topMin, indexPos[index].topMax);
-              const left = randomBetween(indexPos[index].leftMin, indexPos[index].leftMax);
+              const key = `${f.icon}-${f.size}-${f.rotation}-${index}`;
+
+              if (!positions.has(key)) {
+                positions.set(key, {
+                  top: randomBetween(indexPos[index].topMin, indexPos[index].topMax),
+                  left: randomBetween(indexPos[index].leftMin, indexPos[index].leftMax)
+                });
+              }
 
               return (
                 <div key={index+1}
                 style={{ 
                   gridArea: `fig-${index+1}`,
-                  top: `${top}%`,
-                  left: `${left}%`,
+                  top: `${positions.get(key).top}%`,
+                  left: `${positions.get(key).left}%`,
                   ...cellStyles 
                   }}>
                   <DIcon
