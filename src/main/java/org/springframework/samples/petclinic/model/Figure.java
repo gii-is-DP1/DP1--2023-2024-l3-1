@@ -1,12 +1,18 @@
 package org.springframework.samples.petclinic.model;
 
-import org.springframework.samples.petclinic.model.base.BaseEntity;
+import org.springframework.samples.petclinic.model.base.HiddenBaseEntity;
 import org.springframework.samples.petclinic.model.enums.Icon;
 import org.springframework.samples.petclinic.model.enums.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -18,11 +24,14 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "figures")
-public class Figure extends BaseEntity {
+public class Figure extends HiddenBaseEntity {
   @Enumerated(EnumType.STRING)
   private Icon icon;
 
+  @ManyToOne(fetch = FetchType.EAGER)
   @NotNull
+  @JsonIgnore
+  @JoinColumn(name = "card_id")
   private Card card;
 
   @NotNull

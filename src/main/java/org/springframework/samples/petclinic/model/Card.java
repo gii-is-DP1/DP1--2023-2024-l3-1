@@ -1,15 +1,26 @@
 package org.springframework.samples.petclinic.model;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.samples.petclinic.model.base.BaseEntity;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.samples.petclinic.model.base.HiddenBaseEntity;
+import org.springframework.samples.petclinic.model.enums.Icon;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
-import jakarta.persistence.ManyToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Size;
+import jakarta.persistence.Transient;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,20 +28,30 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "cards")
-public class Card extends BaseEntity {
+public class Card extends HiddenBaseEntity {
+  @OneToMany(mappedBy = "card", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
+  @Fetch(FetchMode.SELECT)
+  private List<Figure> figures = new ArrayList<Figure>();
 
-  @Size(min = 8, max = 8)
-  @ManyToMany(fetch = FetchType.EAGER)
-  private List<Figure> figures = new ArrayList<>();
+  @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+  @JsonIgnore
+  private LocalDateTime release_time;
 
-  public Boolean hasIcon(Figure figure) {
-    return this.figures.contains(figure);
-  }
+  @ManyToOne(fetch = FetchType.EAGER)
+  @Fetch(FetchMode.SELECT)
+  @JsonIgnore
+  @JoinColumn(name = "hand_id")
+  private Hand hand;
 
-  public Figure getMatchingIcon(Card card) {
-    return this.figures.stream()
-        .filter(figure -> card.getFigures().contains(figure))
-        .findFirst()
-        .get();
+  @OneToOne(fetch = FetchType.EAGER, orphanRemoval = true, optional = true)
+  @Fetch(FetchMode.SELECT)
+  @JsonIgnore
+  @JoinColumn(name = "game_id")
+  private Game game;
+
+  @JsonIgnore
+  @Transient
+  public Boolean hasIcon(Icon icon) {
+    return this.figures.stream().anyMatch(f -> f.getIcon() == icon);
   }
 }
