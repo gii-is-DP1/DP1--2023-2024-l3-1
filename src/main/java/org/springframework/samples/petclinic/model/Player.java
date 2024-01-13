@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 import org.springframework.samples.petclinic.model.base.BaseEntity;
 import org.springframework.samples.petclinic.model.enums.Icon;
 
@@ -15,7 +13,6 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
