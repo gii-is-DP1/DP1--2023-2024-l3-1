@@ -123,6 +123,7 @@ export default function AchievementListAdminPage() {
         {modal}
         <div>
             <div className="page-container">
+                <div style={{ marginTop: '100px' }}></div>
                 <h1 className="text-center">Logros</h1>
                 <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
                     {refreshInfo}

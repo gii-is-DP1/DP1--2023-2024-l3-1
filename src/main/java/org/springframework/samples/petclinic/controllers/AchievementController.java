@@ -48,23 +48,22 @@ public class AchievementController {
     }
 
     @GetMapping
-	@Operation(summary = "Obtiene una lista de todos los logros")
-	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "Operación realizada correctamente",
-				content = { @Content(mediaType = "application/json", 
-				schema = @Schema(implementation = Achievement.class, type="array" ))}),
-			@ApiResponse(responseCode = "204", description = "No hay contenido que mostrar",
-				content = @Content)
-	})
-	public ResponseEntity<List<Achievement>> findAll() {
-		List<Achievement> achievements = achievementService.getAchievements();
+    @Operation(summary = "Obtiene una lista de todos los logros")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = {
+                    @Content(mediaType = "application/json", schema = @Schema(implementation = Achievement.class, type = "array")) }),
+            @ApiResponse(responseCode = "204", description = "No hay contenido que mostrar", content = @Content)
+    })
+    public ResponseEntity<List<Achievement>> findAll() {
+        Optional<List<Achievement>> optionalAchievements = achievementService.getAchievements();
 
-		if (achievements.size() > 0) {
-			return new ResponseEntity<>(achievements, HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
-	}
+        if (optionalAchievements.isPresent()) {
+            List<Achievement> achievements = optionalAchievements.get();
+            return new ResponseEntity<>(achievements, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
 
     @GetMapping("/{id}")
     @Operation(summary = "Obtiene un logro a partir de su identificador")
@@ -155,7 +154,7 @@ public class AchievementController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteAchievement(@PathVariable("id") int id) {
         Optional<Player> optionalCurrentPlayer = playerService.findCurrentPlayer();
-        if(optionalCurrentPlayer.isPresent() || !optionalCurrentPlayer.get().getIs_admin()) {
+        if (!optionalCurrentPlayer.isPresent() || !optionalCurrentPlayer.get().getIs_admin()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
 
