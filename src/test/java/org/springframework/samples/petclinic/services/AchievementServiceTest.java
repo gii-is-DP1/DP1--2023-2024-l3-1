@@ -1,10 +1,11 @@
-package org.springframework.samples.petclinic.services.achievements;
+package org.springframework.samples.petclinic.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -14,7 +15,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.model.Achievement;
 import org.springframework.samples.petclinic.model.enums.AchievementMetric;
-import org.springframework.samples.petclinic.services.AchievementService;
 
 import jakarta.transaction.Transactional;
 
@@ -32,7 +32,9 @@ public class AchievementServiceTest {
 
     @Test
     void testServiceGetAchievements() {
-        List<Achievement> achievements = achievementService.getAchievements(); 
+        Optional<List<Achievement>> optionalAchievements = achievementService.getAchievements();
+        assertTrue(optionalAchievements.isPresent());
+        List<Achievement> achievements = optionalAchievements.orElse(Collections.emptyList());
         assertNotNull(achievements);
         assertTrue(achievements.size() > 0);
     }
@@ -53,18 +55,18 @@ public class AchievementServiceTest {
     @Test
     @Transactional
     void testServiceSaveAchievement() {
-        Achievement newAchievement = new Achievement(); 
+        Achievement newAchievement = new Achievement();
         newAchievement.setName("New Achievement");
         newAchievement.setDescription("Description for New Achievement");
         newAchievement.setBadgeImage("Badge image link");
         newAchievement.setThreshold(1.0);
         newAchievement.setMetric(AchievementMetric.GAMES_PLAYED);
         achievementService.saveAchievement(newAchievement);
-
-        Achievement achievement = achievementService.getAchievementByName("New Achievement"); 
-
+        Optional<Achievement> optionalAchievement = achievementService.getAchievementByName("New Achievement");
+        assertTrue(optionalAchievement.isPresent());
+        Achievement achievement = optionalAchievement.get();
         assertNotNull(achievement);
-        assertEquals("New Achievement",achievement.getName());
+        assertEquals("New Achievement", achievement.getName());
     }
 
     @Test
@@ -77,11 +79,20 @@ public class AchievementServiceTest {
         assertFalse(achievementAfterDeletion.isPresent());
     }
 
+    // @Test
+    // void testServiceGetAchievementByName() {
+    //     Optional<Achievement> achievement= achievementService.getAchievementByName("Campeón Dobble");  
+    //     assertNotNull(achievement);
+    //     assertEquals("Campeón Dobble", achievement.getName());
+    // }
+
     @Test
     void testServiceGetAchievementByName() {
-        Achievement achievement= achievementService.getAchievementByName("Campeón Dobble");  
+        Optional<Achievement> optionalAchievement = achievementService.getAchievementByName("Entrando en Calor");
+        assertTrue(optionalAchievement.isPresent());
+        Achievement achievement = optionalAchievement.orElseThrow();
         assertNotNull(achievement);
-        assertEquals("Campeón Dobble", achievement.getName());
+        assertEquals("Entrando en Calor", achievement.getName());
     }
 
     @Test
@@ -90,7 +101,7 @@ public class AchievementServiceTest {
         assertTrue(optionalAchievement.isPresent());
         Achievement achievement = optionalAchievement.get();
         assertNotNull(achievement);
-        assertEquals("Máster del Tiempo", achievement.getName());
+        assertEquals("Master del Tiempo", achievement.getName());
     }
     
 }

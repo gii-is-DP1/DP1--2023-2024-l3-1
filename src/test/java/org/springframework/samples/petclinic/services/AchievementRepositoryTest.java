@@ -1,9 +1,11 @@
-package org.springframework.samples.petclinic.services.achievements;
+package org.springframework.samples.petclinic.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +29,10 @@ public class AchievementRepositoryTest {
 
   @Test
   void testFindByName() {
-      Achievement achievement = achievementRepository.findByName("Jugador Veterano");
-      assertNotNull(achievement);
-      assertEquals("Jugador Veterano", achievement.getName());
+    Optional<Achievement> optionalAchievement = achievementRepository.findByName("Jugador Veterano");
+    assertTrue(optionalAchievement.isPresent());
+    Achievement achievement = optionalAchievement.orElseThrow();
+    assertNotNull(achievement);
+    assertEquals("Jugador Veterano", achievement.getName());
   }
 }
