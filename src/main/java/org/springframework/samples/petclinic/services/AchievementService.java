@@ -23,8 +23,9 @@ public class AchievementService {
     }
 
     @Transactional(readOnly = true)
-    public List<Achievement> getAchievements() {
-        return repo.findAll();
+    public Optional<List<Achievement>> getAchievements() {
+        List<Achievement> achievements = repo.findAll();
+        return Optional.ofNullable(achievements);
     }
 
     @Transactional(readOnly = true)
@@ -37,7 +38,7 @@ public class AchievementService {
         return repo.save(newAchievement);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Achievement updateAchievement(@Valid Achievement achievement, Integer idToUpdate) {
         Optional<Achievement> toUpdate_opt = getAchievementById(idToUpdate);
 
@@ -72,13 +73,14 @@ public class AchievementService {
         return null;
     }
 
+    
     @Transactional
     public void deleteAchievementById(int id) {
         repo.deleteById(id);
     }
 
     @Transactional(readOnly = true)
-    public Achievement getAchievementByName(String name) {
+    public Optional<Achievement> getAchievementByName(String name) {
         return repo.findByName(name);
     }
 }
