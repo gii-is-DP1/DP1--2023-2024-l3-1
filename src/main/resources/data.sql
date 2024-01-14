@@ -6,6 +6,33 @@ INSERT INTO players(id,is_admin,email,username,password) VALUES (1,1,'admin@exam
 -- Usuario normal. Contraseña: dobble
 INSERT INTO players(id,is_admin,email,username,password,profile_icon) VALUES (2,0,'dobble@example.com','dobble','$2a$12$pNpPEbQPT3N5k7zdxoIKTeYitzK6UbzCffkbY88QLHr6cGumYj3Ga','DELFIN');
 INSERT INTO players(id,is_admin,email,username,password,profile_icon) VALUES (3,0,'dobble2@example.com','dobble2','$2a$12$pNpPEbQPT3N5k7zdxoIKTeYitzK6UbzCffkbY88QLHr6cGumYj3Ga','MANO_LOGO');
+INSERT INTO players(id,is_admin,email,username,password,profile_icon) VALUES (4,0,'dobble3@example.com','dobble3','$2a$12$pNpPEbQPT3N5k7zdxoIKTeYitzK6UbzCffkbY88QLHr6cGumYj3Ga','MANO_LOGO');
+INSERT INTO players(id,is_admin,email,username,password,profile_icon) VALUES (5,0,'dobble4@example.com','dobble4','$2a$12$pNpPEbQPT3N5k7zdxoIKTeYitzK6UbzCffkbY88QLHr6cGumYj3Ga','MANO_LOGO');
+INSERT INTO players(id,is_admin,email,username,password,profile_icon) VALUES (6,0,'dobble5@example.com','dobble5','$2a$12$pNpPEbQPT3N5k7zdxoIKTeYitzK6UbzCffkbY88QLHr6cGumYj3Ga','MANO_LOGO');
+INSERT INTO players(id,is_admin,email,username,password,profile_icon) VALUES (7,0,'dobble6@example.com','dobble6','$2a$12$pNpPEbQPT3N5k7zdxoIKTeYitzK6UbzCffkbY88QLHr6cGumYj3Ga','MANO_LOGO');
+INSERT INTO players(id,is_admin,email,username,password,profile_icon) VALUES (8,0,'dobble7@example.com','dobble7','$2a$12$pNpPEbQPT3N5k7zdxoIKTeYitzK6UbzCffkbY88QLHr6cGumYj3Ga','MANO_LOGO');
+
+
+--INSERT INTO games(id, name, start, max_players) VALUES ('123e4567-e89b-12d3-a456-426655440000', 'partidaDobble', null,  8);
+
+--INSERT INTO game_players(id, player_id, game_id, strikes) VALUES (1, 2, '123e4567-e89b-12d3-a456-426655440000', 0);
+
+--UPDATE games SET creator_id = 1 WHERE id = '123e4567-e89b-12d3-a456-426655440000';
+
+--INSERT INTO game_players(id,player_id,game_id, strikes) VALUES (2,3,'123e4567-e89b-12d3-a456-426655440000',0);
+--INSERT INTO game_players(id,player_id,game_id, strikes) VALUES (3,4,'123e4567-e89b-12d3-a456-426655440000',0);
+--INSERT INTO game_players(id,player_id,game_id, strikes) VALUES (4,5,'123e4567-e89b-12d3-a456-426655440000',0);
+--INSERT INTO game_players(id,player_id,game_id, strikes) VALUES (5,6,'123e4567-e89b-12d3-a456-426655440000',0);
+--INSERT INTO game_players(id,player_id,game_id, strikes) VALUES (6,7,'123e4567-e89b-12d3-a456-426655440000',0);
+--INSERT INTO game_players(id,player_id,game_id, strikes) VALUES (7,8,'123e4567-e89b-12d3-a456-426655440000',0);
+
+
+
+
+
+
+
+
 
 -- Partidas actuales, en juego o pasadas, la primera está ya finalizada y la creó el jugador "dobble". 
 -- La segunda está en el lobby y la creó "dobble2" 

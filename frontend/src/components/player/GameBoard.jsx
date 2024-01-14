@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Badge } from "reactstrap";
+import { GameStatus } from "../../models/enums";
 import axios from '../../services/api';
 import DIcon from "../ui/DIcon";
 import Card from "./DobbleCard";
@@ -54,6 +55,7 @@ const rightSizeMatchings = {
  */
 export default function GameBoard(props) {
   const [striked, setStriked] = useState();
+  const [gameState,setGameState] = useState();
   const user = useSelector(state => state.appStore.user);
   const playersCards = () => props.game.game_players.filter((p) => p.username !== user.username);
   const currentPlayer = () => props.game.game_players.filter((p) => p.username === user.username)[0];
@@ -68,6 +70,11 @@ export default function GameBoard(props) {
   async function playFigure(icon) {
     try {
       await axios.post(`/games/me/play`, { icon });
+      const response = await axios.get(`/games/me`); 
+      const gameFinished = response.data.status === GameStatus.FINISHED;
+      if (gameFinished) {
+        setGameState('finished');
+      }
     } catch (e) {
       if (e.response?.status === 417) {
         setStriked(icon);
@@ -87,6 +94,14 @@ export default function GameBoard(props) {
 
   return (
   <>
+    {gameState === GameStatus.FINISHED ? (
+      <div style={{ textAlign: 'center', marginTop: '50px' }}>
+        <p>El juego ha terminado.</p>
+        <button >
+          Reiniciar Juego
+        </button>
+      </div>
+    ) : (
     <div style={{
       display: 'grid',
       gridTemplateColumns: '1fr', 
@@ -237,6 +252,6 @@ export default function GameBoard(props) {
         </div>
       </>
       : undefined}
-    </div>
-  </>);
+    </div>)}
+    </>);
 }
