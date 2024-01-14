@@ -17,6 +17,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -56,8 +57,11 @@ public class Player extends BaseEntity {
     @OneToMany(mappedBy = "player", cascade = CascadeType.ALL, orphanRemoval = true)
     List<GamePlayer> game_players;
 
+    @Transient
+    @JsonIgnore
     public Optional<Game> current_game() {
-        return this.game_players.stream()
+        return this.getGame_players()
+            .stream()
             .map(gp -> gp.getGame())
             .filter(g -> !g.isFinished())
             .map(Optional::ofNullable)
