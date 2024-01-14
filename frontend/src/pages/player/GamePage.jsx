@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
+import { Table } from "reactstrap";
 import GameBoard from "../../components/player/GameBoard";
 import GameLobby from "../../components/player/GameLobby";
 import DButton from "../../components/ui/DButton";
@@ -14,6 +15,13 @@ import { appStore } from "../../services/appStore";
  * Este componente es el principal de la partida. Actualiza el estado cada segundo, pasándoselo a los hijos
  * y renderizando el componente apropiado dependiendo de si la partida está en lobby o ha empezado.
  */
+
+const tableStyles = {
+    maxWidth: '600px',
+    width: '100%',
+    margin: '0 auto',
+};
+
 export default function GamePage() {
     const user = useSelector(state => state.appStore.user);
     const [game, setGame] = useState({});
@@ -64,23 +72,23 @@ export default function GamePage() {
 
         return (
             <div>
-                <h2>Puestos al final de la partida:</h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Puesto</th>
-                            <th>Jugador</th>
+                <h2>Puestos de la partida:</h2>
+                <Table aria-label="game-positions" className="mt-4" style={tableStyles}>
+                <thead>
+                    <tr>
+                        <th className="text-center">Puesto</th>
+                        <th className="text-center">Jugador</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {gamePlayers.map((player, index) => (
+                        <tr key={player.id} style={userPosition === index ? {backgroundColor: 'rgb(114, 0, 112)'} : null}>
+                            <td className="text-center">{index + 1}</td>
+                            <td className="text-center">{player.username}</td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        {gamePlayers.map((player, index) => (
-                            <tr key={player.id}>
-                                <td>{index + 1}</td>
-                                <td>{player.username}</td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+                    ))}
+                </tbody>
+            </Table>
                 {userPosition === 0 && (
                     <p>Felicidades, ¡has ganado la partida!</p>
                 )}
