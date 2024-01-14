@@ -2,16 +2,14 @@ package org.springframework.samples.petclinic.services;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -26,10 +24,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.samples.petclinic.controllers.GameController;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.dto.PlayRequestDto;
-import org.springframework.samples.petclinic.model.Card;
 import org.springframework.samples.petclinic.model.Game;
+import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Player;
-import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.samples.petclinic.model.enums.Icon;
+import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.security.auth.message.AuthException;
 
@@ -45,6 +44,8 @@ public class GameControllerTest {
   @Mock
   private CardService cardService;
 
+  @Mock
+  private GamePlayerService gamePlayerService;
 
   @InjectMocks
   private GameController gameController;
@@ -73,26 +74,32 @@ public class GameControllerTest {
   }
 
   @Test
-  public void testGetMyGameAuthenticated() {
-    Player mockPlayer = new Player();
-    mockPlayer.setId(1);
-    Game mockGame = new Game();
-    mockGame.setId("gameId");
-    // mockPlayer.setCurrentGame(mockGame);
+  public void testGetMyGame() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
+    when(gameService.getCurrentGameOfPlayer(any())).thenReturn(Optional.of(new Game()));
 
-    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
+    ResponseEntity<Game> responseEntity = gameController.getMyGame();
 
-    ResponseEntity<Game> response = gameController.getMyGame();
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    assertNotNull(responseEntity.getBody());
+  }
 
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(mockGame, response.getBody());
+  @Test
+  public void testGetMyGamePlayerNotInGame() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
+    when(gameService.getCurrentGameOfPlayer(any())).thenReturn(Optional.empty());
+
+    ResponseEntity<Game> responseEntity = gameController.getMyGame();
+
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    assertNull(responseEntity.getBody());
   }
 
   @Test
   public void testGetMyGameAuthenticatedWithoutGame() {
     Player mockPlayer = new Player();
     mockPlayer.setId(1);
-    //mockPlayer.setCurrentGame(null);
+    // mockPlayer.setCurrentGame(null);
 
     when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
 
@@ -111,20 +118,15 @@ public class GameControllerTest {
   }
 
   @Test
-  public void testCreateGame() throws AuthException {
+  public void testCreateGame() {
     GameCreateDto gameCreateDto = new GameCreateDto();
-    gameCreateDto.setName("TestGame");
-    gameCreateDto.setMax_players(4);
-
-    Game mockGame = new Game();
     when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
-    when(gameService.saveGame(any())).thenReturn(mockGame);
-    //when(gameService.addPlayerToGame(any(), any())).thenReturn(Optional.of(mockGame));
+    when(gameService.createGame(any(), any())).thenReturn(new Game());
 
-    ResponseEntity<Game> response = gameController.createGame(gameCreateDto);
+    ResponseEntity<Game> responseEntity = gameController.createGame(gameCreateDto);
 
-    assertEquals(HttpStatus.CREATED, response.getStatusCode());
-    assertEquals(mockGame, response.getBody());
+    assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+    assertNotNull(responseEntity.getBody());
   }
 
   @Test
@@ -138,99 +140,330 @@ public class GameControllerTest {
   }
 
   @Test
-  @WithMockUser(username = "dobble", password = "dobble")
+  @Transactional
   public void testUpdateGameLobby() {
-    String gameId = "1";
     GameCreateDto gameCreateDto = new GameCreateDto();
-    gameCreateDto.setName("UpdatedGame");
-    gameCreateDto.setMax_players(6);
+    String gameId = "123";
+    Game game = new Game();
+    game.setId(gameId);
+    Player player = new Player();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(player);
+    game.setCreator(gamePlayer);
+    gameService.saveGame(game);
 
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(player));
+    when(gameService.findGame(gameId)).thenReturn(Optional.of(game));
+    when(gameService.updateGame(any(), any())).thenReturn(new Game());
+
+    ResponseEntity<Game> responseEntity = gameController.updateGameLobby(gameCreateDto, gameId);
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    assertNotNull(responseEntity.getBody());
+  }
+
+  @Test
+  public void testUpdateGameLobbyUnauthorized() {
+    GameCreateDto gameCreateDto = new GameCreateDto();
+    String gameId = "123";
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
+
+    ResponseEntity<Game> responseEntity = gameController.updateGameLobby(gameCreateDto, gameId);
+
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+    assertNull(responseEntity.getBody());
+  }
+
+  @Test
+  public void testUpdateGameLobbyNotFound() {
+    GameCreateDto gameCreateDto = new GameCreateDto();
+    String gameId = "123";
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
+    when(gameService.findGame(gameId)).thenReturn(Optional.empty());
+
+    ResponseEntity<Game> responseEntity = gameController.updateGameLobby(gameCreateDto, gameId);
+
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    assertNull(responseEntity.getBody());
+  }
+
+  @Test
+  public void testUpdateGameLobbyUnauthorizedUser() {
+    GameCreateDto gameCreateDto = new GameCreateDto();
+    String gameId = "123";
     Game mockGame = new Game();
-    mockGame.setId(gameId);
-    mockGame.setName("OriginalGame");
-    mockGame.setMax_players(4);
 
-    Player mockPlayer = new Player();
-    mockPlayer.setId(1);
-    //mockGame.setRaw_creator(mockPlayer);
+    Player player = new Player();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(player);
+    mockGame.setCreator(gamePlayer);
 
-    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
     when(gameService.findGame(gameId)).thenReturn(Optional.of(mockGame));
-    //when(gameService.updateGame(any(), any())).thenReturn(Optional.of(mockGame));
 
-    ResponseEntity<Game> response = gameController.updateGameLobby(gameCreateDto, gameId);
+    ResponseEntity<Game> responseEntity = gameController.updateGameLobby(gameCreateDto, gameId);
 
-    assertEquals(HttpStatus.OK, response.getStatusCode());
-    assertEquals(mockGame, response.getBody());
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
   }
 
   @Test
-  public void testJoinGame() throws AuthException {
-    GameService gameService = mock(GameService.class);
-    PlayerService playerService = mock(PlayerService.class);
+  public void testUpdateGameLobbyGameNotInLobby() {
+    GameCreateDto gameCreateDto = new GameCreateDto();
+    String gameId = "123";
+    Game ongoingGame = new Game();
+    ongoingGame.setStart(LocalDateTime.now());
+    GamePlayer gamePlayer = new GamePlayer();
+    Player mockCurrentPlayer = new Player();
+    gamePlayer.setPlayer(mockCurrentPlayer);
+    ongoingGame.setCreator(gamePlayer);
 
-    //GameController controller = new GameController(gameService, playerService, cardService);
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
 
-    Player mockPlayer = new Player();
-    mockPlayer.setId(1);
-    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
+    when(gameService.findGame(gameId)).thenReturn(Optional.of(ongoingGame));
 
+    ResponseEntity<Game> responseEntity = gameController.updateGameLobby(gameCreateDto, gameId);
+
+    assertEquals(HttpStatus.LOCKED, responseEntity.getStatusCode());
+    assertNull(responseEntity.getBody());
+  }
+
+  @Test
+  public void testLeaveGame() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
+    when(gameService.getCurrentGameOfPlayer(any())).thenReturn(Optional.of(new Game()));
+
+    ResponseEntity<?> responseEntity = gameController.leaveGame();
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void testLeaveGameUnauthorized() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
+
+    ResponseEntity<?> responseEntity = gameController.leaveGame();
+
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void testLeaveGameNoCurrentGame() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
+    when(gameService.getCurrentGameOfPlayer(any())).thenReturn(Optional.empty());
+
+    ResponseEntity<?> responseEntity = gameController.leaveGame();
+
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void testExpelPlayer() {
+    Player mockCurrentPlayer = new Player();
     Game mockGame = new Game();
-    mockGame.setId("gameId");
-    when(gameService.findGame("gameId")).thenReturn(Optional.of(mockGame));
-    //when(gameService.addPlayerToGame("gameId", mockPlayer)).thenReturn(Optional.of(mockGame));
-    when(gameService.saveGame(mockGame)).thenReturn(mockGame);
+    Player mockPlayerToExpel = new Player();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(mockCurrentPlayer);
+    mockGame.setCreator(gamePlayer);
 
-    //ResponseEntity<Game> response = controller.joinGame("gameId");
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.getCurrentGameOfPlayer(mockCurrentPlayer)).thenReturn(Optional.of(mockGame));
+    when(gameService.getCurrentGameByUsername(anyString())).thenReturn(Optional.of(mockGame));
+    when(playerService.findByUsernamePlayer(anyString())).thenReturn(Optional.of(mockPlayerToExpel));
 
-    //assertEquals(HttpStatus.OK, response.getStatusCode());
-    //assertEquals(mockGame, response.getBody());
+    ResponseEntity<?> responseEntity = gameController.expelPlayer("player_to_expel");
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    verify(gameService).removePlayerFromGame(mockGame, mockPlayerToExpel);
   }
 
   @Test
-  void testStartGame() {
-    Player creator = new Player();
-    creator.setId(1);
+  public void testExpelPlayerUnauthorized() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
 
-    Player currentPlayer = new Player();
-    currentPlayer.setId(1);
-    currentPlayer.setIs_admin(true);
+    ResponseEntity<?> responseEntity = gameController.expelPlayer("player_to_expel");
 
-    Game gameInLobby = new Game();
-    gameInLobby.setId("gameId");
-    //gameInLobby.setRaw_creator(currentPlayer);
-    List<Player> players = new ArrayList<>();
-    Player player2 = new Player();
-    players.add(currentPlayer);
-    players.add(player2);
-    //gameInLobby.setRaw_players(players);
-    gameInLobby.setStart(null);
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+  }
 
-    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(currentPlayer));
-    when(gameService.findGame("gameId")).thenReturn(Optional.of(gameInLobby));
+  @Test
+  public void testExpelPlayerNotFound() {
+    Player mockCurrentPlayer = new Player();
+    mockCurrentPlayer.setId(1);
+    Game mockGame = new Game();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(mockCurrentPlayer);
+    mockGame.setCreator(gamePlayer);
 
-    CardService cardServiceMock = mock(CardService.class);
-    
-    
-    List<Card> mockCards = new ArrayList<>();
-    when(cardServiceMock.findAll()).thenReturn(Optional.of(mockCards));
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.getCurrentGameOfPlayer(mockCurrentPlayer)).thenReturn(Optional.of(mockGame));
+    when(gameService.getCurrentGameByUsername(anyString())).thenReturn(Optional.empty());
 
-    // gameController.setCardService(cardServiceMock);
-    //ResponseEntity<Game> response = gameController.startGame("gameId");
+    ResponseEntity<?> responseEntity = gameController.expelPlayer("player_to_expel");
 
-    //assertEquals(HttpStatus.OK, response.getStatusCode());
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    verify(gameService, never()).removePlayerFromGame(any(), any());
+  }
+
+  @Test
+  public void testJoinGame() {
+    Player mockCurrentPlayer = new Player();
+    Game mockGameToJoin = new Game();
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.findGame(anyString())).thenReturn(Optional.of(mockGameToJoin));
+
+    ResponseEntity<Game> responseEntity = gameController.joinGame("game_id");
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    verify(gameService).addPlayerToGame(mockGameToJoin, mockCurrentPlayer);
+  }
+
+  @Test
+  public void testJoinGameUnauthorized() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
+
+    ResponseEntity<Game> responseEntity = gameController.joinGame("game_id");
+
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+    verify(gameService, never()).addPlayerToGame(any(), any());
+  }
+
+  @Test
+  public void testJoinGameNotFound() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
+    when(gameService.findGame(anyString())).thenReturn(Optional.empty());
+
+    ResponseEntity<Game> responseEntity = gameController.joinGame("game_id");
+
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    verify(gameService, never()).addPlayerToGame(any(), any());
+  }
+
+  @Test
+  public void testJoinGameLocked() {
+    Player mockCurrentPlayer = new Player();
+    Game mockGameToJoin = new Game();
+    mockGameToJoin.setStart(LocalDateTime.now());
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.findGame(anyString())).thenReturn(Optional.of(mockGameToJoin));
+
+    ResponseEntity<Game> responseEntity = gameController.joinGame("game_id");
+
+    assertEquals(HttpStatus.LOCKED, responseEntity.getStatusCode());
+    verify(gameService, never()).addPlayerToGame(any(), any());
+  }
+
+  @Test
+  public void testJoinGameBandwidthLimitExceeded() {
+    Player mockCurrentPlayer = new Player();
+    Game mockGameToJoin = new Game();
+    mockGameToJoin.setMax_players(1);
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(mockCurrentPlayer);
+    mockGameToJoin.setGame_players(List.of(gamePlayer));
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.findGame(anyString())).thenReturn(Optional.of(mockGameToJoin));
+
+    ResponseEntity<Game> responseEntity = gameController.joinGame("game_id");
+
+    assertEquals(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, responseEntity.getStatusCode());
+    verify(gameService, never()).addPlayerToGame(any(), any());
+  }
+
+  @Test
+  public void testStartGame() {
+    Player mockCurrentPlayer = new Player();
+    Game mockCurrentGame = new Game();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(mockCurrentPlayer);
+    mockCurrentGame.setCreator(gamePlayer);
+    List<GamePlayer> players = new ArrayList<GamePlayer>();
+    players.add(new GamePlayer());
+    players.add(gamePlayer);
+    mockCurrentGame.setGame_players(players);
+    mockCurrentGame.setMax_players(2);
+
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.getCurrentGameOfPlayer(mockCurrentPlayer)).thenReturn(Optional.of(mockCurrentGame));
+    when(gameService.startGame(mockCurrentGame)).thenReturn(mockCurrentGame);
+
+    ResponseEntity<Game> responseEntity = gameController.startGame();
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+    verify(gameService).startGame(mockCurrentGame);
   }
 
   @Test
   public void testStartGameUnauthorized() {
-    String gameId = "1";
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
+
+    ResponseEntity<Game> responseEntity = gameController.startGame();
+
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+    verify(gameService, never()).startGame(any());
+  }
+
+  @Test
+  public void testStartGameNotFound() {
     when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
-    when(gameService.findGame(gameId)).thenReturn(Optional.of(new Game()));
+    when(gameService.getCurrentGameOfPlayer(any())).thenReturn(Optional.empty());
 
-    //ResponseEntity<Game> response = gameController.startGame(gameId);
+    ResponseEntity<Game> responseEntity = gameController.startGame();
 
-    //assertEquals(HttpStatus.UNAUTHORIZED, response.getStatusCode());
-    //assertNull(response.getBody());
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    verify(gameService, never()).startGame(any());
+  }
+
+  @Test
+  public void testStartGameLocked() {
+    Player mockCurrentPlayer = new Player();
+    Game mockCurrentGame = new Game();
+    mockCurrentGame.setStart(LocalDateTime.now());
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.getCurrentGameOfPlayer(mockCurrentPlayer)).thenReturn(Optional.of(mockCurrentGame));
+
+    ResponseEntity<Game> responseEntity = gameController.startGame();
+
+    assertEquals(HttpStatus.LOCKED, responseEntity.getStatusCode());
+    verify(gameService, never()).startGame(any());
+  }
+
+  @Test
+  public void testStartGameUnauthorizedCreator() {
+    Player mockPlayer = new Player();
+    Game mockCurrentGame = new Game();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(mockPlayer);
+    mockCurrentGame.setCreator(gamePlayer);
+    List<GamePlayer> players = new ArrayList<GamePlayer>();
+    players.add(new GamePlayer());
+    players.add(gamePlayer);
+    mockCurrentGame.setGame_players(players);
+    mockCurrentGame.setMax_players(2);
+
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
+
+    ResponseEntity<Game> responseEntity = gameController.startGame();
+
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
+    verify(gameService, never()).startGame(any());
+  }
+
+  @Test
+  public void testStartGamePreconditionRequired() {
+    Player mockCurrentPlayer = new Player();
+    Game mockCurrentGame = new Game();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(mockCurrentPlayer);
+    mockCurrentGame.setCreator(gamePlayer);
+
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.getCurrentGameOfPlayer(mockCurrentPlayer)).thenReturn(Optional.of(mockCurrentGame));
+
+    ResponseEntity<Game> responseEntity = gameController.startGame();
+
+    assertEquals(HttpStatus.PRECONDITION_REQUIRED, responseEntity.getStatusCode());
+    verify(gameService, never()).startGame(any());
   }
 
   @Test
@@ -265,30 +498,64 @@ public class GameControllerTest {
 
   @Test
   public void testPlay() {
-    PlayRequestDto playRequestDto= new PlayRequestDto(); 
-    //playRequestDto.setFigure_id(1);
-    Player mockPlayer = new Player();
-    mockPlayer.setId(1);
-    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
-    //doNothing().when(gameService).playFigure(anyString(), anyInt(), anyInt());
+    Player mockCurrentPlayer = new Player();
+    Game mockCurrentGame = new Game();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(mockCurrentPlayer);
+    mockCurrentGame.setCreator(gamePlayer);
 
-    // ResponseEntity<Void> response = gameController.play("gameId", playRequestDto);
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.getCurrentGameOfPlayer(mockCurrentPlayer)).thenReturn(Optional.of(mockCurrentGame));
+    when(gamePlayerService.getGamePlayerByUsernameAndGame(mockCurrentPlayer.getUsername(), mockCurrentGame))
+        .thenReturn(Optional.of(gamePlayer));
 
-    // assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-    //verify(gameService, times(1)).playFigure("gameId", 1, 1); // Assuming figureId is 1 for simplicity
+    PlayRequestDto playRequestDto = new PlayRequestDto();
+    playRequestDto.setIcon(Icon.AGUA);
+
+    ResponseEntity<Void> responseEntity = gameController.play(playRequestDto);
+
+    assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
   }
 
   @Test
-  public void testPlayWithException() {
-    PlayRequestDto playRequestDto= new PlayRequestDto(); 
-    //playRequestDto.setFigure_id(1);
-    Player mockPlayer = new Player();
-    mockPlayer.setId(1);
-    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
-    //doThrow(new RuntimeException("Simulated exception")).when(gameService).playFigure(anyString(), anyInt(), anyInt());
+  public void testPlayUnauthorized() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.empty());
 
-    // ResponseEntity<Void> response = gameController.play("gameId", playRequestDto);
+    PlayRequestDto playRequestDto = new PlayRequestDto();
+    playRequestDto.setIcon(Icon.AGUA);
 
-    // assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+    ResponseEntity<Void> responseEntity = gameController.play(playRequestDto);
+
+    assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
   }
+
+  @Test
+  public void testPlayGameNotFound() {
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(new Player()));
+    when(gameService.getCurrentGameOfPlayer(any())).thenReturn(Optional.empty());
+
+    PlayRequestDto playRequestDto = new PlayRequestDto();
+    playRequestDto.setIcon(Icon.AGUA);
+
+    ResponseEntity<Void> responseEntity = gameController.play(playRequestDto);
+
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+  }
+
+  @Test
+  public void testPlayGamePlayerNotFound() {
+    Player mockCurrentPlayer = new Player();
+    Game mockCurrentGame = new Game();
+    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
+    when(gameService.getCurrentGameOfPlayer(mockCurrentPlayer)).thenReturn(Optional.of(mockCurrentGame));
+    when(gamePlayerService.getGamePlayerByUsernameAndGame(any(), any())).thenReturn(Optional.empty());
+
+    PlayRequestDto playRequestDto = new PlayRequestDto();
+    playRequestDto.setIcon(Icon.AGUA);
+
+    ResponseEntity<Void> responseEntity = gameController.play(playRequestDto);
+
+    assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+  }
+
 }

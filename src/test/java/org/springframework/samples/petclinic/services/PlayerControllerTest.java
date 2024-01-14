@@ -138,7 +138,7 @@ public class PlayerControllerTest {
 
   // Test authenticateUser
   @Test
-  void authenticateUser_WhenAuthenticationFails() {
+  void shouldAuthenticateUser_WhenAuthenticationFails() {
     LoginRequest loginRequest = new LoginRequest();
     loginRequest.setUsername("invalid_username");
     loginRequest.setPassword("invalid_password");
@@ -149,6 +149,7 @@ public class PlayerControllerTest {
 
     assertEquals(HttpStatus.UNAUTHORIZED, responseEntity.getStatusCode());
   }
+  // Test getMe
 
   // Test validateToken
   @Test
