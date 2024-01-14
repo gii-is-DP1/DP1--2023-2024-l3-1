@@ -31,15 +31,26 @@ export default function GamePage() {
             /**
              * TODO: Completar todos los tipos de errores que puede devolver el método
              */
-            setHeader('Error al actualizar el estado del juego');
+           
 
             if (e.response?.status === 404) {
-                setMessage("Ya no estás en esta partida");
+                
+                    const responseById = await axios.get(`/games/${id}`);
+                    if(responseById.data.status === GameStatus.FINISHED 
+                        && responseById.data.game_players.some(gp => gp.username === user.username)){
+                        setGame(responseById.data);
+                        return;
+                     }
+                    setHeader('Error al obtener los datos de la partida');
+                    setMessage("No estás autenticado o no tienes permisos para esta partida");
+                    setError(true);
             } else if (e.response?.status === 401) {
+                setHeader('Error al actualizar el estado del juego');
                 setMessage("No estás autenticado o no tienes permisos para esta partida");
+                setError(true);
             }
 
-            setError(true);
+            
         }
     }
 
@@ -55,7 +66,9 @@ export default function GamePage() {
 
     async function leaveGame() {
         try {
-            await axios.delete(`/games/me`);
+            if (game.status !== GameStatus.FINISHED && user && game.id) 
+                await axios.delete(`/games/me`);
+            
         } catch {
             setError(true);
         }
@@ -77,7 +90,7 @@ export default function GamePage() {
     }, [game.status, game.name]);
 
     useEffect(() => {
-        if (!message && error || (!message && game.status === GameStatus.FINISHED)) {
+        if (!message && error ) {
             navigate('/');
         }
     }, [message, error, game.status]);
@@ -92,9 +105,9 @@ export default function GamePage() {
         window.addEventListener('beforeunload', leaveGame);
         return async () => {
             window.removeEventListener('beforeunload', leaveGame);
-            if (game.status !== GameStatus.FINISHED && user && game.id) {
-                await leaveGame();
-            }
+            
+            {/*await leaveGame();*/}
+            
             appStore.dispatch({
                 type: 'appStore/setNavbar',
                 payload: undefined
@@ -116,6 +129,15 @@ export default function GamePage() {
             case GameStatus.STARTED:
                 return (
                     <GameBoard game={game} />
+                );
+            case GameStatus.FINISHED:
+                return (
+                    <div style={{ textAlign: 'center', marginTop: '50px' }}>
+                        <p>El juego ha terminado.</p>
+                        <button >
+                            Reiniciar Juego
+                        </button>
+                    </div>
                 );
             // Mostrar página en blanco mientras se obtiene la información inicial
             default:
