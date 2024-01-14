@@ -3,6 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import GameBoard from "../../components/player/GameBoard";
 import GameLobby from "../../components/player/GameLobby";
+import DButton from "../../components/ui/DButton";
 import { useModal } from "../../composables/useModal";
 import { useRefreshableData } from "../../composables/useRefreshableData";
 import { GameStatus } from '../../models/enums';
@@ -34,7 +35,6 @@ export default function GamePage() {
            
 
             if (e.response?.status === 404) {
-                
                     const responseById = await axios.get(`/games/${id}`);
                     if(responseById.data.status === GameStatus.FINISHED 
                         && responseById.data.game_players.some(gp => gp.username === user.username)){
@@ -75,10 +75,11 @@ export default function GamePage() {
     }
 
     useEffect(() => {
-        if (game.status === GameStatus.FINISHED) {
+        /*if (game.status === GameStatus.FINISHED) {
             setHeader('Partida finalizada');
             setMessage('La partida ya ha finalizado. Cierra esta ventana para volver a la página principal');
         }
+        */
 
         game.status === GameStatus.STARTED ? appStore.dispatch({
             type: 'appStore/setNavbar',
@@ -93,7 +94,7 @@ export default function GamePage() {
         if (!message && error ) {
             navigate('/');
         }
-    }, [message, error, game.status]);
+    }, [message, error]);
 
     useEffect(() => {
         (async () => {
@@ -106,7 +107,7 @@ export default function GamePage() {
         return async () => {
             window.removeEventListener('beforeunload', leaveGame);
             
-            {/*await leaveGame();*/}
+            await leaveGame();
             
             appStore.dispatch({
                 type: 'appStore/setNavbar',
@@ -134,9 +135,16 @@ export default function GamePage() {
                 return (
                     <div style={{ textAlign: 'center', marginTop: '50px' }}>
                         <p>El juego ha terminado.</p>
-                        <button >
-                            Reiniciar Juego
-                        </button>
+                        <DButton onClick={() => {
+                            navigate(`/`)
+                        }}>
+                            Volver al menú
+                        </DButton>
+                        <DButton onClick={() => {
+                            navigate(`/play/new`)
+                        }}>
+                            Nueva partida
+                        </DButton>
                     </div>
                 );
             // Mostrar página en blanco mientras se obtiene la información inicial
