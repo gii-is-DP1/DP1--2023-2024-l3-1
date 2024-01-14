@@ -103,6 +103,7 @@ public class Game extends UUIDEntity {
         // Por alguna razón, parece que Spring devuelve al creador aquí también
         // pese a estar en propiedades diferentes. igualmente, mantenemos este método
         // para distinguirlos unívocamente en la lógica de negocio de los servicios.
+        this.game_players.sort(Comparator.comparingInt(gpl -> gpl.getNumberOfAvailableCards()));
         return this.getGame_players();
     }
 
