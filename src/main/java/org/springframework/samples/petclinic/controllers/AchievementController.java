@@ -73,9 +73,8 @@ public class AchievementController {
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado"),
             @ApiResponse(responseCode = "404", description = "No se encuentra el logro solicitado")
     })
-    public ResponseEntity<Achievement> findAchievement(@PathVariable("id") int id) {
+    public ResponseEntity<?> findAchievement(@PathVariable("id") int id) {
         Optional<Achievement> achievementToGet = achievementService.getAchievementById(id);
-
         if (!achievementToGet.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
