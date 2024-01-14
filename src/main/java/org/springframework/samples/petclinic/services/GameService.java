@@ -191,13 +191,15 @@ public class GameService {
                 Card player_card = op_player_card.get();
                 Card central_card = op_central_card.get();
                 Boolean gameFinished = gp.getCurrentCard().get().equals(gp.getCards().get(gp.getCards().size()-1));
-                if (player_card.hasIcon(icon) && central_card.hasIcon(icon)) {
-                    if(gameFinished){
-                        game.setFinish(LocalDateTime.now());
-                    }
+                if (player_card.hasIcon(icon) && central_card.hasIcon(icon)) {                                                                
                     player_card.setRelease_time(LocalDateTime.now());
                     this.cardService.saveCard(player_card);
+                     if(gameFinished){
+                        game.setFinish(LocalDateTime.now());
+                    }
+                    
                     this.saveGame(game);
+                    
                     // TODO: Añadir hito partidas y otro tipo de logros aquí
                 } else {
                     throw new NotFoundException();

@@ -62,6 +62,29 @@ public class HitoPartidaService {
     }
   }
 
+  @Transactional
+  public void getMyRank(Game game, GamePlayer gamePlayer) {
+    List<GamePlayer> gamePlayers = getRankGamePlayers(game);
+
+    Integer rank = gamePlayers.indexOf(gamePlayer) + 1;
+
+    HitoPartida hito = new HitoPartida();
+    hito.setGamePlayer(gamePlayer);
+    hito.setRank(rank);
+    hito.setGame(game);
+    hitoPartidaRepository.save(hito);
+
+  }
+
+  public List<GamePlayer> getRankGamePlayers(Game game) {
+    List<GamePlayer> gamePlayers = game.getAllGamePlayers();
+
+    gamePlayers.sort(Comparator.comparingInt(gp -> gp.getNumberOfAvailableCards()));
+
+    return gamePlayers;
+
+  }
+
   @Transactional(readOnly = true)
   public long calcularTiempoTotalPartida(Game game) {
     LocalDateTime inicio = game.getStart();

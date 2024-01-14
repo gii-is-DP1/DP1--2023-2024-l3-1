@@ -65,6 +65,14 @@ public class GamePlayer extends BaseEntity {
 
   @Transient
   @JsonIgnore
+  public int getNumberOfAvailableCards() {
+    return (int) this.getCards().stream()
+        .filter(c -> c.getRelease_time() == null)
+        .count();
+  }
+
+  @Transient
+  @JsonIgnore
   public Integer getPlayerId(){
     return this.getPlayer().getId(); 
   }

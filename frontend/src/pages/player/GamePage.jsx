@@ -54,6 +54,40 @@ export default function GamePage() {
         }
     }
 
+    function renderTable() {
+        if (game.status !== GameStatus.FINISHED) {
+            return null;
+        }
+
+        const gamePlayers = game.game_players;
+        const userPosition = gamePlayers.findIndex(player => player.username === user.username);
+
+        return (
+            <div>
+                <h2>Puestos al final de la partida:</h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Puesto</th>
+                            <th>Jugador</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {gamePlayers.map((player, index) => (
+                            <tr key={player.id}>
+                                <td>{index + 1}</td>
+                                <td>{player.username}</td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+                {userPosition === 0 && (
+                    <p>Felicidades, ¡has ganado la partida!</p>
+                )}
+            </div>
+        );
+    }
+
     async function patchGame() {
         if ((game.max_player !== undefined || game.name !== undefined) && isCreator()) {
             try {
@@ -135,6 +169,7 @@ export default function GamePage() {
                 return (
                     <div style={{ textAlign: 'center', marginTop: '50px' }}>
                         <p>El juego ha terminado.</p>
+                        {renderTable()}
                         <DButton onClick={() => {
                             navigate(`/`)
                         }}>
