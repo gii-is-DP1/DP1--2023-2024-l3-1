@@ -120,45 +120,45 @@ export default function AchievementListAdminPage() {
 
     return (
         <>
-        {modal}
-        <div>
-            <div className="page-container">
-                <div style={{ marginTop: '100px' }}></div>
-                <h1 className="text-center">Logros</h1>
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
-                    {refreshInfo}
-                </div>
-                <div>
-                    <div style={{
-                        display: 'flex',
-                        justifyContent: 'center',
-                    }}>
-                        <Link 
-                            to={`/achievements/new`}
-                            style={{ textDecoration: "none" }}
-                        > 
-                            <DButton style={{ width: '25vw' }}>Crear logro</DButton>
-                        </Link>
+            {modal}
+            <div>
+                <div className="page-container">
+                    <div style={{ marginTop: '100px' }}></div>
+                    <h1 className="text-center" style={{ marginTop: '30px' }}>Logros</h1>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginRight: '10px' }}>
+                        {refreshInfo}
                     </div>
-                    <Table aria-label="achievements" className="mt-4">
-                        <thead>
-                            <tr>
-                                <th className="text-center">Icono</th>
-                                <th className="text-center">Nombre</th>
-                                <th className="text-center">Descripción</th>
-                                <th className="text-center">Límite</th>
-                                <th className="text-center">Métrica</th>
-                                <th className="text-center">Acciones</th>
-                                <th className="text-center"></th>
-                            </tr>
-                        </thead>
-                        <tbody>{achievementList}</tbody>
-                    </Table>
-                    <p>La información se actualiza automáticamente cada 5 segundos</p>
-                    {paginationButtons}
+                    <div>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'center',
+                        }}>
+                            <Link
+                                to={`/achievements/new`}
+                                style={{ textDecoration: "none" }}
+                            >
+                                <DButton style={{ width: '25vw' }}>Crear logro</DButton>
+                            </Link>
+                        </div>
+                        <Table aria-label="achievements" className="mt-4">
+                            <thead>
+                                <tr>
+                                    <th className="text-center">Icono</th>
+                                    <th className="text-center">Nombre</th>
+                                    <th className="text-center">Descripción</th>
+                                    <th className="text-center">Límite</th>
+                                    <th className="text-center">Métrica</th>
+                                    <th className="text-center">Acciones</th>
+                                    <th className="text-center"></th>
+                                </tr>
+                            </thead>
+                            <tbody>{achievementList}</tbody>
+                        </Table>
+                        <p>La información se actualiza automáticamente cada 5 segundos</p>
+                        {paginationButtons}
+                    </div>
                 </div>
             </div>
-        </div>
         </>
     );
 }
