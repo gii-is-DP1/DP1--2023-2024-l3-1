@@ -2,7 +2,7 @@ package org.springframework.samples.petclinic.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
@@ -15,7 +15,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.samples.petclinic.dto.GameCreateDto;
 import org.springframework.samples.petclinic.model.Game;
+import org.springframework.samples.petclinic.model.GamePlayer;
 import org.springframework.samples.petclinic.model.Player;
+import org.springframework.samples.petclinic.repositories.GamePlayerRepository;
 import org.springframework.samples.petclinic.repositories.GameRepository;
 import org.springframework.samples.petclinic.repositories.PlayerRepository;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -32,20 +34,41 @@ public class GameServiceTest {
   private PlayerRepository playerRepository;
 
   @Autowired
+  private GamePlayerRepository gamePlayerRepository;
+
+  @Autowired
   private GameService gameService;
+
+  @Autowired
+  private GamePlayerService gamePlayerService;
 
   @Autowired
   PlayerService playerService;
 
   @Test
-  void testFindAll() {
-    Optional<List<Game>> allGames = gameService.findAll();
-    assertTrue(allGames.isPresent());
-    assertFalse(allGames.get().isEmpty());
+  @Transactional
+  void testFindGame() {
+    Game game = new Game();
+    game.setName("Test Game");
+    gameRepository.save(game);
+
+    Optional<Game> foundGame = gameService.findGame(game.getId());
+
+    assertTrue(foundGame.isPresent());
   }
 
   @Test
+  void testFindGameNotFound() {
+    Optional<Game> notFoundGame = gameService.findGame("nonexistent-id");
+    assertFalse(notFoundGame.isPresent());
+  }
+
+  @Test
+  @Transactional
   void testFindByNameGame() {
+    Game game = new Game();
+    game.setName("partida1");
+    gameRepository.save(game);
     Optional<Game> foundGame = gameService.findByNameGame("partida1");
     assertTrue(foundGame.isPresent());
     assertEquals("partida1", foundGame.get().getName());
@@ -58,44 +81,138 @@ public class GameServiceTest {
   }
 
   @Test
-  void testFindGameById() {
-    Optional<Game> foundGame = gameService.findGame("123e4567-e89b-12d3-a456-426655440000");
-    assertTrue(foundGame.isPresent());
-    assertEquals("partida1", foundGame.get().getName());
+  @Transactional
+  void testGetAllGamesOfPlayer() {
+    Player player = new Player();
+    player.setUsername("testPlayer");
+    player.setEmail("test@example.com");
+    player.setPassword("password");
+    playerRepository.save(player);
+
+    Game game1 = new Game();
+    Game game2 = new Game();
+    game1.setName("game1");
+    game2.setName("game2");
+    gameRepository.save(game1);
+    gameRepository.save(game2);
+
+    gameService.addPlayerToGame(game1, player);
+    gameService.addPlayerToGame(game2, player);
+
+    List<Game> result = gameService.getAllGamesOfPlayer(player);
+
+    assertEquals(2, result.size());
   }
 
   @Test
-  void testFindGameByIdNotFound() {
-    Optional<Game> notFoundGame = gameService.findGame("nonexistent-id");
-    assertFalse(notFoundGame.isPresent());
+  @Transactional
+  void testGetAllGamesOfPlayer_NoGames() {
+    Player player = new Player();
+    player.setUsername("testPlayer");
+    player.setEmail("test@example.com");
+    player.setPassword("password");
+    playerRepository.save(player);
+
+    List<Game> result = gameService.getAllGamesOfPlayer(player);
+
+    assertEquals(0, result.size());
   }
 
   @Test
-  void testIsGameInLobby() {
-    Optional<Game> foundGame = gameService.findGame("123e4567-e89b-12d3-a456-324833943923");
-    assertTrue(foundGame.isPresent());
-    assertTrue(foundGame.get().isOnLobby());
+  @Transactional
+  public void testGetCurrentGameOfPlayer() {
+    Player player = new Player();
+    player.setId(1);
+    player.setUsername("player");
+    player.setEmail("player@email.com");
+
+    Game unfinishedGame = new Game();
+    unfinishedGame.setName("Partida en curso");
+    gameRepository.save(unfinishedGame);
+
+    Game finishedGame = new Game();
+    finishedGame.setName("Partida finalizada");
+    finishedGame.setFinish(LocalDateTime.now());
+    gameRepository.save(finishedGame);
+
+    gameService.addPlayerToGame(unfinishedGame, player);
+
+    Optional<Game> result = gameService.getCurrentGameOfPlayer(player);
+
+    assertTrue(result.isPresent());
+    assertEquals(unfinishedGame.getId(), result.get().getId());
   }
 
   @Test
-  void testIsGameNotInLobby() {
-    Optional<Game> foundGame = gameService.findGame("123e4567-e89b-12d3-a456-324833943924");
-    assertTrue(foundGame.isPresent());
-    assertFalse(foundGame.get().isOnLobby());
+  @Transactional
+  void testGetGamesByPlayerUsername() {
+    Player player = new Player();
+    player.setUsername("testPlayer");
+    player.setEmail("test@example.com");
+    player.setPassword("password");
+    playerRepository.save(player);
+
+    Game game1 = new Game();
+    Game game2 = new Game();
+    game1.setName("game1");
+    game2.setName("game2");
+    gameRepository.save(game1);
+    gameRepository.save(game2);
+
+    gameService.addPlayerToGame(game1, player);
+    gameService.addPlayerToGame(game2, player);
+
+    List<Game> result = gameService.getGamesByPlayerUsername(player.getUsername());
+
+    assertEquals(2, result.size());
+
   }
 
   @Test
-  void testIsGameOngoing() {
-    Optional<Game> foundGame = gameService.findGame("123e4567-e89b-12d3-a456-324833943924");
-    assertTrue(foundGame.isPresent());
-    assertTrue(foundGame.get().isOngoing());
+  @Transactional
+  void testGetGamesByPlayerUsername_NoGames() {
+    Player player = new Player();
+    player.setUsername("testPlayer");
+    player.setEmail("test@example.com");
+    player.setPassword("password");
+    playerRepository.save(player);
+
+    List<Game> result = gameService.getGamesByPlayerUsername(player.getUsername());
+
+    assertEquals(0, result.size());
   }
 
   @Test
-  void testIsGameFinished() {
-    Optional<Game> foundGame = gameService.findGame("123e4567-e89b-12d3-a456-426655440000");
-    assertTrue(foundGame.isPresent());
-    assertTrue(foundGame.get().isFinished());
+  @Transactional
+  public void testGetCurrentGameByUsername() {
+    Player player = new Player();
+    player.setId(1);
+    player.setUsername("player");
+    player.setEmail("player@email.com");
+    player.setPassword("1234");
+
+    Game unfinishedGame = new Game();
+    unfinishedGame.setName("Partida en curso");
+    gameRepository.save(unfinishedGame);
+
+    Game finishedGame = new Game();
+    finishedGame.setName("Partida finalizada");
+    finishedGame.setFinish(LocalDateTime.now());
+    gameRepository.save(finishedGame);
+
+    gameService.addPlayerToGame(unfinishedGame, player);
+    GamePlayer gp = new GamePlayer();
+    gp.setPlayer(player);
+    gp.setGame(finishedGame);
+    gamePlayerRepository.save(gp);
+    player.setGame_players(List.of(gp));
+
+    playerRepository.save(player);
+
+    Optional<Game> result = gameService.getCurrentGameByUsername(player.getUsername());
+
+    assertTrue(result.isPresent());
+    assertEquals(unfinishedGame.getId(), result.get().getId());
   }
 
   @Test
@@ -105,8 +222,7 @@ public class GameServiceTest {
     Game game = new Game();
     Optional<Player> player = playerService.findCurrentPlayer();
     game.setName("Test Game");
-    // game.setRaw_creator(player.get());
-    // game.setRaw_players(List.of(player.get()));
+
     gameRepository.save(game);
 
     Optional<Game> foundGame = gameService.findGame(game.getId());
@@ -115,93 +231,136 @@ public class GameServiceTest {
     assertEquals("Test Game", foundGame.get().getName());
   }
 
-  @Transactional
   @Test
+  @Transactional
   void testUpdateGame() {
-    Optional<Game> gameToUpdate = gameService.findGame("123e4567-e89b-12d3-a456-426655440000");
-    assertTrue(gameToUpdate.isPresent());
+    Game initialGame = new Game();
+    initialGame.setName("OldGameName");
+    initialGame.setMax_players(5);
+    gameRepository.save(initialGame);
 
-    GameCreateDto gameCreateDto = new GameCreateDto();
-    gameCreateDto.setName("NombreActualizado");
-    gameCreateDto.setMax_players(7);
+    GameCreateDto payload = new GameCreateDto();
+    payload.setName("NewGameName");
+    payload.setMax_players(8);
 
-    // gameService.updateGame(gameCreateDto, "123e4567-e89b-12d3-a456-426655440000");
+    Game updatedGame = gameService.updateGame(payload, initialGame);
 
-    Optional<Game> updatedGame = gameService.findGame("123e4567-e89b-12d3-a456-426655440000");
-
-    assertTrue(updatedGame.isPresent());
-    assertEquals("NombreActualizado", updatedGame.get().getName());
-    assertEquals(7, updatedGame.get().getMax_players());
-
+    assertEquals("NewGameName", updatedGame.getName());
+    assertEquals(8, updatedGame.getMax_players());
   }
 
-  @Transactional
   @Test
-  void testUpdateGameNotFound() {
-    GameCreateDto gameCreateDto = new GameCreateDto();
-    gameCreateDto.setName("NombreActualizado");
-    gameCreateDto.setMax_players(7);
+  @Transactional
+  void testFindAll() {
+    Game game = new Game();
+    game.setName("Test Game");
+    gameRepository.save(game);
 
-    // assertEquals(Optional.empty(), gameService.updateGame(gameCreateDto, "nonexistent-id"));
+    Optional<List<Game>> allGames = gameService.findAll();
+    assertTrue(allGames.isPresent());
+    assertFalse(allGames.get().isEmpty());
+  }
+
+  @Test
+  @Transactional
+  void testCreateGame() {
+    Player creator = new Player();
+    creator.setUsername("creator");
+    creator.setEmail("creator@example.com");
+    creator.setPassword("password");
+    playerRepository.save(creator);
+
+    GameCreateDto payload = new GameCreateDto();
+    payload.setName("NewGame");
+    payload.setMax_players(8);
+
+    Game createdGame = gameService.createGame(payload, creator);
+
+    assertNotNull(createdGame.getId());
+    assertEquals("NewGame", createdGame.getName());
+    assertEquals(creator, createdGame.getCreator().getPlayer());
+    assertEquals(8, createdGame.getMax_players());
+  }
+
+  @Test
+  @Transactional
+  void testRemovePlayerFromGame() {
+    Player playerToRemove = new Player();
+    playerToRemove.setUsername("playerToRemove");
+    playerToRemove.setEmail("playerToRemove@example.com");
+    playerToRemove.setPassword("password");
+    playerRepository.save(playerToRemove);
+
+    Game game = new Game();
+    game.setName("TestGame");
+    game.setMax_players(4);
+    gameRepository.save(game);
+
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(playerToRemove);
+    gamePlayer.setGame(game);
+    gamePlayerService.save(gamePlayer);
+
+    game.setCreator(gamePlayer);
+    gameRepository.save(game);
+
+    game.getGame_players().add(gamePlayer);
+    gameService.saveGame(game);
+
+    gameService.removePlayerFromGame(game, playerToRemove);
+
+    assertTrue(gameRepository.findById(game.getId()).isEmpty());
+  }
+
+  @Test
+  @Transactional
+  void testRemovePlayerFromFinishedGame() {
+    Player playerToRemove = new Player();
+    playerToRemove.setUsername("playerToRemove");
+    playerToRemove.setEmail("playerToRemove@example.com");
+    playerToRemove.setPassword("password");
+    playerRepository.save(playerToRemove);
+
+    Game game = new Game();
+    game.setName("FinishedGame");
+    game.setMax_players(4);
+    game.setFinish(LocalDateTime.now());
+    gameRepository.save(game);
+
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setPlayer(playerToRemove);
+    gamePlayer.setGame(game);
+    gamePlayerService.save(gamePlayer);
+
+    game.getGame_players().add(gamePlayer);
+    gameService.saveGame(game);
+
+    gameService.removePlayerFromGame(game, playerToRemove);
+
+    assertTrue(gameRepository.findById(game.getId()).isPresent());
+    assertTrue(game.getGame_players().stream().anyMatch(gp -> gp.getPlayerId() == playerToRemove.getId()));
   }
 
   @Test
   @Transactional
   void testAddPlayerToGame() {
-    Game testGame = new Game();
-    testGame.setName("Test Game");
-    testGame.setMax_players(3);
-    testGame.setStart(null);
-    gameRepository.save(testGame);
+    Player playerToAdd = new Player();
+    playerToAdd.setUsername("playerToAdd");
+    playerToAdd.setEmail("playerToAdd@example.com");
+    playerToAdd.setPassword("password");
+    playerRepository.save(playerToAdd);
 
-    Player testPlayer = new Player();
-    testPlayer.setUsername("TestPlayer");
+    Game game = new Game();
+    game.setName("TestGame");
+    game.setMax_players(4);
+    gameRepository.save(game);
 
-    // Optional<Game> resultGameOptional = gameService.addPlayerToGame(testGame.getId(), testPlayer);
+    gameService.addPlayerToGame(game, playerToAdd);
 
-    // assertTrue(resultGameOptional.isPresent());
-    // Game resultGame = resultGameOptional.get();
-    // assertEquals(testGame.getId(), resultGame.getId());
-    // assertTrue(resultGame.getRaw_game_players().size() > 0);
+    assertTrue(game.getGame_players().stream().anyMatch(gp -> gp.getPlayerId() == playerToAdd.getId()));
 
-    // boolean playerFoundInGame = resultGame.getRaw_game_players().stream()
-    //     .anyMatch(gp -> gp.getPlayer().getUsername().equals(testPlayer.getUsername()));
-    // assertTrue(playerFoundInGame);
-  }
-
-  @Test
-  @Transactional
-  void testAddPlayerToGamePlayerAlreadyInGame() {
-    Game testGame = new Game();
-    testGame.setName("Test Game");
-    testGame.setMax_players(3);
-    testGame.setStart(null);
-    gameRepository.save(testGame);
-
-    Player testPlayer = new Player();
-    testPlayer.setUsername("TestPlayer");
-
-    // gameService.addPlayerToGame(testGame.getId(), testPlayer);
-
-    // assertThrows(RuntimeException.class, () -> {
-    //   gameService.addPlayerToGame(testGame.getId(), testPlayer);
-    // });
-  }
-
-  @Test
-  @Transactional
-  void testAddPlayerToGameGameNotOnLobby() {
-    Game testGame = new Game();
-    testGame.setName("Test Game");
-    testGame.setMax_players(3);
-    testGame.setStart(LocalDateTime.now());
-    gameRepository.save(testGame);
-
-    Player testPlayer = new Player();
-    testPlayer.setUsername("TestPlayer");
-
-    // Optional<Game> resultGameOptional = gameService.addPlayerToGame(testGame.getId(), testPlayer);
-
-    // assertFalse(resultGameOptional.isPresent());
+    Game savedGame = gameRepository.findById(game.getId()).orElse(null);
+    assertNotNull(savedGame);
+    assertTrue(savedGame.getGame_players().stream().anyMatch(gp -> gp.getPlayerId() == playerToAdd.getId()));
   }
 }
