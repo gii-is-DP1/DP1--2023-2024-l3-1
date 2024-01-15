@@ -39,7 +39,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import com.dobble.configuration.jwt.JwtUtils;
 import com.dobble.configuration.services.UserDetailsImpl;
-import com.dobble.controllers.PlayerController;
 import com.dobble.dto.EditPlayerDto;
 import com.dobble.dto.JwtResponseDto;
 import com.dobble.dto.LoginRequestDto;
@@ -55,10 +54,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  *
  */
 
-// @WebMvcTest(value = PlayerController.class, excludeFilters =
-// @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE, classes =
-// WebSecurityConfigurer.class), excludeAutoConfiguration = {
-// SecurityAutoConfiguration.class })
 @SpringBootTest
 @AutoConfigureMockMvc
 public class PlayerControllerTest {

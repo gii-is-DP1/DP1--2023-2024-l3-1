@@ -115,14 +115,6 @@ public class AchievementServiceTest {
         assertFalse(achievementAfterDeletion.isPresent());
     }
 
-    // @Test
-    // void testServiceGetAchievementByName() {
-    // Optional<Achievement> achievement=
-    // achievementService.getAchievementByName("Campeón Dobble");
-    // assertNotNull(achievement);
-    // assertEquals("Campeón Dobble", achievement.getName());
-    // }
-
     @Test
     void testServiceGetAchievementByName() {
         Optional<Achievement> optionalAchievement = achievementService.getAchievementByName("Entrando en Calor");

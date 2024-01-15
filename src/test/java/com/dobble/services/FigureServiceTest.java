@@ -17,7 +17,6 @@ import com.dobble.model.Card;
 import com.dobble.model.Figure;
 import com.dobble.model.enums.Icon;
 import com.dobble.repositories.FigureRepository;
-import com.dobble.services.FigureService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

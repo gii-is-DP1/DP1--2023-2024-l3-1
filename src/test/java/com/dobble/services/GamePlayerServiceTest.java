@@ -20,7 +20,6 @@ import com.dobble.model.Game;
 import com.dobble.model.GamePlayer;
 import com.dobble.model.Player;
 import com.dobble.repositories.GamePlayerRepository;
-import com.dobble.services.GamePlayerService;
 
 @SpringBootTest
 @AutoConfigureTestDatabase

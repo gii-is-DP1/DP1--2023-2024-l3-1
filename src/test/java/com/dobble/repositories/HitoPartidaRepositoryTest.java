@@ -16,8 +16,6 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import com.dobble.model.Game;
 import com.dobble.model.HitoPartida;
-import com.dobble.repositories.GameRepository;
-import com.dobble.repositories.HitoPartidaRepository;
 
 @DataJpaTest
 @ExtendWith(MockitoExtension.class)
