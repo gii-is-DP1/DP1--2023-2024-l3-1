@@ -712,7 +712,6 @@ public class PlayerControllerTest {
   @Test
   @WithMockUser(username = "dobble", password = "dobble")
   void testGetAllAsNonAdmin() throws Exception {
-    // Mocking the behavior of playerService.findCurrentPlayer()
     Player nonAdminPlayer = new Player();
     nonAdminPlayer.setId(2);
     nonAdminPlayer.setIs_admin(false);
@@ -727,7 +726,6 @@ public class PlayerControllerTest {
   @Test
   @WithMockUser(username = "admin", password = "dobble_admin")
   void testGetAllWithNoContent() throws Exception {
-    // Mocking the behavior of playerService.findCurrentPlayer()
     Player adminPlayer = new Player();
     adminPlayer.setId(1);
     adminPlayer.setIs_admin(true);
