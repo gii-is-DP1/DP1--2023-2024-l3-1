@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-import axios from '../../services/api';
+import { useEffect, useState } from "react";
 import SwaggerUI from "swagger-ui-react";
-import "swagger-ui-react/swagger-ui.css"
+import "swagger-ui-react/swagger-ui.css";
+import axios from '../../services/api';
 
 export default function SwaggerDocsPage(){
     const [spec, setSpec] = useState({});
@@ -13,5 +13,9 @@ export default function SwaggerDocsPage(){
         })();
     }, []);
 
-    return spec ? <SwaggerUI spec={spec} /> : (<></>);    
+    return spec ?
+    <div style={{ backgroundColor: 'white', display: 'flex', flexDirection: 'column' }}>
+        <SwaggerUI spec={spec} />
+    </div>
+    : (<></>);    
 }
