@@ -23,6 +23,7 @@ import lombok.Setter;
 @Setter
 @Table(name = "figures")
 public class Figure extends HiddenBaseEntity {
+  @NotNull
   @Enumerated(EnumType.STRING)
   private Icon icon;
 
