@@ -160,9 +160,9 @@ public class GameController {
 
     @Operation(summary = "Elimina al jugador actual de la partida.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente."),
-            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado."),
-            @ApiResponse(responseCode = "404", description = "El jugador actual no tiene ninguna partida en curso."),
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "El jugador actual no tiene ninguna partida en curso.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
@@ -186,11 +186,11 @@ public class GameController {
 
     @Operation(summary = "Expulsa a un jugador de la partida (solo permitido para el creador de la partida).")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente. El jugador fue expulsado de la partida."),
-            @ApiResponse(responseCode = "401", description = "El jugador actual no es el creador de la partida o no está autenticado."),
-            @ApiResponse(responseCode = "404", description = "El jugador a expulsar no se encontró en la partida o la partida no existe."),
-            @ApiResponse(responseCode = "400", description = "No se puede expulsar a sí mismo de la partida."),
-            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para expulsar jugadores (en curso o finalizada)."),
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente. El jugador fue expulsado de la partida.", content = @Content),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no es el creador de la partida o no está autenticado.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "El jugador a expulsar no se encontró en la partida o la partida no existe.", content = @Content),
+            @ApiResponse(responseCode = "400", description = "No se puede expulsar a sí mismo de la partida.", content = @Content),
+            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para expulsar jugadores (en curso o finalizada).", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
@@ -234,11 +234,11 @@ public class GameController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
-            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado."),
-            @ApiResponse(responseCode = "404", description = "No se encuentra la partida o jugador."),
-            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para unirse (está en curso o finalizada)."),
-            @ApiResponse(responseCode = "509", description = "La partida está completa y no se puede unir más jugadores."),
-            @ApiResponse(responseCode = "304", description = "El jugador ya se encuentra en la partida"),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "No se encuentra la partida o jugador.", content = @Content),
+            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para unirse (está en curso o finalizada).", content = @Content),
+            @ApiResponse(responseCode = "509", description = "La partida está completa y no se puede unir más jugadores.", content = @Content),
+            @ApiResponse(responseCode = "304", description = "El jugador ya se encuentra en la partida", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
@@ -281,10 +281,10 @@ public class GameController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
-            @ApiResponse(responseCode = "401", description = "El jugador actual no es el creador de la partida o no está autenticado."),
-            @ApiResponse(responseCode = "404", description = "No se encuentra la partida."),
-            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para iniciar (está en curso o finalizada)."),
-            @ApiResponse(responseCode = "428", description = "No hay suficientes jugadores para iniciar la partida."),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no es el creador de la partida o no está autenticado.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "No se encuentra la partida.", content = @Content),
+            @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para iniciar (está en curso o finalizada).", content = @Content),
+            @ApiResponse(responseCode = "428", description = "No hay suficientes jugadores para iniciar la partida.", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
@@ -349,10 +349,10 @@ public class GameController {
 
     @Operation(summary = "Juega una figura en la partida actual.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente."),
-            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado."),
-            @ApiResponse(responseCode = "404", description = "El jugador actual no está en ninguna partida"),
-            @ApiResponse(responseCode = "417", description = "El icono seleccionado no es el correcto"),
+            @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
+            @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
+            @ApiResponse(responseCode = "404", description = "El jugador actual no está en ninguna partida", content = @Content),
+            @ApiResponse(responseCode = "417", description = "El icono seleccionado no es el correcto", content = @Content),
             @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
