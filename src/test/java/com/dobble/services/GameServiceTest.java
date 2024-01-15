@@ -4,6 +4,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -13,18 +17,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithMockUser;
-
 import com.dobble.dto.GameCreateDto;
+import com.dobble.model.Card;
 import com.dobble.model.Game;
 import com.dobble.model.GamePlayer;
 import com.dobble.model.Player;
+import com.dobble.model.enums.Icon;
 import com.dobble.repositories.GamePlayerRepository;
 import com.dobble.repositories.GameRepository;
 import com.dobble.repositories.PlayerRepository;
-import com.dobble.services.GamePlayerService;
-import com.dobble.services.GameService;
-import com.dobble.services.PlayerService;
+import org.springframework.security.test.context.support.WithMockUser;
 
 import jakarta.transaction.Transactional;
 
@@ -366,5 +368,42 @@ public class GameServiceTest {
     Game savedGame = gameRepository.findById(game.getId()).orElse(null);
     assertNotNull(savedGame);
     assertTrue(savedGame.getGame_players().stream().anyMatch(gp -> gp.getPlayerId() == playerToAdd.getId()));
+  }
+
+  @Test
+  void testPlayFigure() {
+    GameRepository gameRepository = mock(GameRepository.class);
+    GamePlayerService gamePlayerService = mock(GamePlayerService.class);
+    CardService cardService = mock(CardService.class);
+
+    Game game = new Game();
+    game.setId("1");
+    game.setName("TestGame");
+
+    GamePlayer gp = new GamePlayer();
+    gp.setId(1);
+    gp.setGame(game);
+
+    Card playerCard = new Card();
+    playerCard.setId(1);
+    playerCard.setGame_player(gp);
+    playerCard.setRelease_time(LocalDateTime.now());
+
+    Card centralCard = new Card();
+    centralCard.setId(2);
+    centralCard.setGame(game);
+
+    when(gameRepository.save(any())).thenReturn(game);
+    when(gamePlayerService.save(any())).thenReturn(gp);
+    when(cardService.saveCard(any())).thenReturn(playerCard);
+
+    try {
+      gameService.playFigure(game, gp, Icon.AGUA);
+
+      assertNotNull(playerCard.getRelease_time());
+
+    } catch (Exception e) {
+      fail("Exception not expected");
+    }
   }
 }
