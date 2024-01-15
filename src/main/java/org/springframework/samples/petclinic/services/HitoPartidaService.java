@@ -62,27 +62,35 @@ public class HitoPartidaService {
     }
   }
 
+  
+
+
   @Transactional
-  public void getMyRank(Game game, GamePlayer gamePlayer) {
-    List<GamePlayer> gamePlayers = getRankGamePlayers(game);
+  public Integer getMyRank(Game game, GamePlayer gamePlayer) {
+    List<GamePlayer> gamePlayers = game.getAllGamePlayers();
 
     Integer rank = gamePlayers.indexOf(gamePlayer) + 1;
 
+    return rank;
+  }
+
+  @Transactional
+  public void saveMyRank(Game game, GamePlayer gamePlayer) {
+    Integer rank = getMyRank(game, gamePlayer);
     HitoPartida hito = new HitoPartida();
     hito.setGamePlayer(gamePlayer);
-    hito.setRank(rank);
     hito.setGame(game);
+    hito.setRank(rank);
+
     hitoPartidaRepository.save(hito);
 
   }
 
-  public List<GamePlayer> getRankGamePlayers(Game game) {
-    List<GamePlayer> gamePlayers = game.getAllGamePlayers();
 
-    gamePlayers.sort(Comparator.comparingInt(gp -> gp.getNumberOfAvailableCards()));
-
-    return gamePlayers;
-
+  @Transactional
+  public Boolean isWinner(Game game, GamePlayer gamePlayer) {
+    Integer rank = getMyRank(game, gamePlayer);
+    return rank == 1 ? true : false;
   }
 
   @Transactional(readOnly = true)
@@ -106,7 +114,7 @@ public class HitoPartidaService {
       if (hitoPartida.getGamePlayer().equals(gamePlayer)) {
         // List<Double> tiemposRespuesta = hitoPartida.getTiemposRespuesta();
         // if (tiemposRespuesta == null) {
-        //   tiemposRespuesta = new ArrayList<>();
+        // tiemposRespuesta = new ArrayList<>();
         // }
         // tiemposRespuesta.add(tiempoDeRespuesta);
         // hitoPartida.setTiemposRespuesta(tiemposRespuesta);

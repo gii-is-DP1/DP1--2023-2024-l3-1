@@ -25,16 +25,18 @@ public class GameService {
     private final GameRepository gameRepository;
     private final GamePlayerService gamePlayerService;
     private final CardService cardService;
+    private final HitoPartidaService hitoPartidaService;
 
     @Autowired
     public GameService(GameRepository gameRepository,
-        GamePlayerService gamePlayerService,
-        CardService cardService,
-        HitoPartidaRepository hitoRepository
-    ) {
+            GamePlayerService gamePlayerService,
+            CardService cardService,
+            HitoPartidaRepository hitoRepository,
+            HitoPartidaService hitoPartidaService) {
         this.gameRepository = gameRepository;
         this.gamePlayerService = gamePlayerService;
         this.cardService = cardService;
+        this.hitoPartidaService = hitoPartidaService;
     }
 
     @Transactional(readOnly = true)
@@ -54,9 +56,9 @@ public class GameService {
     }
 
     /**
-	 * Games that are in lobby or started
-	 */
-	@Transactional(readOnly = true)
+     * Games that are in lobby or started
+     */
+    @Transactional(readOnly = true)
     public Optional<Game> getCurrentGameOfPlayer(Player player) {
         List<Game> query = this.getAllGamesOfPlayer(player).stream().filter(g -> !g.isFinished()).toList();
 
@@ -70,8 +72,8 @@ public class GameService {
     }
 
     /**
-	 * Games that are in lobby or started
-	 */
+     * Games that are in lobby or started
+     */
     @Transactional(readOnly = true)
     public Optional<Game> getCurrentGameByUsername(String username) {
         return Optional.ofNullable(this.getGamesByPlayerUsername(username).stream().filter(g -> !g.isFinished()).toList().get(0));
@@ -109,7 +111,8 @@ public class GameService {
         Game game = new Game();
         game.setName(payload.getName());
         GamePlayer gp = this.gamePlayerService.createGamePlayerCreator(creator);
-        // Necesario puesto que Spring requiere de que la entidad exista en la base de datos
+        // Necesario puesto que Spring requiere de que la entidad exista en la base de
+        // datos
         // antes de asociarlas
         this.saveGame(game);
         gp.setGame(game);
@@ -140,7 +143,7 @@ public class GameService {
         game.getGame_players().add(gp);
         this.saveGame(game);
     }
-    
+
     @Transactional
     public Game startGame(Game game) {
         List<GamePlayer> gps = game.getGame_players();
@@ -163,7 +166,7 @@ public class GameService {
             gamePlayer.getCards().addAll(playerCards);
             this.gamePlayerService.save(gamePlayer);
 
-            for (Card c: playerCards) {
+            for (Card c : playerCards) {
                 c.setGame_player(gamePlayer);
                 this.cardService.saveCard(c);
             }
@@ -175,8 +178,9 @@ public class GameService {
         // Eliminar las cartas que sobran
         try {
             this.cardService.deleteAll(cards.subList(firstIndex, cardsPerPlayer));
-        } catch (Exception _e) {}
-        
+        } catch (Exception _e) {
+        }
+
         game.setStart(LocalDateTime.now());
         return this.saveGame(game);
     }
@@ -190,16 +194,19 @@ public class GameService {
             if (op_player_card.isPresent() && op_central_card.isPresent()) {
                 Card player_card = op_player_card.get();
                 Card central_card = op_central_card.get();
-                Boolean gameFinished = gp.getCurrentCard().get().equals(gp.getCards().get(gp.getCards().size()-1));
-                if (player_card.hasIcon(icon) && central_card.hasIcon(icon)) {                                                                
+                Boolean gameFinished = gp.getCurrentCard().get().equals(gp.getCards().get(gp.getCards().size() - 1));
+                if (player_card.hasIcon(icon) && central_card.hasIcon(icon)) {
                     player_card.setRelease_time(LocalDateTime.now());
                     this.cardService.saveCard(player_card);
-                     if(gameFinished){
+                    if (gameFinished) {
                         game.setFinish(LocalDateTime.now());
+                        for (GamePlayer gamePlayer: game.getAllGamePlayers()){
+                            hitoPartidaService.saveMyRank(game, gamePlayer);
+                        }
                     }
-                    
+
                     this.saveGame(game);
-                    
+
                     // TODO: Añadir hito partidas y otro tipo de logros aquí
                 } else {
                     throw new NotFoundException();
