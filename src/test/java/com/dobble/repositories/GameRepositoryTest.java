@@ -1,4 +1,4 @@
-package com.dobble;
+package com.dobble.repositories;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
