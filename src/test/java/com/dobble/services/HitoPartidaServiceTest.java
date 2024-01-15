@@ -1,6 +1,7 @@
 package com.dobble.services;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
@@ -12,12 +13,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.dobble.model.Card;
 import com.dobble.model.Game;
 import com.dobble.model.GamePlayer;
 import com.dobble.model.HitoPartida;
 import com.dobble.repositories.HitoPartidaRepository;
-import com.dobble.services.HitoPartidaService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -35,23 +34,25 @@ public class HitoPartidaServiceTest {
   private HitoPartidaRepository hitoPartidaRepository;
 
   @Test
+  void testFindAll() {
+    HitoPartidaRepository hitoPartidaRepository = mock(HitoPartidaRepository.class);
+    HitoPartidaService hitoPartidaService = new HitoPartidaService(hitoPartidaRepository);
+
+    HitoPartida hito1 = new HitoPartida();
+    HitoPartida hito2 = new HitoPartida();
+    List<HitoPartida> expectedHitos = List.of(hito1, hito2);
+
+    when(hitoPartidaRepository.findAll()).thenReturn(expectedHitos);
+
+    List<HitoPartida> actualHitos = hitoPartidaService.findAll();
+
+    assertEquals(expectedHitos, actualHitos);
+  }
+
+  @Test
   void testFinalizarPartidaSiNecesario() {
     Game game = new Game();
     List<GamePlayer> gamePlayers = new ArrayList<>();
-
-    // GamePlayer winnerPlayer = new GamePlayer();
-    // Hand winnerHand = new Hand();
-    // winnerHand.setCards(new ArrayList<>());
-    // winnerPlayer.setHand(winnerHand);
-    // gamePlayers.add(winnerPlayer);
-
-    // GamePlayer secondPlayer = new GamePlayer();
-    // Hand secondHand = new Hand();
-    // List<Card> secondPlayerCards = new ArrayList<>();
-    // secondPlayerCards.add(new Card());
-    // secondHand.setCards(secondPlayerCards);
-    // secondPlayer.setHand(secondHand);
-    // gamePlayers.add(secondPlayer);
 
     game.setGame_players(gamePlayers);
 
@@ -60,6 +61,38 @@ public class HitoPartidaServiceTest {
     hitoPartidaService.finalizarPartidaSiNecesario(game);
 
     verify(hitoPartidaRepository, times(gamePlayers.size())).save(any(HitoPartida.class));
+  }
+
+  @Test
+  void testSaveMyRank() {
+    HitoPartidaRepository hitoPartidaRepository = mock(HitoPartidaRepository.class);
+    HitoPartidaService hitoPartidaService = new HitoPartidaService(hitoPartidaRepository);
+
+    Game game = new Game();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setId(1);
+
+    when(hitoPartidaRepository.save(any(HitoPartida.class))).thenReturn(new HitoPartida());
+
+    hitoPartidaService.saveMyRank(game, gamePlayer);
+
+    verify(hitoPartidaRepository, times(1)).save(any(HitoPartida.class));
+  }
+
+  @Test
+  void testSaveMyRankNegative() {
+    HitoPartidaRepository hitoPartidaRepository = mock(HitoPartidaRepository.class);
+    HitoPartidaService hitoPartidaService = new HitoPartidaService(hitoPartidaRepository);
+
+    Game game = new Game();
+    GamePlayer gamePlayer = new GamePlayer();
+    gamePlayer.setId(1);
+
+    when(hitoPartidaRepository.save(any(HitoPartida.class))).thenThrow(new RuntimeException("Error al guardar"));
+
+    assertThrows(RuntimeException.class, () -> hitoPartidaService.saveMyRank(game, gamePlayer));
+
+    verify(hitoPartidaRepository, times(1)).save(any(HitoPartida.class));
   }
 
   @Test
