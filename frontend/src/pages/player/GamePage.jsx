@@ -127,7 +127,7 @@ export default function GamePage() {
     }, [game.status, game.name]);
 
     useEffect(() => {
-        if (!message && error ) {
+        if (!message && error) {
             navigate('/');
         }
     }, [message, error]);
