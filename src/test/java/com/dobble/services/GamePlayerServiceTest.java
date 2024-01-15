@@ -1,4 +1,4 @@
-package com.dobble;
+package com.dobble.services;
 
 import static org.junit.Assert.assertNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;

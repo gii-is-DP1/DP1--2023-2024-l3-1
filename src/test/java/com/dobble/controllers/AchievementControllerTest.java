@@ -1,4 +1,4 @@
-package com.dobble;
+package com.dobble.controllers;
 
 import com.dobble.controllers.AchievementController;
 import com.dobble.model.Achievement;
