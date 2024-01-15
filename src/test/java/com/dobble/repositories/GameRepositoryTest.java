@@ -15,7 +15,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.dobble.model.Game;
-import com.dobble.repositories.GameRepository;
 
 @SpringBootTest
 @AutoConfigureTestDatabase

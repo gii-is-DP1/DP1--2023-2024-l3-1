@@ -19,7 +19,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import com.dobble.model.Game;
 import com.dobble.model.GamePlayer;
 import com.dobble.model.Player;
-import com.dobble.repositories.GamePlayerRepository;
 
 @SpringBootTest
 @AutoConfigureTestDatabase

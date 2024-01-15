@@ -11,7 +11,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.dobble.model.Figure;
-import com.dobble.repositories.FigureRepository;
 
 @SpringBootTest
 @AutoConfigureTestDatabase

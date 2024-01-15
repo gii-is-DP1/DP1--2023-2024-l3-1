@@ -15,8 +15,6 @@ import java.util.Optional;
 
 import com.dobble.model.Card;
 import com.dobble.repositories.CardRepository;
-import com.dobble.services.CardService;
-import com.dobble.services.FigureService;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.dobble.model.Achievement;
-import com.dobble.repositories.AchievementRepository;
 
 @SpringBootTest
 @AutoConfigureTestDatabase

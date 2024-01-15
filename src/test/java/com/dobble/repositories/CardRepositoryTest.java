@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.context.SpringBootTest;
 
 import com.dobble.model.Card;
-import com.dobble.repositories.CardRepository;
 
 @SpringBootTest
 @AutoConfigureTestDatabase
