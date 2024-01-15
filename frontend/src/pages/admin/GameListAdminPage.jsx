@@ -59,7 +59,7 @@ export default function GameListAdminPage() {
                     <td className="text-center">{getStatus(game)}</td>
                     <td className="text-center"> {game.creator.username} </td>
                     <td className="text-center">
-                        {Array.from(game.players).map((player, index, array) => (
+                        {Array.from(game.game_players).map((player, index, array) => (
                             <span key={player.id}>
                                 {player.username}
                                 {index < array.length - 1 && ', '}
