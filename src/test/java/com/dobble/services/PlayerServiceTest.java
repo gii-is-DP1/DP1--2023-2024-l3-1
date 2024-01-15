@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.dobble.dto.EditPlayerDto;
-import com.dobble.dto.SignupRequest;
+import com.dobble.dto.SignupRequestDto;
 import com.dobble.model.Player;
 import com.dobble.services.PlayerService;
 import org.junit.jupiter.api.Test;
@@ -82,7 +82,7 @@ public class PlayerServiceTest {
     @Test
     @Transactional
     void testCreateUser() {
-        SignupRequest signupRequest = new SignupRequest();
+        SignupRequestDto signupRequest = new SignupRequestDto();
         signupRequest.setUsername("dobblenew");
         signupRequest.setEmail("dobblenew@example.com");
         signupRequest.setPassword("dobblenew");
