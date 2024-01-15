@@ -117,12 +117,6 @@ export default function GamePage() {
     }
 
     useEffect(() => {
-        /*if (game.status === GameStatus.FINISHED) {
-            setHeader('Partida finalizada');
-            setMessage('La partida ya ha finalizado. Cierra esta ventana para volver a la página principal');
-        }
-        */
-
         game.status === GameStatus.STARTED ? appStore.dispatch({
             type: 'appStore/setNavbar',
             payload: { name: 'GAME', content: game.name }
