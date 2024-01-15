@@ -1,15 +1,39 @@
 
-
-              |\      _,,,--,,_
-             /,`.-'`'   ._  \-;;,_
-  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
- |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
- |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
- |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
- |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
- |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
- |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
- ==================================================================/_/_/_/
+                                                                                                        
+                                     bbbbbbbb           bbbbbbbb                                        
+DDDDDDDDDDDDD                        b::::::b           b::::::b            lllllll                     
+D::::::::::::DDD                     b::::::b           b::::::b            l:::::l                     
+D:::::::::::::::DD                   b::::::b           b::::::b            l:::::l                     
+DDD:::::DDDDD:::::D                   b:::::b            b:::::b            l:::::l                     
+  D:::::D    D:::::D    ooooooooooo   b:::::bbbbbbbbb    b:::::bbbbbbbbb     l::::l     eeeeeeeeeeee    
+  D:::::D     D:::::D oo:::::::::::oo b::::::::::::::bb  b::::::::::::::bb   l::::l   ee::::::::::::ee  
+  D:::::D     D:::::Do:::::::::::::::ob::::::::::::::::b b::::::::::::::::b  l::::l  e::::::eeeee:::::ee
+  D:::::D     D:::::Do:::::ooooo:::::ob:::::bbbbb:::::::bb:::::bbbbb:::::::b l::::l e::::::e     e:::::e
+  D:::::D     D:::::Do::::o     o::::ob:::::b    b::::::bb:::::b    b::::::b l::::l e:::::::eeeee::::::e
+  D:::::D     D:::::Do::::o     o::::ob:::::b     b:::::bb:::::b     b:::::b l::::l e:::::::::::::::::e 
+  D:::::D     D:::::Do::::o     o::::ob:::::b     b:::::bb:::::b     b:::::b l::::l e::::::eeeeeeeeeee  
+  D:::::D    D:::::D o::::o     o::::ob:::::b     b:::::bb:::::b     b:::::b l::::l e:::::::e           
+DDD:::::DDDDD:::::D  o:::::ooooo:::::ob:::::bbbbbb::::::bb:::::bbbbbb::::::bl::::::le::::::::e          
+D:::::::::::::::DD   o:::::::::::::::ob::::::::::::::::b b::::::::::::::::b l::::::l e::::::::eeeeeeee  
+D::::::::::::DDD      oo:::::::::::oo b:::::::::::::::b  b:::::::::::::::b  l::::::l  ee:::::::::::::e  
+DDDDDDDDDDDDD           ooooooooooo   bbbbbbbbbbbbbbbb   bbbbbbbbbbbbbbbb   llllllll    eeeeeeeeeeeeee  
+                                                                                          
+     OOOOOOOOO                       lllllll   iiii                                                     
+   OO:::::::::OO                     l:::::l  i::::i                                                    
+ OO:::::::::::::OO                   l:::::l   iiii                                                     
+O:::::::OOO:::::::O                  l:::::l                                                            
+O::::::O   O::::::Onnnn  nnnnnnnn     l::::l iiiiiiinnnn  nnnnnnnn        eeeeeeeeeeee                  
+O:::::O     O:::::On:::nn::::::::nn   l::::l i:::::in:::nn::::::::nn    ee::::::::::::ee                
+O:::::O     O:::::On::::::::::::::nn  l::::l  i::::in::::::::::::::nn  e::::::eeeee:::::ee              
+O:::::O     O:::::Onn:::::::::::::::n l::::l  i::::inn:::::::::::::::ne::::::e     e:::::e              
+O:::::O     O:::::O  n:::::nnnn:::::n l::::l  i::::i  n:::::nnnn:::::ne:::::::eeeee::::::e              
+O:::::O     O:::::O  n::::n    n::::n l::::l  i::::i  n::::n    n::::ne:::::::::::::::::e               
+O:::::O     O:::::O  n::::n    n::::n l::::l  i::::i  n::::n    n::::ne::::::eeeeeeeeeee                
+O::::::O   O::::::O  n::::n    n::::n l::::l  i::::i  n::::n    n::::ne:::::::e                         
+O:::::::OOO:::::::O  n::::n    n::::nl::::::li::::::i n::::n    n::::ne::::::::e                        
+ OO:::::::::::::OO   n::::n    n::::nl::::::li::::::i n::::n    n::::n e::::::::eeeeeeee                
+   OO:::::::::OO     n::::n    n::::nl::::::li::::::i n::::n    n::::n  ee:::::::::::::e                
+     OOOOOOOOO       nnnnnn    nnnnnnlllllllliiiiiiii nnnnnn    nnnnnn    eeeeeeeeeeeeee
 
 :: Built with Spring Boot :: ${spring-boot.version}
 
