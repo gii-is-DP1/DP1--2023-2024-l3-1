@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.dobble.dto.EditPlayerDto;
-import com.dobble.dto.SignupRequest;
+import com.dobble.dto.SignupRequestDto;
 import com.dobble.model.Player;
 import com.dobble.model.enums.Icon;
 import com.dobble.repositories.PlayerRepository;
@@ -51,7 +51,7 @@ public class PlayerService {
 	}
 
 	@Transactional
-	public void createUser(@Valid SignupRequest request) {
+	public void createUser(@Valid SignupRequestDto request) {
 		Player player = new Player();
 		player.setUsername(request.getUsername().toLowerCase());
 		player.setEmail(request.getEmail().toLowerCase());

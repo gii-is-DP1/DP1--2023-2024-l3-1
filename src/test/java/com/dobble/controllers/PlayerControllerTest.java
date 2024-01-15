@@ -42,9 +42,9 @@ import com.dobble.configuration.services.UserDetailsImpl;
 import com.dobble.controllers.PlayerController;
 import com.dobble.dto.EditPlayerDto;
 import com.dobble.dto.JwtResponseDto;
-import com.dobble.dto.LoginRequest;
+import com.dobble.dto.LoginRequestDto;
 import com.dobble.dto.PublicPlayerDto;
-import com.dobble.dto.SignupRequest;
+import com.dobble.dto.SignupRequestDto;
 import com.dobble.model.Player;
 import com.dobble.model.enums.Icon;
 import com.dobble.services.PlayerService;
@@ -86,8 +86,8 @@ public class PlayerControllerTest {
   @Autowired
   private MockMvc mockMvc;
 
-  private LoginRequest loginRequest;
-  private SignupRequest signupRequest;
+  private LoginRequestDto loginRequest;
+  private SignupRequestDto signupRequest;
   private UserDetailsImpl userDetails;
   private String token;
   private String username;
@@ -119,11 +119,11 @@ public class PlayerControllerTest {
 
     String username = "player";
     String password = "password";
-    loginRequest = new LoginRequest();
+    loginRequest = new LoginRequestDto();
     loginRequest.setUsername(username);
     loginRequest.setPassword(password);
 
-    signupRequest = new SignupRequest();
+    signupRequest = new SignupRequestDto();
     signupRequest.setUsername(username);
     signupRequest.setPassword(password);
     signupRequest.setEmail("playertest@email.com");
@@ -140,7 +140,7 @@ public class PlayerControllerTest {
   // Test authenticateUser
   @Test
   void shouldAuthenticateUser_WhenAuthenticationFails() {
-    LoginRequest loginRequest = new LoginRequest();
+    LoginRequestDto loginRequest = new LoginRequestDto();
     loginRequest.setUsername("invalid_username");
     loginRequest.setPassword("invalid_password");
     when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))

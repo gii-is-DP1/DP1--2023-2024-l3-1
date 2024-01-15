@@ -8,9 +8,9 @@ import com.dobble.configuration.services.UserDetailsImpl;
 import com.dobble.dto.EditPlayerDto;
 import com.dobble.dto.ExceptionMessageDto;
 import com.dobble.dto.JwtResponseDto;
-import com.dobble.dto.LoginRequest;
+import com.dobble.dto.LoginRequestDto;
 import com.dobble.dto.PublicPlayerDto;
-import com.dobble.dto.SignupRequest;
+import com.dobble.dto.SignupRequestDto;
 import com.dobble.model.Player;
 import com.dobble.services.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,7 +67,7 @@ public class PlayerController {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Inicia la sesión de un usuario")
 	@PostMapping("/login")
-	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
+	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequestDto loginRequest) {
 		try {
 			Authentication authentication = authenticationManager.authenticate(
 					new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword()));
@@ -130,13 +130,13 @@ public class PlayerController {
 				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Registra a un usuario")
 	@PostMapping("/signup")
-	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
+	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequestDto signUpRequest) {
 		if (playerService.existsUser(signUpRequest.getUsername(), signUpRequest.getEmail())) {
 			return new ResponseEntity<>(HttpStatus.IM_USED);
 		} else {
 			playerService.createUser(signUpRequest);
 
-			LoginRequest loginRequest = new LoginRequest();
+			LoginRequestDto loginRequest = new LoginRequestDto();
 			loginRequest.setUsername(signUpRequest.getUsername());
 			loginRequest.setPassword(signUpRequest.getPassword());
 
