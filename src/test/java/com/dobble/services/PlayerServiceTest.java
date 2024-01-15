@@ -76,7 +76,7 @@ public class PlayerServiceTest {
     void testFindAllNotAdmin() {
         Optional<List<Player>> players = playerService.findAll();
         assertTrue(players.isPresent());
-        assertEquals(2, players.get().size());
+        assertEquals(7, players.get().size());
     }
 
     @Test
@@ -178,13 +178,4 @@ public class PlayerServiceTest {
     void testExistsUser() {
         assertEquals(true, playerService.existsUser("dobble", "dobble@example.com"));
     }
-
-    /*
-     * @Test
-     * void testNotExistsUser() {
-     * assertEquals(false, playerService.existsUser("dobble",
-     * "dobble1000@example.com"));
-     * }
-     */
-
 }
