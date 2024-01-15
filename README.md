@@ -1,28 +1,34 @@
-# React Petclinic
-Small project based on spring-petclinic for teaching SPA architectures with react, java and spring developer for teaching DP1 at the Software Engineering degree of University of Sevilla.
+# Dobble Game Application
+Este proyecto es una implementación del juego de mesa Dobble.
 
-This is a fork of https://github.com/spring-projects/spring-petclinic  The main changes that have been performed were:
-- Trimming several parts of the application to keep the example low
-- Reorganize some parts of the code according to best practices introduced in the course
-- Modifying the Controllers to work as RestControllers creating several API endpoings
-- Modifying the security configuration to use JWT
-- Creating a React frontend.
+Es un fork de https://github.com/spring-projects/spring-petclinic 
 
-## Understanding the Spring Petclinic application  backend with a few diagrams
-<a href="https://speakerdeck.com/michaelisvy/spring-petclinic-sample-application">See the presentation here</a>
+Las claves por defecto de cada uno de los usuarios son las siguientes: 
 
-## Running petclinic backend locally
-Petclinic is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/). You can build a jar file and run it from the command line:
+- Para el usuario "admin" (es administrador) →  Usuario: admin / Contraseña: dobble_admin
+
+- Para el usuario "dobble" (es usuario jugador) → Usuario: dobble / Contraseña: dobble
+
+- Para el usuario "dobble2" (es usuario jugador) →  Usuario: dobble2 / Contraseña: dobble
+
+(Podemos encontrar estos datos en el archivo data.sql)
+
+
+## Cómo funciona el juego
+El desarrollo normal de una partida del modo de juego “El Foso” comienza colocando una carta de la baraja boca arriba en el centro de la mesa y el resto de las cartas son repartidas boca abajo entre todos los jugadores. Una vez repartidas todas, les darán la vuelta y el juego comenzará, de tal forma que el primer jugador que identifique los símbolos que aparezcan tanto en su primera carta como en la del centro de la mesa, se descartará de su carta y esta pasará al centro de la mesa, continuando el juego empleando la misma dinámica. La partida concluirá cuando un jugador haya logrado deshacerse de todas las cartas de su montón, proclamándose, así como el ganador de la partida. 
+
+## Running Dobble backend locally
+Dobble is a [Spring Boot](https://spring.io/guides/gs/spring-boot) application built using [Maven](https://spring.io/guides/gs/maven/). You can build a jar file and run it from the command line:
 
 
 ```
-git clone https://github.com/gii-is-DP1/spring-petclinic.git
-cd spring-petclinic
+git clone https://github.com/gii-is-DP1/DP1--2023-2024-l3-1.git
+cd DP1--2023-2024-l3-1
 ./mvnw package
 java -jar target/*.jar
 ```
 
-You can then access petclinic backend here: [http://localhost:8080/](http://localhost:8080/swagger-ui/index.html)
+You can access Dobble's backend here: [http://localhost:8080/](http://localhost:8080/swagger-ui/index.html)
 
 
 
@@ -33,10 +39,10 @@ Or you can run it from Maven directly using the Spring Boot Maven plugin. If you
 ```
 ## Database configuration
 
-In its default configuration, Petclinic uses an in-memory database (H2) which
+In its default configuration, Dobble uses an in-memory database (H2) which
 gets populated at startup with data. The INSERTs are specified in the file data.sql.
 
-## Working with React Petclinic in your IDE
+## Working with React Dobble in your IDE
 
 ### Prerequisites
 The following items should be installed in your system:
@@ -54,7 +60,7 @@ The following items should be installed in your system:
 
 1) On the command line
 ```
-git clone https://github.com/gii-is-DP1/spring-petclinic.git
+git clone https://github.com/gii-is-DP1/DP1--2023-2024-l3-1.git
 ```
 2) Inside Eclipse or STS
 ```
@@ -65,16 +71,16 @@ Then either build on the command line `./mvnw generate-resources` or using the E
 
 3) Inside IntelliJ IDEA
 
-In the main menu, choose `File -> Open` and select the Petclinic [pom.xml](pom.xml). Click on the `Open` button.
+In the main menu, choose `File -> Open` and select the Dobble [pom.xml](pom.xml). Click on the `Open` button.
 
 CSS files are generated from the Maven build. You can either build them on the command line `./mvnw generate-resources`
-or right click on the `spring-petclinic` project then `Maven -> Generates sources and Update Folders`.
+or right click on the `DP1--2023-2024-l3-1` project then `Maven -> Generates sources and Update Folders`.
 
-A run configuration named `PetClinicApplication` should have been created for you if you're using a recent Ultimate
-version. Otherwise, run the application by right clicking on the `PetClinicApplication` main class and choosing
-`Run 'PetClinicApplication'`.
+A run configuration named `DobbleApplication` should have been created for you if you're using a recent Ultimate
+version. Otherwise, run the application by right clicking on the `DobbleApplication` main class and choosing
+`Run 'DobbleApplication'`.
 
-4) Navigate to Petclinic
+4) Navigate to Dobble
 Visit [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) in your browser.
 
 
@@ -82,15 +88,15 @@ Visit [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagge
 
 |Spring Boot Configuration | Class or Java property files  |
 |--------------------------|---|
-|The Main Class | [PetClinicApplication](https://github.com/gii-is-DP1/spring-petclinic/blob/master/src/main/java/org/springframework/samples/petclinic/PetClinicApplication.java) |
-|Properties Files | [application.properties](https://github.com/gii-is-DP1/spring-petclinic/blob/master/src/main/resources) |
+|The Main Class | [DobbleApplication](https://github.com/gii-is-DP1/DP1--2023-2024-l3-1/blob/main/src/main/java/com/dobble/DobbleApplication.java) |
+|Properties Files | [application.properties](https://github.com/gii-is-DP1/DP1--2023-2024-l3-1/blob/main/src/main/resources/application.properties) |
 
 
 ## Starting the frontend
 
-The Spring Petclinic is implemented with a React frontend in the folder named "frontend".
+Dobble is implemented with a React frontend in the folder named "frontend".
 You can start the development server to see frontend using the command (maybe you should use the command npm insall prior to this):
 ```
 npm start
 ```
-You can then access the PetClinic frontend at [http://localhost:3000](http://localhost:3000)
+You can then access the Dobble frontend at [http://localhost:3000](http://localhost:3000)
