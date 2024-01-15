@@ -1,5 +1,3 @@
-
-                                                                                                        
                                      bbbbbbbb           bbbbbbbb                                        
 DDDDDDDDDDDDD                        b::::::b           b::::::b            lllllll                     
 D::::::::::::DDD                     b::::::b           b::::::b            l:::::l                     
@@ -36,4 +34,3 @@ O:::::::OOO:::::::O  n::::n    n::::nl::::::li::::::i n::::n    n::::ne::::::::e
      OOOOOOOOO       nnnnnn    nnnnnnlllllllliiiiiiii nnnnnn    nnnnnn    eeeeeeeeeeeeee
 
 :: Built with Spring Boot :: ${spring-boot.version}
-
