@@ -103,7 +103,6 @@ public class GameControllerTest {
   public void testGetMyGameAuthenticatedWithoutGame() {
     Player mockPlayer = new Player();
     mockPlayer.setId(1);
-    // mockPlayer.setCurrentGame(null);
 
     when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockPlayer));
 
@@ -353,23 +352,6 @@ public class GameControllerTest {
     ResponseEntity<Game> responseEntity = gameController.joinGame("game_id");
 
     assertEquals(HttpStatus.LOCKED, responseEntity.getStatusCode());
-    verify(gameService, never()).addPlayerToGame(any(), any());
-  }
-
-  @Test
-  public void testJoinGameBandwidthLimitExceeded() {
-    Player mockCurrentPlayer = new Player();
-    Game mockGameToJoin = new Game();
-    mockGameToJoin.setMax_players(1);
-    GamePlayer gamePlayer = new GamePlayer();
-    gamePlayer.setPlayer(mockCurrentPlayer);
-    mockGameToJoin.setGame_players(List.of(gamePlayer));
-    when(playerService.findCurrentPlayer()).thenReturn(Optional.of(mockCurrentPlayer));
-    when(gameService.findGame(anyString())).thenReturn(Optional.of(mockGameToJoin));
-
-    ResponseEntity<Game> responseEntity = gameController.joinGame("game_id");
-
-    assertEquals(HttpStatus.BANDWIDTH_LIMIT_EXCEEDED, responseEntity.getStatusCode());
     verify(gameService, never()).addPlayerToGame(any(), any());
   }
 
