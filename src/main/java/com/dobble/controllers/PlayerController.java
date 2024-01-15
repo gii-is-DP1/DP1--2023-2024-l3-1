@@ -6,6 +6,7 @@ import java.util.Optional;
 import com.dobble.configuration.jwt.JwtUtils;
 import com.dobble.configuration.services.UserDetailsImpl;
 import com.dobble.dto.EditPlayerDto;
+import com.dobble.dto.ExceptionMessageDto;
 import com.dobble.dto.JwtResponseDto;
 import com.dobble.dto.LoginRequest;
 import com.dobble.dto.PublicPlayerDto;
@@ -62,7 +63,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "200", description = "Inicio de sesión correcto", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponseDto.class)) }),
 			@ApiResponse(responseCode = "401", description = "Credenciales incorrectas", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Inicia la sesión de un usuario")
 	@PostMapping("/login")
 	public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
@@ -87,7 +89,8 @@ public class PlayerController {
 	@ApiResponses(value = {
 			@ApiResponse(responseCode = "200", description = "El token es correcto", content = @Content),
 			@ApiResponse(responseCode = "406", description = "El token es incorrecto", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Verifica la validez de un token JWT")
 	@GetMapping("/validate")
 	public ResponseEntity<?> validateToken(@RequestParam String token) {
@@ -104,7 +107,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "200", description = "Usuario actual", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Player.class)) }),
 			@ApiResponse(responseCode = "401", description = "No autenticado", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Devuelve el usuario que tiene iniciada la sesión actual")
 	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping("/me")
@@ -122,7 +126,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "200", description = "El token de inicio de sesión del usuario registrado", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponseDto.class)) }),
 			@ApiResponse(responseCode = "226", description = "Ya existe un usuario con ese nombre de usuario y correo electrónico", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Registra a un usuario")
 	@PostMapping("/signup")
 	public ResponseEntity<?> registerUser(@Valid @RequestBody SignupRequest signUpRequest) {
@@ -145,7 +150,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
 			@ApiResponse(responseCode = "404", description = "No se encuentra el usuario a modificar", content = @Content),
 			@ApiResponse(responseCode = "409", description = "Ya existe un usuario con ese e-mail o nombre de usuario", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario de un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@PatchMapping("/{id}")
@@ -180,7 +186,8 @@ public class PlayerController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Player.class)) }),
 			@ApiResponse(responseCode = "404", description = "No se encuentra el usuario a modificar", content = @Content),
 			@ApiResponse(responseCode = "409", description = "Ya existe un usuario con ese e-mail o nombre de usuario", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Edita correo, contraseña y nombre de usuario del usuario con sesión iniciada")
 	@SecurityRequirement(name = "bearerAuth")
 	@PatchMapping("/me")
@@ -205,7 +212,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = @Content),
 			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
 			@ApiResponse(responseCode = "404", description = "No se encuentra el usuario a eliminar", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Elimina un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping("/{id}")
@@ -230,7 +238,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "304", description = "Los usuarios ya son amigos", content = @Content),
 			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
 			@ApiResponse(responseCode = "404", description = "No se encuentra alguno de los usuarios proporcionados", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Añade un amigo a un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@PutMapping("/friends/{id}/{friend_username}")
@@ -261,7 +270,8 @@ public class PlayerController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Player.class, type = "array")) }),
 			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
 			@ApiResponse(responseCode = "404", description = "No se encuentra al usuario proporcionado", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Lista los amigos de un usuario. El usuario que realice la petición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping("/friends/{id}")
@@ -284,7 +294,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = PublicPlayerDto.class, type = "array")) }),
 			@ApiResponse(responseCode = "401", description = "El usuario actual no ha iniciado sesión", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Lista los amigos del usuario actual")
 	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping("/friends")
@@ -308,7 +319,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "304", description = "Los usuarios no eran amigos", content = @Content),
 			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
 			@ApiResponse(responseCode = "404", description = "No se encuentra alguno de los usuarios proporcionados", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Elimina un amigo a un usuario. El usuario que realice la edición debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping("/friends/{id}/{friend_username}")
@@ -338,7 +350,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = @Content),
 			@ApiResponse(responseCode = "304", description = "Los usuarios ya eran amigos", content = @Content),
 			@ApiResponse(responseCode = "404", description = "No se encuentra alguno de los usuarios proporcionados", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Añade un amigo al usuario actual. Se proporciona el usuario del jugador a añadir como amigo")
 	@SecurityRequirement(name = "bearerAuth")
 	@PutMapping("/friends/{friend_username}")
@@ -362,7 +375,8 @@ public class PlayerController {
 			@ApiResponse(responseCode = "200", description = "Operación realizada correctamente", content = @Content),
 			@ApiResponse(responseCode = "304", description = "Los usuarios no eran amigos", content = @Content),
 			@ApiResponse(responseCode = "404", description = "No se encuentra alguno de los usuarios proporcionados", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Elimina un amigo del usuario actual. Se proporciona el usuario del jugador a eliminar como amigo")
 	@SecurityRequirement(name = "bearerAuth")
 	@DeleteMapping("/friends/{friend_username}")
@@ -387,7 +401,8 @@ public class PlayerController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = JwtResponseDto.class, type = "array")) }),
 			@ApiResponse(responseCode = "204", description = "No hay usuarios que mostrar", content = @Content),
 			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Lista todos los usuarios. El usuario de este método debe ser administrador")
 	@SecurityRequirement(name = "bearerAuth")
 	@GetMapping
@@ -412,7 +427,8 @@ public class PlayerController {
 					@Content(mediaType = "application/json", schema = @Schema(implementation = Player.class)) }),
 			@ApiResponse(responseCode = "401", description = "El usuario actual no es administrador", content = @Content),
 			@ApiResponse(responseCode = "404", description = "Usuario no encontrado", content = @Content),
-			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+			@ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
 	@Operation(summary = "Obtiene un usuario por su ID")
 	@GetMapping("/{id}")
 	@SecurityRequirement(name = "bearerAuth")
