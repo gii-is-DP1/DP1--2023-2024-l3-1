@@ -4,6 +4,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.Collections;
 import java.util.List;
@@ -16,7 +18,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import com.dobble.model.Achievement;
 import com.dobble.model.enums.AchievementMetric;
-import com.dobble.services.AchievementService;
+import com.dobble.repositories.AchievementRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -69,6 +71,38 @@ public class AchievementServiceTest {
         Achievement achievement = optionalAchievement.get();
         assertNotNull(achievement);
         assertEquals("New Achievement", achievement.getName());
+    }
+
+    @Test
+    public void testUpdateAchievement() {
+        AchievementRepository mockRepository = mock(AchievementRepository.class);
+
+        AchievementService achievementService = new AchievementService(mockRepository);
+
+        Achievement existingAchievement = new Achievement();
+        existingAchievement.setId(1);
+        existingAchievement.setName("Existing Achievement");
+        existingAchievement.setDescription("Description");
+        existingAchievement.setBadgeImage("Image");
+        existingAchievement.setThreshold(10.0);
+        existingAchievement.setMetric(AchievementMetric.GAMES_PLAYED);
+
+        when(mockRepository.findById(1)).thenReturn(Optional.of(existingAchievement));
+
+        Achievement updatedAchievement = new Achievement();
+        updatedAchievement.setName("Updated Achievement");
+        updatedAchievement.setDescription("Updated Description");
+        updatedAchievement.setBadgeImage("Updated Image");
+        updatedAchievement.setThreshold(20.0);
+        updatedAchievement.setMetric(AchievementMetric.GAMES_PLAYED);
+
+        Achievement result = achievementService.updateAchievement(updatedAchievement, 1);
+
+        assertNotNull(result);
+        assertEquals("Updated Achievement", result.getName());
+        assertEquals("Updated Description", result.getDescription());
+        assertEquals("Updated Image", result.getBadgeImage());
+        assertEquals(AchievementMetric.GAMES_PLAYED, result.getMetric());
     }
 
     @Test

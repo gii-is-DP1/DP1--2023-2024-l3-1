@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,11 +12,13 @@ import java.util.Optional;
 import com.dobble.dto.EditPlayerDto;
 import com.dobble.dto.SignupRequestDto;
 import com.dobble.model.Player;
-import com.dobble.services.PlayerService;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
+import com.dobble.model.enums.Icon;
+import com.dobble.repositories.PlayerRepository;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,6 +28,8 @@ public class PlayerServiceTest {
 
     @Autowired
     private PlayerService playerService;
+    @Mock
+    private PlayerRepository playerRepository;
 
     @Test
     void testFindPlayer() {
@@ -104,12 +109,15 @@ public class PlayerServiceTest {
         EditPlayerDto newPlayer = new EditPlayerDto();
         newPlayer.setUsername("dobbleupdate");
         newPlayer.setEmail("dobbleupdate@example.com");
+        newPlayer.setProfile_icon(Icon.CACTUS);
 
         playerService.updatePlayer(newPlayer, playerToUpdate.get().getId());
         Optional<Player> updatedPlayer = playerService.findPlayer(2);
 
         assertEquals("dobbleupdate", updatedPlayer.get().getUsername());
         assertEquals("dobbleupdate@example.com", updatedPlayer.get().getEmail());
+        assertEquals(Icon.CACTUS, updatedPlayer.get().getProfile_icon());
+
     }
 
     // Prueba para cuando son amigos y haces addFriend()
@@ -177,5 +185,28 @@ public class PlayerServiceTest {
     @Test
     void testExistsUser() {
         assertEquals(true, playerService.existsUser("dobble", "dobble@example.com"));
+    }
+
+    @Test
+    void testExistsUser2() {
+        Player targetPlayer = new Player();
+        targetPlayer.setId(1);
+        targetPlayer.setUsername("existingUsername");
+        targetPlayer.setEmail("existingEmail@example.com");
+
+        EditPlayerDto editPayload = new EditPlayerDto();
+        editPayload.setUsername("newUsername");
+        editPayload.setEmail("newEmail");
+
+        Optional<Player> existingUsernamePlayer = Optional.of(new Player());
+        existingUsernamePlayer.get().setId(2);
+        when(playerRepository.findByUsername("newUsername")).thenReturn(existingUsernamePlayer);
+
+        Optional<Player> existingEmailPlayer = Optional.empty();
+        when(playerRepository.findByEmail("newEmail")).thenReturn(existingEmailPlayer);
+
+        boolean result = playerService.existsUser(targetPlayer, editPayload);
+
+        assertFalse(result);
     }
 }
