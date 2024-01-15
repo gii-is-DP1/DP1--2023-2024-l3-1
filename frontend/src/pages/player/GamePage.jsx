@@ -15,13 +15,6 @@ import { appStore } from "../../services/appStore";
  * Este componente es el principal de la partida. Actualiza el estado cada segundo, pasándoselo a los hijos
  * y renderizando el componente apropiado dependiendo de si la partida está en lobby o ha empezado.
  */
-
-const tableStyles = {
-    maxWidth: '600px',
-    width: '100%',
-    margin: '0 auto',
-};
-
 export default function GamePage() {
     const user = useSelector(state => state.appStore.user);
     const [game, setGame] = useState({});
@@ -37,28 +30,23 @@ export default function GamePage() {
             const response = await axios.get('/games/me');
             setGame(response.data);
         } catch (e) {
-            /**
-             * TODO: Completar todos los tipos de errores que puede devolver el método
-             */
-           
-
             if (e.response?.status === 404) {
                     const responseById = await axios.get(`/games/${id}`);
-                    if(responseById.data.status === GameStatus.FINISHED 
-                        && responseById.data.game_players.some(gp => gp.username === user.username)){
-                        setGame(responseById.data);
-                        return;
-                     }
-                    setHeader('Error al obtener los datos de la partida');
+
+                    if(responseById.data.status === GameStatus.FINISHED &&
+                        responseById.data.game_players.some(gp => gp.username === user.username)) {
+                            setGame(responseById.data);
+                            return;
+                    }
+
                     setMessage("No estás autenticado o no tienes permisos para esta partida");
-                    setError(true);
+                    
             } else if (e.response?.status === 401) {
-                setHeader('Error al actualizar el estado del juego');
                 setMessage("No estás autenticado o no tienes permisos para esta partida");
-                setError(true);
             }
 
-            
+            setHeader('Error al actualizar el estado del juego');
+            setError(true);
         }
     }
 
@@ -73,7 +61,12 @@ export default function GamePage() {
         return (
             <div>
                 <h2>Puestos de la partida:</h2>
-                <Table aria-label="game-positions" className="mt-4" style={tableStyles}>
+                <Table aria-label="game-positions" className="mt-4"
+                    style={{
+                        maxWidth: '600px',
+                        width: '100%',
+                        margin: '0 auto'
+                }}>
                 <thead>
                     <tr>
                         <th className="text-center">Puesto</th>
