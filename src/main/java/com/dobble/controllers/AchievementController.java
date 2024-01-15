@@ -3,6 +3,7 @@ package com.dobble.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import com.dobble.dto.ExceptionMessageDto;
 import com.dobble.model.Achievement;
 import com.dobble.model.Player;
 import com.dobble.services.AchievementService;
@@ -89,7 +90,8 @@ public class AchievementController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Achievement.class)) }),
             @ApiResponse(responseCode = "400", description = "Los datos proporcionados no han pasado la validación", content = @Content),
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado o no es administrador", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content)
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+			    @Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Achievement> createAchievement(@RequestBody @Valid Achievement newAchievement,
@@ -117,7 +119,8 @@ public class AchievementController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Achievement.class)) }),
             @ApiResponse(responseCode = "401", description = "El usuario actual no está autorizado para realizar esta operación.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra el logro a actualizar.", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<Achievement> modifyAchievement(@PathVariable("id") Integer id,
@@ -148,7 +151,8 @@ public class AchievementController {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente.", content = @Content),
             @ApiResponse(responseCode = "401", description = "El usuario actual no está autorizado para realizar esta operación.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra el logro a eliminar.", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<?> deleteAchievement(@PathVariable("id") int id) {

@@ -3,6 +3,7 @@ package com.dobble.controllers;
 import java.util.List;
 import java.util.Optional;
 
+import com.dobble.dto.ExceptionMessageDto;
 import com.dobble.dto.GameCreateDto;
 import com.dobble.dto.PlayRequestDto;
 import com.dobble.model.Game;
@@ -98,7 +99,8 @@ public class GameController {
             @ApiResponse(responseCode = "201", description = "Partida creada correctamente.", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class)) }),
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado.", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content),
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }),
             @ApiResponse(responseCode = "400", description = "Error en el cuerpo de la solicitud", content = @Content)
     })
     @PostMapping()
@@ -122,7 +124,8 @@ public class GameController {
             @ApiResponse(responseCode = "401", description = "El usuario actual no está autorizado para realizar esta operación.", content = @Content),
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida a actualizar.", content = @Content),
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para ser actualizada (está en curso o finalizada).", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = @Content)
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @PatchMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
@@ -160,7 +163,8 @@ public class GameController {
             @ApiResponse(responseCode = "200", description = "Operación realizada correctamente."),
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado."),
             @ApiResponse(responseCode = "404", description = "El jugador actual no tiene ninguna partida en curso."),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @DeleteMapping("/me")
     public ResponseEntity<?> leaveGame() {
@@ -187,7 +191,8 @@ public class GameController {
             @ApiResponse(responseCode = "404", description = "El jugador a expulsar no se encontró en la partida o la partida no existe."),
             @ApiResponse(responseCode = "400", description = "No se puede expulsar a sí mismo de la partida."),
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para expulsar jugadores (en curso o finalizada)."),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @DeleteMapping("/{player_username}")
     public ResponseEntity<?> expelPlayer(@PathVariable String player_username) {
@@ -234,7 +239,8 @@ public class GameController {
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para unirse (está en curso o finalizada)."),
             @ApiResponse(responseCode = "509", description = "La partida está completa y no se puede unir más jugadores."),
             @ApiResponse(responseCode = "304", description = "El jugador ya se encuentra en la partida"),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @PostMapping("/join/{game_id}")
     public ResponseEntity<Game> joinGame(@PathVariable String game_id) {
@@ -279,7 +285,8 @@ public class GameController {
             @ApiResponse(responseCode = "404", description = "No se encuentra la partida."),
             @ApiResponse(responseCode = "423", description = "La partida no está en el estado correcto para iniciar (está en curso o finalizada)."),
             @ApiResponse(responseCode = "428", description = "No hay suficientes jugadores para iniciar la partida."),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @PostMapping("/start")
     public ResponseEntity<Game> startGame() {
@@ -320,7 +327,8 @@ public class GameController {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Game.class, type = "array")) }),
             @ApiResponse(responseCode = "204", description = "No hay partidas que mostrar", content = @Content),
             @ApiResponse(responseCode = "401", description = "El usuario actual no es administrador o no está autenticado", content = @Content),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = @Content) })
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
     @Operation(summary = "Lista todas las partidas. El usuario de este método debe ser administrador")
     @GetMapping
     public ResponseEntity<List<Game>> getAll() {
@@ -345,7 +353,8 @@ public class GameController {
             @ApiResponse(responseCode = "401", description = "El jugador actual no está autenticado."),
             @ApiResponse(responseCode = "404", description = "El jugador actual no está en ninguna partida"),
             @ApiResponse(responseCode = "417", description = "El icono seleccionado no es el correcto"),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.")
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor.", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) })
     })
     @PostMapping("/me/play")
     public ResponseEntity<Void> play(@RequestBody PlayRequestDto playRequestDto) {

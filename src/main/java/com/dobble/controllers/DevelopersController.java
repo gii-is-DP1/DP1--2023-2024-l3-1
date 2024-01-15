@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dobble.dto.ExceptionMessageDto;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -31,7 +33,8 @@ public class DevelopersController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Solicitud correcta", content = {
                     @Content(mediaType = "application/json", schema = @Schema(implementation = Developer.class)) }),
-            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor") })
+            @ApiResponse(responseCode = "500", description = "Error desconocido del servidor", content = {
+				@Content(mediaType = "application/json", schema = @Schema(implementation = ExceptionMessageDto.class)) }) })
     @Operation(summary = "Obtiene una lista de los desarrolladores de la aplicación")
     public ResponseEntity<List<Developer>> getDevelopers() {
         MavenXpp3Reader reader = new MavenXpp3Reader();
